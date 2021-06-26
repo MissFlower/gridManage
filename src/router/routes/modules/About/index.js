@@ -4,25 +4,28 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 18:06:03
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-22 18:12:06
+ * @LastEditTime: 2021-06-24 11:32:52
  */
 import { Layout } from 'src/router/constant'
 
-const about = {
+const route = {
 	path: '/about',
-	name: 'About',
 	component: Layout,
 	children: [
 		{
-			path: 'index',
-			name: 'Index',
-			component: () => import('/@/components/HelloWorld.vue'),
+			path: '',
+			name: 'About',
+			component: () => import('src/views/About/index.vue'),
 			meta: {
-				title: '关于',
-				icon: 'simple-icons:about-dot-me'
+				title: 'About',
+				icon: 'iconsafetycertificate',
+				noCache: true
 			}
 		}
 	]
 }
 
-export default about
+export default {
+	orderNo: 100,
+	route
+}

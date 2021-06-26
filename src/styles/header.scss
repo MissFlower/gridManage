@@ -1,0 +1,90 @@
+.header-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  color: #001529;
+  background-color: #FFF;
+
+  .header-left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    width: $sideBarWidth !important;
+    height: 100%;
+    padding-left: 5px;
+
+    .sidebar-logo {
+      height: 80%;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    .logo {
+      display: inline-block;
+      margin-right: 10px;
+      font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      vertical-align: middle;
+    }
+  }
+    
+  .toggle-container {
+    margin-right: 15px;
+
+    .toggle {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      cursor: pointer;
+      transform: rotate(180deg);
+    }
+  
+    .toggle.is-active {
+      transform: rotate(0deg);
+    }
+  }
+
+  .header-right {
+    display: flex;
+    height: 100%;
+    margin-right: 24px;
+    align-items: center;
+
+    .ant-dropdown-trigger {
+      display: flex;
+      height: 100%;
+      padding-right: 10px;
+      padding-left: 5px;
+      cursor: pointer;
+      align-items: center;
+
+      .ant-avatar {
+        margin-right: 5px;
+      }
+
+      .username {
+        display: flex;
+        align-items: center;
+        height: 100%;
+      }
+
+      &:hover {
+        background-color: #f6f6f6;
+      }
+    }
+
+    .ant-dropdown-menu {
+      text-align: center;
+    }
+  }
+}

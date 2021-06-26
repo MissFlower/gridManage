@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 17:42:00
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-22 18:03:29
+ * @LastEditTime: 2021-06-26 18:11:54
  */
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { basicRoutes } from './routes'
@@ -31,6 +31,12 @@ export function resetRouter() {
 		}
 	})
 }
+console.log(router)
+// const originalPush = router.push
+// router.push = function push(location, onResolve, onReject) {
+// 	if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+// 	return originalPush.call(this, location).catch(err => err)
+// }
 
 // config router
 export function setupRouter(app) {

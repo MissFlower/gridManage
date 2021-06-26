@@ -4,10 +4,10 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:25:56
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-22 13:33:25
+ * @LastEditTime: 2021-06-26 11:57:11
  */
 module.exports = {
-	printWidth: 100, // 每行最大字符数，超过会换行，默认80
+	printWidth: 150, // 每行最大字符数，超过会换行，默认80
 	tabWidth: 2, // 一个tab代表几个空格数，默认2
 	useTabs: true, // 是否使用tab进行缩进，默认false
 	semi: false, // 结尾是否添加分号 默认true

@@ -1,26 +1,41 @@
 /*
- * @Description: 
+ * @Description:
  * @Version: 0.1.0
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:26:33
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-22 11:26:34
+ * @LastEditTime: 2021-06-24 20:11:22
  */
 module.exports = {
 	root: true,
 	plugins: ['stylelint-order'],
 	extends: ['stylelint-config-standard', 'stylelint-config-prettier'],
 	rules: {
-		'selector-pseudo-class-no-unknown': [
-			true,
-			{
-				ignorePseudoClasses: ['global']
-			}
-		],
 		'selector-pseudo-element-no-unknown': [
 			true,
 			{
 				ignorePseudoElements: ['v-deep']
+			}
+		],
+		'selector-pseudo-class-no-unknown': [
+			true,
+			{
+				ignorePseudoClasses: ['export', 'deep']
+			}
+		],
+		'property-no-unknown': [
+			true,
+			{
+				ignoreProperties: [
+					'menuText',
+					'menuActiveText',
+					'subMenuActiveText',
+					'menuBg',
+					'menuHover',
+					'subMenuBg',
+					'subMenuHover',
+					'sideBarWidth'
+				]
 			}
 		],
 		'at-rule-no-unknown': [

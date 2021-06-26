@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:25:01
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-22 18:01:06
+ * @LastEditTime: 2021-06-23 09:33:32
  */
 /**
  * Eslint 检查规则（A）
@@ -59,7 +59,7 @@ module.exports = defineConfig({
 		],
 		// 设置每行最大属性数
 		'vue/max-attributes-per-line': [
-			2,
+			0,
 			{
 				singleline: 3, // 标签为单行时，每行最大属性数值为 5，默认值为 1
 				multiline: {

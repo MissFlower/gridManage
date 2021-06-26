@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:01:42
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-22 17:38:59
+ * @LastEditTime: 2021-06-23 17:19:40
  */
 import { loadEnv } from 'vite'
 import { resolve } from 'path'
@@ -50,6 +50,9 @@ export default ({ command, mode }) => {
 					replacement: pathResolve('src') + '/'
 				}
 			]
+		},
+		define: {
+			'process.env': {}
 		},
 		css: {
 			preprocessorOptions: {
