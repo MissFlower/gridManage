@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-26 13:56:12
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-26 15:42:58
+ * @LastEditTime: 2021-06-27 00:20:00
  */
 import { router } from 'src/router'
 import { createPermissionGuard } from './permissionGuard'

@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 18:01:50
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-26 18:20:39
+ * @LastEditTime: 2021-06-27 09:48:57
 -->
 <template>
 	<div class="login-container">
@@ -40,7 +40,6 @@
 	import { Form, Image, InputPassword } from 'ant-design-vue'
 	import { useForm } from '@ant-design-vue/use'
 	import { login, getVerifyCode } from 'src/api/System'
-	import {  router } from 'src/router'
 	export default defineComponent({
 		name: 'Login',
 		components: {
@@ -50,9 +49,8 @@
 			InputPassword
 		},
 		setup() {
-			// const router = useRouter()
+			const router = useRouter()
 			const route = useRoute()
-			console.log(router)
 			const usernameRef = ref(null)
 			const passwordRef = ref(null)
 
@@ -103,16 +101,17 @@
 							code,
 							uuid
 						}
-					})
-						.then(() => {
-							console.log(redirectRef)
-							router.push({ path: redirectRef.redirect || '/', query: redirectRef.otherQuery }).catch(error => {
+					}).then(() => {
+						console.log({ path: redirectRef.redirect || '/', query: redirectRef.otherQuery })
+						router
+							.push({ path: redirectRef.redirect || '/', query: redirectRef.otherQuery })
+							.then(res => {
+								console.log(res)
+							})
+							.catch(error => {
 								console.log(error)
 							})
-						})
-						.catch(error => {
-							console.log(error)
-						})
+					})
 				} catch (error) {
 					console.log(error)
 				}

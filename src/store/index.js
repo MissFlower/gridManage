@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-23 10:58:53
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-25 17:25:32
+ * @LastEditTime: 2021-06-26 20:59:24
  */
 import { createStore } from 'vuex'
 import getters from 'src/store/getters'

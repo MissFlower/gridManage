@@ -4,9 +4,9 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 17:52:09
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-24 18:31:59
+ * @LastEditTime: 2021-06-26 21:36:15
  */
-import { REDIRECT_NAME } from 'src/router/constant'
+import { Layout, REDIRECT_NAME } from 'src/router/constant'
 const basic = [
 	{
 		path: '/login',
@@ -28,19 +28,26 @@ const basic = [
 		hidden: true
 	},
 	{
+		path: '/redirect',
+		name: REDIRECT_NAME,
+		component: Layout,
+		hidden: true,
+		children: [
+			{
+				path: '/redirect/:path(.*)',
+				name: REDIRECT_NAME,
+				component: () => import('src/views/System/Redirect/index.vue'),
+				meta: {
+					title: REDIRECT_NAME,
+					breadcrumb: false
+				}
+			}
+		]
+	},
+	{
 		path: '/:path(.*)*',
 		redirect: '/404',
 		hidden: true
-	},
-	{
-		path: '/redirect/:path(.*)',
-		name: REDIRECT_NAME,
-		hidden: true,
-		component: () => import('src/views/System/ErrorPage/404.vue'),
-		meta: {
-			title: REDIRECT_NAME,
-			breadcrumb: false
-		}
 	}
 ]
 export default basic
