@@ -4,10 +4,15 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 17:52:09
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-26 21:36:15
+ * @LastEditTime: 2021-06-28 17:16:40
  */
 import { Layout, REDIRECT_NAME } from 'src/router/constant'
 const basic = [
+	{
+		path: '/',
+		redirect: '/grid',
+		hidden: true
+	},
 	{
 		path: '/login',
 		name: 'Login',
@@ -43,11 +48,7 @@ const basic = [
 				}
 			}
 		]
-	},
-	{
-		path: '/:path(.*)*',
-		redirect: '/404',
-		hidden: true
 	}
 ]
+
 export default basic

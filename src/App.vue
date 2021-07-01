@@ -4,24 +4,34 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:01:42
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-22 17:23:09
+ * @LastEditTime: 2021-06-28 18:34:24
 -->
 <template>
 	<RouterView />
+	<Loading :loading="loading" />
 </template>
 
-<script setup>
-	// This starter template is using Vue 3 experimental <script setup> SFCs
-	// Check out https://github.com/vuejs/rfcs/blob/script-setup-2/active-rfcs/0000-script-setup.md
-</script>
+<script>
+	import { defineComponent, watchEffect, ref } from 'vue'
+	import { useTitle } from 'src/hooks/useTitle'
+	import { useStore } from 'vuex'
+	import Loading from 'src/components/Loading/index.vue'
+	export default defineComponent({
+		name: 'App',
+		components: {
+			Loading
+		},
+		setup() {
+			const store = useStore()
+			const loading = ref(false)
+			useTitle()
+			watchEffect(() => {
+				loading.value = store.state.common.requestCount > 0
+			})
 
-<style lang="scss">
-	#app {
-		height: 100%;
-
-		div,
-		section {
-			box-sizing: border-box;
+			return {
+				loading
+			}
 		}
-	}
-</style>
+	})
+</script>

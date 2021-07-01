@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 18:01:50
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-27 09:48:57
+ * @LastEditTime: 2021-06-29 09:53:59
 -->
 <template>
 	<div class="login-container">
@@ -25,7 +25,8 @@
 				</FormItem>
 				<FormItem label="验证码" v-bind="validateInfos.code" class="verify">
 					<AInput v-model:value.trim="modelRef.code" @focus="clearValidateHandle" />
-					<Image :width="100" :height="32" :src="modelRef.verifyImage" :preview="false" @click="verifyCodeHandle" />
+					<Image v-if="modelRef.verifyImage" :width="100" :height="32" :src="modelRef.verifyImage" :preview="false" @click="verifyCodeHandle" />
+					<RedoOutlined v-else @click="verifyCodeHandle" />
 				</FormItem>
 				<AButton type="link">忘记密码？</AButton>
 				<AButton type="primary" block class="login-btn" @click.prevent="loginHandle">登录</AButton>
@@ -37,20 +38,24 @@
 <script>
 	import { defineComponent, ref, reactive, onMounted, watch } from 'vue'
 	import { useRouter, useRoute } from 'vue-router'
+	import { useStore } from 'vuex'
 	import { Form, Image, InputPassword } from 'ant-design-vue'
+	import { RedoOutlined } from '@ant-design/icons-vue'
 	import { useForm } from '@ant-design-vue/use'
-	import { login, getVerifyCode } from 'src/api/System'
+	import { getVerifyCode } from 'src/api/System'
 	export default defineComponent({
 		name: 'Login',
 		components: {
 			Form,
 			FormItem: Form.Item,
 			Image,
-			InputPassword
+			InputPassword,
+			RedoOutlined
 		},
 		setup() {
 			const router = useRouter()
 			const route = useRoute()
+			const store = useStore()
 			const usernameRef = ref(null)
 			const passwordRef = ref(null)
 
@@ -92,26 +97,23 @@
 				try {
 					await validate()
 					const { username, password, code, uuid } = modelRef
-					await login({
-						data: {
-							username,
-							password
-						},
-						params: {
-							code,
-							uuid
-						}
-					}).then(() => {
-						console.log({ path: redirectRef.redirect || '/', query: redirectRef.otherQuery })
-						router
-							.push({ path: redirectRef.redirect || '/', query: redirectRef.otherQuery })
-							.then(res => {
-								console.log(res)
-							})
-							.catch(error => {
-								console.log(error)
-							})
-					})
+					store
+						.dispatch('user/login', {
+							data: {
+								username,
+								password
+							},
+							params: {
+								code,
+								uuid
+							}
+						})
+						.then(() => {
+							router.push({ path: redirectRef.redirect || '/', query: redirectRef.otherQuery })
+						})
+						.catch(error => {
+							console.log(error)
+						})
 				} catch (error) {
 					console.log(error)
 				}
@@ -220,6 +222,16 @@
 					height: 100%;
 					margin-left: 12px;
 					cursor: pointer;
+				}
+
+				.anticon-redo {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					width: 100px;
+					margin-left: 12px;
+					cursor: pointer;
+					background-color: #ddd;
 				}
 			}
 		}

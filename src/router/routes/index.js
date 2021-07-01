@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 18:03:13
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-24 17:58:46
+ * @LastEditTime: 2021-06-28 17:21:00
  */
 import basicRoute from './basic'
 const modules = import.meta.globEager('./modules/**/*.js')
@@ -23,5 +23,12 @@ sortModList.forEach(mod => {
 })
 
 // Basic routing without permission
-export const basicRoutes = [...basicRoute, ...routeModuleList]
-export const asyncRoutes = []
+export const basicRoutes = [...basicRoute]
+// Async routing with permission
+export const asyncRoutes = [...routeModuleList]
+// not found route
+export const PAGE_NOT_FOUND_ROUTE = {
+	path: '/:pathMatch(.*)*',
+	redirect: '/404',
+	hidden: true
+}

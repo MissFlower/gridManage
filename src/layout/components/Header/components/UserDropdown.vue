@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 16:54:57
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-26 11:56:44
+ * @LastEditTime: 2021-06-29 17:41:35
 -->
 <template>
 	<Dropdown>
@@ -39,8 +39,7 @@
 			const store = useStore()
 			const { avator, username } = store.getters.userInfo
 			return {
-				avator:
-					avator || 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+				avator: avator || 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
 				username
 			}
 		}

@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:25:01
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-23 09:33:32
+ * @LastEditTime: 2021-06-29 17:19:38
  */
 /**
  * Eslint 检查规则（A）
@@ -25,12 +25,7 @@ module.exports = defineConfig({
 		ecmaVersion: 2020,
 		sourceType: 'module'
 	},
-	extends: [
-		'plugin:vue/vue3-recommended',
-		'eslint:recommended',
-		'prettier',
-		'plugin:prettier/recommended'
-	],
+	extends: ['plugin:vue/vue3-recommended', 'eslint:recommended', 'prettier', 'plugin:prettier/recommended'],
 	rules: {
 		'vue/custom-event-name-casing': 'off',
 		'no-use-before-define': 'off',
@@ -49,8 +44,8 @@ module.exports = defineConfig({
 			'error',
 			{
 				html: {
-					void: 'always',
-					normal: 'never',
+					void: 'never',
+					normal: 'always',
 					component: 'always'
 				},
 				svg: 'always',
@@ -250,7 +245,7 @@ module.exports = defineConfig({
 		// 禁止使用不必要的嵌套块
 		'no-lone-blocks': 2,
 		// 不允许使用混合空格和制表符进行缩进
-		'no-mixed-spaces-and-tabs': 2,
+		'no-mixed-spaces-and-tabs': 0,
 		// 禁止在逻辑表达式，条件表达式，声明，数组元素，对象属性，序列和函数参数周围使用多个空格
 		'no-multi-spaces': 2,
 		// 禁止使用斜线（\）进行换行

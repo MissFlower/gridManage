@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:01:42
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-23 17:19:40
+ * @LastEditTime: 2021-06-29 11:50:08
  */
 import { loadEnv } from 'vite'
 import { resolve } from 'path'
@@ -62,6 +62,6 @@ export default ({ command, mode }) => {
 			}
 		},
 		// 单独提取管理vite插件
-		plugins: createVitePlugins(mode, isBuild)
+		plugins: createVitePlugins(viteEnv, isBuild)
 	}
 }

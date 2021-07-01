@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 14:49:10
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-24 18:20:11
+ * @LastEditTime: 2021-06-28 14:38:50
 -->
 <template>
 	<Breadcrumb :routes="routes">
@@ -12,13 +12,7 @@
 			<span v-if="!hasRedirect(routes, route)">
 				{{ route.meta.title }}
 			</span>
-			<RouterLink
-				v-else
-				tag="div"
-				to=""
-				class="route-text"
-				@click.prevent="handleLink(route, paths, $event)"
-			>
+			<RouterLink v-else tag="div" to="" class="route-text" @click.prevent="handleLink(route, paths, $event)">
 				{{ route.meta.title }}
 			</RouterLink>
 		</template>
@@ -44,28 +38,26 @@
 					return
 				}
 				// only show routes with meta.title
-				let routeMatched = currentRoute.value.matched.filter(item => item.meta?.title)
-				const first = routeMatched[0]
-				if (!isHome(first)) {
-					routeMatched = [
-						{
-							path: 'home',
-							meata: {
-								title: 'home'
-							}
-						}
-					].concat(routeMatched)
-				}
-				routes.value = routeMatched.filter(
-					item => item.meta?.title && item.meta.breadcrumb !== false
-				)
+				const routeMatched = currentRoute.value.matched.filter(item => item.meta?.title)
+				// const first = routeMatched[0]
+				// if (!isHome(first)) {
+				// 	routeMatched = [
+				// 		{
+				// 			path: 'home',
+				// 			meata: {
+				// 				title: 'home'
+				// 			}
+				// 		}
+				// 	].concat(routeMatched)
+				// }
+				routes.value = routeMatched.filter(item => item.meta?.title && item.meta.breadcrumb !== false)
 			})
-			function isHome(route) {
-				if (route?.name) {
-					return false
-				}
-				return route?.name.trim().toLocaleLowerCase() === 'Home'.toLocaleLowerCase()
-			}
+			// function isHome(route) {
+			// 	if (route?.name) {
+			// 		return false
+			// 	}
+			// 	return route?.name.trim().toLocaleLowerCase() === 'Home'.toLocaleLowerCase()
+			// }
 
 			function hasRedirect(routes, route) {
 				if (routes.indexOf(route) === routes.length - 1) {

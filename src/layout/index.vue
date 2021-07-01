@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 13:59:31
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-24 17:29:23
+ * @LastEditTime: 2021-06-28 17:23:56
 -->
 <template>
 	<Layout class="app-wrapper">
@@ -13,18 +13,12 @@
 		</LayoutHeader>
 
 		<Layout>
-			<LayoutSider
-				v-model:collapsed="collapsed"
-				:collapsed-width="60"
-				:width="sideBarWidth"
-				:trigger="null"
-				collapsible
-			>
+			<LayoutSider v-model:collapsed="collapsed" :collapsed-width="60" :width="sideBarWidth" :trigger="null" collapsible>
 				<Sider />
 			</LayoutSider>
 
 			<Layout>
-				<LayoutContent class="main-container">
+				<LayoutContent class="content-wrapper">
 					<Content />
 				</LayoutContent>
 			</Layout>

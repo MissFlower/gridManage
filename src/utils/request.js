@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-25 13:47:47
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-26 11:51:06
+ * @LastEditTime: 2021-07-01 17:00:17
  */
 import axios from 'axios'
 import qs from 'qs'
@@ -14,8 +14,9 @@ import { message } from 'ant-design-vue'
 import { UPDATE_REQUEST_COUNT } from 'src/store/modules/common/types'
 
 // 请求超时时间
-const TIMEOUT = 10000
-const BASE_URL = import.meta.env.VITE_GLOB_API_URL
+const TIMEOUT = 100000
+// const BASE_URL = import.meta.env.VITE_GLOB_API_URL
+const BASE_URL = import.meta.env.VITE_GLOB_LOCAL_URL
 
 const http = axios.create({
 	baseURL: BASE_URL,
@@ -62,7 +63,7 @@ http.interceptors.response.use(
 		}
 
 		// 请求失败
-		if (result?.code && result?.code !== 0) {
+		if (result?.code !== 0) {
 			const msg = result.msg || '服务器内部错误!'
 			if (response.config.showMessage) {
 				message.error(`${msg}`)

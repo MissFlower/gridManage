@@ -4,6 +4,7 @@
 @import './header.scss';
 @import './transition.scss';
 @import './dropdown.scss';
+@import './drawer.scss';
 
 html,
 body {
@@ -111,12 +112,6 @@ a:focus {
   --animate-duration: 500ms !important;
 }
 
-.el-menu-item [class^="el-icon-"],
-.el-submenu [class^="el-icon-"] {
-  // width: initial;
-  width: 18px;
-}
-
 #app {
   height: 100%;
 
@@ -124,6 +119,10 @@ a:focus {
   section {
     box-sizing: border-box;
   }
+}
+
+.amap-logo, .amap-copyright {
+  display: none !important;
 }
 
 /* 定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸 */

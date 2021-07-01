@@ -83,13 +83,6 @@ a:focus {
   --animate-duration: 500ms !important;
 }
 
-.el-menu-item [class^="el-icon-"],
-.el-submenu [class^="el-icon-"] {
-  // width: initial;
-  width: 18px;
-}
-
-
 /* 定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸 */
 ::-webkit-scrollbar{
   width: 10px;

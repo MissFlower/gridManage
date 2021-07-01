@@ -4,11 +4,11 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 14:43:10
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-26 11:56:25
+ * @LastEditTime: 2021-06-28 09:45:55
 -->
 <template>
 	<div class="logo-wrap">
-		<Image v-if="logo" :width="60" :height="60" :src="logo" />
+		<Image v-if="logo" :width="50" :height="50" :src="logo" />
 		<div>{{ title }}</div>
 	</div>
 </template>
@@ -22,9 +22,7 @@
 			Image
 		},
 		setup() {
-			const logo = ref(
-				'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-			)
+			const logo = ref('https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png')
 			const title = ref('Vue3-Antd-Admin')
 			return {
 				logo,

@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-26 14:05:01
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-27 01:07:19
+ * @LastEditTime: 2021-06-28 17:21:19
  */
 import { store } from 'src/store'
 import { getToken } from 'src/utils/cookie'
@@ -15,30 +15,26 @@ export function createPermissionGuard(router) {
 	router.beforeEach(async (to, from, next) => {
 		// 判断用户是否登录
 		const hasToken = getToken()
-		console.log(to.path)
 		if (hasToken) {
 			// 登录状态
-			if (to.path === '/home') {
-				next()
-			}
 			if (to.path === '/login') {
-				// next()
 				next({ path: '/' })
 			} else {
-				const addRoutes = store.getters.addRoutes.length
-				if (addRoutes) {
+				const menuList = store.getters.menuList?.length
+				const userId = store.getters.userInfo.userId
+				if (userId || menuList.length) {
 					next()
 				} else {
 					try {
 						// 获取用户信息
 						await store.dispatch('user/getUserInfo')
 						// 获取权限路由
-						const accessRoutes = await store.dispatch('permission/generateRoutes')
+						const permissionList = await store.dispatch('user/getMenuList')
+						const accessRoutes = await store.dispatch('permission/generateRoutes', permissionList)
 						accessRoutes.forEach(route => {
 							router.addRoute(route)
 						})
-						next()
-						// next({ ...to, replace: true })
+						next({ ...to, replace: true })
 					} catch (error) {
 						// 清除token重新登录
 						await store.dispatch('user/resetToken')

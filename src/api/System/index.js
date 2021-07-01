@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-25 15:01:32
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-26 11:53:34
+ * @LastEditTime: 2021-06-28 13:25:57
  */
 import request from 'src/utils/request'
 /**
@@ -39,9 +39,20 @@ export function getVerifyCode(params) {
  * @param page 页码(是)
  * @param size 每页条数(是)
  * @FrontendAuthor 艾东阳
- * @BackendAuthor author
+ * @BackendAuthor 梁华强
  * @Date 2021-06-26 11:24:41
  */
 export function getUserInfo() {
 	return request.get('/auth/getUserInfo')
+}
+
+/**
+ * APIURL: 'https://www.tapd.cn/48625949/markdown_wikis/show/#1148625949001000950'
+ ** 获取菜单列表 参数 - 说明(是否必填)
+ * @FrontendAuthor 艾东阳
+ * @BackendAuthor 梁华强
+ * @Date 2021-06-28 13:22:30
+ */
+export function getMenuList() {
+	return request.get('/auth/getMenuList')
 }

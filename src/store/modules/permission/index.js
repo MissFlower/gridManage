@@ -4,10 +4,10 @@
  * @Author: AiDongYang
  * @Date: 2021-06-23 11:06:53
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-25 14:39:57
+ * @LastEditTime: 2021-06-29 14:22:54
  */
 import path from 'path-browserify'
-import { basicRoutes, asyncRoutes } from 'src/router/routes'
+import { basicRoutes, asyncRoutes, PAGE_NOT_FOUND_ROUTE } from 'src/router/routes'
 import * as types from './types'
 import { isExternal } from 'src/utils/validate'
 /**
@@ -64,14 +64,14 @@ const withFullPathContantRoutes = (function setFullPathBasicRoutes(basicRoutes, 
 })(basicRoutes)
 
 const state = {
-	routes: withFullPathContantRoutes || [],
+	routes: [],
 	addRoutes: []
 }
 
 const mutations = {
 	[types.SET_ROUTES]: (state, routes) => {
 		state.addRoutes = routes
-		state.routes = withFullPathContantRoutes.concat(routes)
+		state.routes = routes.concat(withFullPathContantRoutes)
 	}
 }
 
@@ -80,7 +80,7 @@ const actions = {
 		return new Promise(resolve => {
 			const accessedRoutes = filterAsyncRoutes(asyncRoutes, permissionList)
 			commit(types.SET_ROUTES, accessedRoutes)
-			resolve(accessedRoutes)
+			resolve(accessedRoutes.concat(PAGE_NOT_FOUND_ROUTE))
 		})
 	}
 }
