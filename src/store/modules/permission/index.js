@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-23 11:06:53
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-29 14:22:54
+ * @LastEditTime: 2021-07-02 09:36:27
  */
 import path from 'path-browserify'
 import { basicRoutes, asyncRoutes, PAGE_NOT_FOUND_ROUTE } from 'src/router/routes'
@@ -64,7 +64,7 @@ const withFullPathContantRoutes = (function setFullPathBasicRoutes(basicRoutes, 
 })(basicRoutes)
 
 const state = {
-	routes: [],
+	routes: [...basicRoutes],
 	addRoutes: []
 }
 

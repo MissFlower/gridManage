@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 18:03:13
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-28 17:21:00
+ * @LastEditTime: 2021-07-02 09:34:32
  */
 import basicRoute from './basic'
 const modules = import.meta.globEager('./modules/**/*.js')
@@ -23,7 +23,7 @@ sortModList.forEach(mod => {
 })
 
 // Basic routing without permission
-export const basicRoutes = [...basicRoute]
+export const basicRoutes = [...basicRoute, ...routeModuleList]
 // Async routing with permission
 export const asyncRoutes = [...routeModuleList]
 // not found route

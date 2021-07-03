@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 14:31:46
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-29 17:44:09
+ * @LastEditTime: 2021-07-02 17:14:20
 -->
 <template>
 	<div class="grid-container">
@@ -17,7 +17,7 @@
 		<RadioGroup v-model:value="mapType" button-style="solid" class="map-radio-group">
 			<RadioButton value="SignMap">签约地图</RadioButton>
 			<RadioButton value="MaintainMap">维护地图</RadioButton>
-			<RadioButton value="HeatMap">热地图</RadioButton>
+			<RadioButton value="HeatMap">热力图</RadioButton>
 		</RadioGroup>
 
 		<!-- 选择门店类型RadioGroup -->

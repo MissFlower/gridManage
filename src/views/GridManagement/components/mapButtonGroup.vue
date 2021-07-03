@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-30 13:38:30
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-01 15:48:29
+ * @LastEditTime: 2021-07-02 16:35:15
 -->
 <template>
 	<div class="button-group-wrapper">
@@ -20,7 +20,7 @@
 	import { defineComponent, ref } from 'vue'
 	export default defineComponent({
 		name: 'MapButtonGroup',
-		emits: ['createGrid', 'editGrid', 'saveGrid', 'deleteGrid', 'batchDispatchGrid'],
+		emits: ['createGrid', 'editGrid', 'saveGrid', 'deleteGrid', 'batchDispatchGrid', 'cancelBatchDispatchGrid'],
 		setup(_, { emit }) {
 			const batchDispatchGridFlag = ref(true)
 			const createGridHandle = () => {
