@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-03 17:42:18
+ * @LastEditTime: 2021-07-05 19:37:15
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -18,6 +18,7 @@
 
 	<!-- 地图按钮功能 -->
 	<MapButtonGroup
+		:is-edit="isEdit"
 		@create-grid="createGridHandle"
 		@edit-grid="editGridHandle"
 		@save-grid="saveGridHandle"
@@ -38,11 +39,13 @@
 		:closable="false"
 		cancel-text="取消"
 		ok-text="保存"
+		@ok="addSaveGridHandle"
+		@cancel="editGridHandle"
 	/>
 </template>
 
 <script>
-	import { defineComponent, onMounted, reactive, ref } from 'vue'
+	import { defineComponent, onMounted, reactive, ref, watchEffect } from 'vue'
 	import { message as Message } from 'ant-design-vue'
 	import ShopInfo from '../components/shopInfo.vue'
 	import LegendInfo from '../components/legendInfo.vue'
@@ -67,6 +70,7 @@
 			})
 			const gridDrawerVisible = ref(false)
 			const gridModalVisible = ref(false)
+			const isEdit = ref(false)
 			let map = null
 			let userGridsData = {} // 用户网格数据
 
@@ -89,6 +93,10 @@
 					zooms: [5, 20]
 				})
 				const { mapInstance } = map
+
+				watchEffect(() => {
+					isEdit.value = map?.isEdit.value
+				})
 				// 添加控件
 				addControl(mapInstance)
 			}
@@ -101,45 +109,58 @@
 
 			// 绘制网格
 			const drawGrids = () => {
-				const { ownGridPaths } = userGridsData
-				map.renderPolygons(ownGridPaths)
+				const { parentGridPaths, ownGridPaths } = userGridsData
+				map.renderPolygons([...parentGridPaths, ...ownGridPaths])
 			}
 
 			// 创建网格
 			const createGridHandle = () => {
-				console.log('开始创建网格')
 				const { drawPolygon } = map
-				// cursor.value = 'crosshair'
+				console.log('开始创建网格')
 
-				drawPolygon((event, { code, message, data }) => {
-					// cursor.value = 'default'
+				drawPolygon(({ code, message, data }) => {
 					if (code === 200) {
-						// event.obj 为绘制出来的覆盖物对象
-						const { obj } = event
-						const params = {
-							lngLat: obj.toString(),
-							code: data.districtCode,
-							area: data.polygonsArea
-						}
-						getGridInfo(params)
-						console.log(params)
+						getGridInfo(data)
+						console.log(data)
 					} else {
 						Message.warn(message)
 					}
 				})
 
 				// 获取绘制好的网格信息
-				async function getGridInfo(params) {
-					console.log(params)
+				async function getGridInfo() {
 					gridModalVisible.value = true
 				}
 			}
 
 			// 编辑网格
-			const editGridHandle = () => {}
+			const editGridHandle = () => {
+				const { openPolyEditor } = map
+				openPolyEditor()
+			}
 
 			// 保存网格
-			const saveGridHandle = () => {}
+			const saveGridHandle = () => {
+				const { getPolygonInfo } = map
+				const { code, message, data } = getPolygonInfo()
+				if (code === 200) {
+					console.log(data)
+				} else {
+					Message.warn(message)
+				}
+			}
+
+			// 编辑保存网格
+			const editSaveGridHandle = () => {
+				const { openPolyEditor } = map
+				openPolyEditor()
+			}
+
+			// 添加保存网格
+			const addSaveGridHandle = () => {
+				gridModalVisible.value = false
+				console.log('添加保存网格')
+			}
 
 			// 删除网格
 			const deleteGridHandle = () => {}
@@ -174,10 +195,45 @@
 							area: 3679792104,
 							parentId: '',
 							districtCode: '654322'
+						},
+						{
+							id: 3,
+							path: '87.231453,48.672587;86.81248,48.002114;87.301282,47.97615',
+							area: 1403219450,
+							parentId: '',
+							districtCode: '654321'
 						}
 					]
 				}
-				userGridsData = dealDataHandle(data)
+				const bdData = {
+					role: ADMIN_ROLE_TYPE.BD_ADMIN_ROLE,
+					districtCode: ['110101', '110108', '110112'],
+					parentGridPaths: [
+						{
+							id: 1,
+							path: '116.661113,39.996551;116.754549,40.002993;116.750811,39.901284;116.633083,39.869738',
+							area: 111787921,
+							parentId: '',
+							districtCode: '110112'
+						},
+						{
+							id: 2,
+							path: '116.626542,39.846069;116.56394,39.800142;116.560203,39.730475;116.663916,39.731913;116.79566,39.874758',
+							area: 173442686,
+							parentId: '',
+							districtCode: '110112'
+						},
+						{
+							id: 3,
+							path: '116.176183,40.023746;116.208885,40.070953;116.275225,40.073813;116.334089,40.026608;116.199542,39.972926',
+							area: 88961592,
+							parentId: '',
+							districtCode: '110108'
+						}
+					],
+					ownGridPaths: []
+				}
+				userGridsData = dealDataHandle(bdData)
 			}
 
 			// 处理网格数据
@@ -217,9 +273,12 @@
 				infoData,
 				gridDrawerVisible,
 				gridModalVisible,
+				isEdit,
 				createGridHandle,
 				editGridHandle,
 				saveGridHandle,
+				editSaveGridHandle,
+				addSaveGridHandle,
 				deleteGridHandle,
 				batchDispatchGridHandle,
 				cancelBatchDispatchGridHandle

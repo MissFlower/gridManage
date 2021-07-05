@@ -4,11 +4,11 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:01:42
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-29 18:00:30
+ * @LastEditTime: 2021-07-05 12:31:55
  */
 import { createApp } from 'vue'
 import App from './App.vue'
-import 'default-passive-events'
+// import 'default-passive-events'
 import 'src/styles/index.scss'
 
 import { router, setupRouter } from 'src/router'

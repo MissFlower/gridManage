@@ -4,10 +4,10 @@
  * @Author: AiDongYang
  * @Date: 2021-07-03 17:01:55
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-03 17:05:53
+ * @LastEditTime: 2021-07-05 10:15:09
 -->
 <template>
-	<Modal v-bind="$attrs" @ok="handleOk">
+	<Modal v-bind="$attrs">
 		<div>123</div>
 	</Modal>
 </template>
@@ -19,17 +19,17 @@
 		name: 'GridInfoModal',
 		components: {
 			Modal
-		},
-		emits: ['addSave'],
-		setup(_, { emit }) {
-			const handleOk = () => {
-				emit('addSave')
-			}
-
-			return {
-				handleOk
-			}
 		}
+		// emits: ['addSave'],
+		// setup(_, { emit }) {
+		// 	const handleOk = () => {
+		// 		emit('addSave')
+		// 	}
+
+		// 	return {
+		// 		handleOk
+		// 	}
+		// }
 	})
 </script>
 

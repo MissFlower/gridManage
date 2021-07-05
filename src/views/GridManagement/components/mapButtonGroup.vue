@@ -4,13 +4,13 @@
  * @Author: AiDongYang
  * @Date: 2021-06-30 13:38:30
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-02 16:35:15
+ * @LastEditTime: 2021-07-05 18:27:30
 -->
 <template>
 	<div class="button-group-wrapper">
-		<AButton @click.prevent="createGridHandle">新建网格</AButton>
-		<AButton @click.prevent="editGridHandle">编辑已有网格</AButton>
-		<AButton @click.prevent="saveGridHandle">保存</AButton>
+		<AButton :disabled="isEdit" @click.prevent="createGridHandle">新建网格</AButton>
+		<AButton :disabled="isEdit" @click.prevent="editGridHandle">编辑已有网格</AButton>
+		<AButton :disabled="!isEdit" @click.prevent="saveGridHandle">保存</AButton>
 		<AButton @click.prevent="deleteGridHandle">删除网格</AButton>
 		<AButton @click.prevent="batchDispatchGridHandle">{{ batchDispatchGridFlag ? '批量分配网格' : '取消批量分配' }}</AButton>
 	</div>
@@ -20,6 +20,12 @@
 	import { defineComponent, ref } from 'vue'
 	export default defineComponent({
 		name: 'MapButtonGroup',
+		props: {
+			isEdit: {
+				type: Boolean,
+				default: false
+			}
+		},
 		emits: ['createGrid', 'editGrid', 'saveGrid', 'deleteGrid', 'batchDispatchGrid', 'cancelBatchDispatchGrid'],
 		setup(_, { emit }) {
 			const batchDispatchGridFlag = ref(true)
