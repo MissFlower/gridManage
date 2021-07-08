@@ -4,8 +4,18 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 18:11:03
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-02 17:29:45
+ * @LastEditTime: 2021-07-08 16:11:54
  */
+const [SIGN_MAP, MAINTAIN_MAP] = [1, 2]
+export const MAP_TYPE = {
+	SIGN_MAP,
+	MAINTAIN_MAP
+}
+export const MAP_TYPE_NAME = {
+	[MAP_TYPE.SIGN_MAP]: '签约地图',
+	[MAP_TYPE.MAINTAIN_MAP]: '维护地图'
+}
+
 export const SIZE_TYPE = {
 	SMALL: 'small',
 	DEFAULT: 'default',
@@ -41,4 +51,14 @@ export const GRID_AREA_TYPE = {
 		MIN: 1000,
 		MAX: 10000000
 	}
+}
+// 负责人变更、维护人变更、网格变更、新增网格、删除网格
+const [ADD_GRID, CHANGE_GRID, CHANGE_LEADER, CHANGE_MAINTAINER, CHANGE_PERSONNEL, DELETE_GRID] = [1, 2, 3, 4, 5, 6]
+export const MAP_OPERATE_TYPE = {
+	[ADD_GRID]: '新增网格',
+	[CHANGE_GRID]: '网格变更',
+	[CHANGE_LEADER]: '负责人变更',
+	[CHANGE_MAINTAINER]: '维护人变更',
+	[CHANGE_PERSONNEL]: '人员变更',
+	[DELETE_GRID]: '删除网格'
 }

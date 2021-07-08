@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 14:31:46
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-02 17:14:20
+ * @LastEditTime: 2021-07-06 17:34:58
 -->
 <template>
 	<div class="grid-container">
@@ -19,21 +19,15 @@
 			<RadioButton value="MaintainMap">维护地图</RadioButton>
 			<RadioButton value="HeatMap">热力图</RadioButton>
 		</RadioGroup>
-
-		<!-- 选择门店类型RadioGroup -->
-		<RadioGroup v-model:value="shopType" button-style="solid" class="shop-radio-group">
-			<RadioButton v-for="(shopTypeName, key) of SHOP_TYPE_NAME" :key="key" :value="+key" :style="shopRadioStyle">{{ shopTypeName }}</RadioButton>
-		</RadioGroup>
 	</div>
 </template>
 
 <script>
-	import { defineComponent, ref, watchEffect, shallowRef, reactive } from 'vue'
+	import { defineComponent, ref, watchEffect, shallowRef } from 'vue'
+	import { RadioGroup, RadioButton } from 'ant-design-vue'
 	import SignMap from './SignMap/index.vue'
 	import MaintainMap from './MaintainMap/index.vue'
 	import HeatMap from './HeatMap/index.vue'
-	import { RadioGroup, RadioButton } from 'ant-design-vue'
-	import { SHOP_TYPE, SHOP_TYPE_NAME } from 'src/common/constant'
 
 	export default defineComponent({
 		name: 'GridManagement',
@@ -52,12 +46,6 @@
 			}
 			const mapType = ref('SignMap')
 			const currentMap = shallowRef(null)
-			const shopType = ref(SHOP_TYPE.ALL)
-			const shopRadioStyle = reactive({
-				display: 'block',
-				height: '30px',
-				lineHeight: '30px'
-			})
 
 			watchEffect(() => {
 				currentMap.value = mapComp[mapType.value]
@@ -65,16 +53,13 @@
 
 			return {
 				currentMap,
-				mapType,
-				SHOP_TYPE_NAME,
-				shopType,
-				shopRadioStyle
+				mapType
 			}
 		}
 	})
 </script>
 <style lang="scss" scoped>
-	.grid-container {
+	.grid-container :deep {
 		position: relative;
 		width: 100%;
 		height: 100%;
@@ -85,7 +70,7 @@
 			right: 10px;
 		}
 
-		.shop-radio-group :deep {
+		.shop-radio-group {
 			position: absolute;
 			top: 60px;
 			right: 10px;
@@ -105,7 +90,7 @@
 			}
 		}
 
-		:deep .map {
+		.map {
 			width: 100%;
 			height: 100%;
 		}

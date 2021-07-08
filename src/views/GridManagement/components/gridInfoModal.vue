@@ -4,11 +4,18 @@
  * @Author: AiDongYang
  * @Date: 2021-07-03 17:01:55
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-05 10:15:09
+ * @LastEditTime: 2021-07-08 15:33:04
 -->
 <template>
 	<Modal v-bind="$attrs">
-		<div>123</div>
+		<div class="grid-info-wrap">
+			<p>网格名：{{ gridInfo.gridName }}</p>
+			<p>店日均流水总和：{{ gridInfo.averageFlow }}</p>
+			<p>自营团队门店数：{{ gridInfo.selfShopNum }}</p>
+			<p>直营创建门店数：{{ gridInfo.directShopNum }}</p>
+			<p>公海推荐门店数：{{ gridInfo.publicRecommendNum }}</p>
+			<p>公海地图门店数：{{ gridInfo.publicMapNum }}</p>
+		</div>
 	</Modal>
 </template>
 
@@ -19,18 +26,23 @@
 		name: 'GridInfoModal',
 		components: {
 			Modal
+		},
+		props: {
+			gridInfo: {
+				type: Object,
+				required: true
+			}
 		}
-		// emits: ['addSave'],
-		// setup(_, { emit }) {
-		// 	const handleOk = () => {
-		// 		emit('addSave')
-		// 	}
-
-		// 	return {
-		// 		handleOk
-		// 	}
-		// }
 	})
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+	.grid-info-wrap {
+		display: flex;
+		flex-wrap: wrap;
+
+		p {
+			flex: 1 1 50%;
+		}
+	}
+</style>

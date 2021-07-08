@@ -4,15 +4,15 @@
  * @Author: AiDongYang
  * @Date: 2021-06-30 13:38:30
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-05 18:27:30
+ * @LastEditTime: 2021-07-08 17:48:31
 -->
 <template>
 	<div class="button-group-wrapper">
-		<AButton :disabled="isEdit" @click.prevent="createGridHandle">新建网格</AButton>
-		<AButton :disabled="isEdit" @click.prevent="editGridHandle">编辑已有网格</AButton>
-		<AButton :disabled="!isEdit" @click.prevent="saveGridHandle">保存</AButton>
-		<AButton @click.prevent="deleteGridHandle">删除网格</AButton>
-		<AButton @click.prevent="batchDispatchGridHandle">{{ batchDispatchGridFlag ? '批量分配网格' : '取消批量分配' }}</AButton>
+		<AButton :disabled="isEdit || isDispatchGrid" @click.prevent="createGridHandle">新建网格</AButton>
+		<AButton :disabled="isEdit || isDispatchGrid" @click.prevent="editGridHandle">编辑已有网格</AButton>
+		<AButton :disabled="!isEdit || isDispatchGrid" @click.prevent="saveGridHandle">保存</AButton>
+		<AButton :disabled="isEdit || isDispatchGrid" @click.prevent="deleteGridHandle">删除网格</AButton>
+		<AButton :disabled="isEdit" @click.prevent="batchDispatchGridHandle">{{ batchDispatchGridFlag ? '批量分配网格' : '取消批量分配' }}</AButton>
 	</div>
 </template>
 
@@ -22,6 +22,10 @@
 		name: 'MapButtonGroup',
 		props: {
 			isEdit: {
+				type: Boolean,
+				default: false
+			},
+			isDispatchGrid: {
 				type: Boolean,
 				default: false
 			}

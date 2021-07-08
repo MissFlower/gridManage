@@ -23,7 +23,7 @@ sortModList.forEach(mod => {
 })
 
 // Basic routing without permission
-export const basicRoutes = [...basicRoute, ...routeModuleList]
+export const basicRoutes = [...basicRoute]
 // Async routing with permission
 export const asyncRoutes = [...routeModuleList]
 // not found route

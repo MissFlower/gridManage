@@ -4,11 +4,11 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 13:26:36
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-05 20:00:29
+ * @LastEditTime: 2021-07-08 19:52:33
  */
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
-import { is } from 'src/utils'
+import { is, isSupportCanvas } from 'src/utils'
 import { ADMIN_ROLE_TYPE, GRID_AREA_TYPE } from 'src/common/constant'
 const rolezIndex = {
 	[ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE]: 100,
@@ -19,6 +19,7 @@ export function useMap(el, options = {}) {
 	let district = null // 行政查询工具实例
 	let mouseTool = null // 鼠标工具实例
 	let polyEditor = null // 多边形编辑器实例
+	let heatmap = null // 热力图实例
 	let currentRole = '' // 当前用户角色
 	const drawedDistrictPolygons = [] // 已经绘制过的行政区域集合边界数据
 	let currentUsedDistrictPolygon = null // 当前绘制图形的行政区域多边形边界数据
@@ -28,7 +29,9 @@ export function useMap(el, options = {}) {
 	const drawedOwnPolygons = [] // 已经绘制过自己的网格数据
 	let currentUsedDistrictCode = '' // 当前正在被使用的行政区code
 	let currentUsedParentPolygonId = '' // 当前正在被使用的父级多边形ID
-	const isEdit = ref(false)
+	const isEdit = ref(false) // 是否正在编辑
+	let markers = [] // 存储marker点
+	let isFirst = true
 
 	const accordRoleMethods = {
 		[ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE]: {
@@ -84,11 +87,13 @@ export function useMap(el, options = {}) {
 		console.log(currentPolygon)
 		console.log(polygons)
 		if (!polygons) {
-			return true
+			return false
 		}
+		// 绘制图形是否和行政区域相交
+		const doesRingRingIntersect = AMap.GeometryUtil.doesRingRingIntersect(currentPolygon, polygons)
 		// 绘制图形是否在行政区域内
-		const isRingInRing = AMap.GeometryUtil.isRingInRing(currentPolygon, polygons)
-		return isRingInRing
+		const isRingInRing = !doesRingRingIntersect && AMap.GeometryUtil.isRingInRing(currentPolygon, polygons)
+		return doesRingRingIntersect || !isRingInRing
 	}
 
 	// 检测绘制图形和已绘制的图形位置关系 是否存在相交和被包含情况
@@ -142,11 +147,11 @@ export function useMap(el, options = {}) {
 		// 1.检测绘制图形是否在行政区域内
 		const currentPolygon = polygon.getPath()
 		console.log(currentUsedDistrictPolygon, currentUsedParentPolygon)
-		const isRingInRing = judgeIsInDistrictOrParentPolygons(
+		const isRingInRingOrIntersectWithDistrictOrParent = judgeIsInDistrictOrParentPolygons(
 			currentPolygon,
 			currentRole === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE ? currentUsedDistrictPolygon : currentUsedParentPolygon
 		)
-		if (!isRingInRing) {
+		if (isRingInRingOrIntersectWithDistrictOrParent) {
 			const res = {
 				code: 10001,
 				message: `当前绘制的网格已超出${currentRole === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE ? '行政' : '网格'}区域边界！`
@@ -156,8 +161,8 @@ export function useMap(el, options = {}) {
 			return callback ? false : res
 		}
 		// 2.检测绘制图形和其他同级多边形是否存在相交和包含的关系
-		const isRingInRingOrIntersect = judgePolygonsPositionRelation(polygon, drawedOwnPolygons)
-		if (isRingInRingOrIntersect) {
+		const isRingInRingOrIntersectWithOther = judgePolygonsPositionRelation(polygon, drawedOwnPolygons)
+		if (isRingInRingOrIntersectWithOther) {
 			const res = {
 				code: 10002,
 				message: '当前绘制的网格与同级网格出现相交或包含关系！'
@@ -178,6 +183,15 @@ export function useMap(el, options = {}) {
 			return callback ? false : res
 		}
 		return true
+	}
+
+	// 重置网格样式
+	function resetGridStyle() {
+		drawedOwnPolygons.forEach(polygon => {
+			polygon.setOptions({
+				fillOpacity: 0.5
+			})
+		})
 	}
 
 	// 处理不符合图形
@@ -202,6 +216,7 @@ export function useMap(el, options = {}) {
 
 	// 绘制行政区域边界
 	function drawAdministrationBoundary(districtCodes, options = {}, role) {
+		console.log(districtCodes)
 		if (!is(districtCodes, 'Array')) {
 			console.error('Administration Code must be Array')
 			return
@@ -253,17 +268,23 @@ export function useMap(el, options = {}) {
 			// 保存图形
 			drawedDistrictPolygons.push(...polygons)
 			// 视口自适应
-			mapInstance.setFitView()
+			isFirst && mapInstance.setFitView()
+			isFirst = false
 		})
 	}
 
 	// 绘制多边形(根据后端数据绘制多边形)
 	function renderPolygons(grids, options = {}) {
 		console.log(grids)
+		// 清除上次结果
+		console.log(drawedOwnPolygons)
+		drawedOwnPolygons.forEach(polygon => mapInstance.remove(polygon))
+		drawedParentPolygons.forEach(polygon => mapInstance.remove(polygon))
+		currentUsedGridPolygon && mapInstance.remove(currentUsedGridPolygon)
+		currentUsedGridPolygon = null
 		drawedParentPolygons.length = 0
 		drawedOwnPolygons.length = 0
 		const defaultOptions = {
-			cursor: 'pointer',
 			fillColor: '#ccebc5',
 			strokeOpacity: 1,
 			fillOpacity: 0.5,
@@ -273,9 +294,9 @@ export function useMap(el, options = {}) {
 			strokeDasharray: [5, 5]
 		}
 		options = Object.assign({}, defaultOptions, options)
-		grids.forEach(({ path, role, ...rest }) => {
+		grids.forEach(({ gridAddress, role, ...rest }) => {
 			const polygon = new AMap.Polygon({
-				path,
+				path: gridAddress,
 				zIndex: rolezIndex[role],
 				extData: {
 					role,
@@ -319,12 +340,18 @@ export function useMap(el, options = {}) {
 			})
 
 			polygon.on('click', () => {
-				console.log(123)
-				polygon.setOptions({
-					fillOpacity: polygon.getOptions().fillOpacity >= 1 ? 0.5 : 1
-				})
-				// 设置当前使用的多边形
-				currentUsedGridPolygon = polygon
+				const lastOpacity = polygon.getOptions().fillOpacity
+				// 重置网格样式
+				resetGridStyle()
+				// 设置当前使用的多边形和透明度
+				if (lastOpacity === 0.5) {
+					polygon.setOptions({
+						fillOpacity: 1
+					})
+					currentUsedGridPolygon = polygon
+				} else {
+					currentUsedGridPolygon = null
+				}
 				const { judgeMethod, polygons } = accordRoleMethods[currentRole]
 				const { lng, lat } = polygon.getPath()[0]
 				// 检测坐标点属于哪一个行政区或父网格
@@ -343,9 +370,9 @@ export function useMap(el, options = {}) {
 		const defaultOptions = {
 			strokeColor: '#FF33FF',
 			strokeWeight: 1,
-			strokeOpacity: 0.2,
+			strokeOpacity: 1,
 			fillColor: '#1791fc',
-			fillOpacity: 0.4,
+			fillOpacity: 0.5,
 			// 线样式还支持 'dashed'
 			strokeStyle: 'solid',
 			zIndex: rolezIndex[currentRole]
@@ -383,9 +410,10 @@ export function useMap(el, options = {}) {
 				callback({
 					code: 200,
 					data: {
-						lngLat: currentUsedGridPolygon.toString(),
+						gridAddress: currentUsedGridPolygon.toString(),
 						districtCode: currentUsedDistrictCode,
-						polygonsArea: Math.round(currentUsedGridPolygon.getArea())
+						pid: currentUsedParentPolygonId,
+						gridArea: Math.round(currentUsedGridPolygon.getArea())
 					}
 				})
 		}
@@ -436,6 +464,13 @@ export function useMap(el, options = {}) {
 
 	// 获取当前多边形的信息
 	function getPolygonInfo() {
+		if (!currentUsedGridPolygon) {
+			return {
+				code: 10006,
+				message: '请先选择网格！',
+				data: {}
+			}
+		}
 		// 1.检测碰撞
 		const checkResult = checkCollide(currentUsedGridPolygon)
 		console.log(checkResult)
@@ -446,16 +481,67 @@ export function useMap(el, options = {}) {
 			return checkResult
 		}
 		// 2.关闭编辑工具
-		closePolyEditor()
+		polyEditor && closePolyEditor()
 		// 3.返回多边形数据
 		return {
 			code: 200,
 			data: {
-				lngLat: currentUsedGridPolygon.toString(),
+				gridAddress: currentUsedGridPolygon.toString(),
 				id: currentUsedGridPolygon.getExtData()?.id,
 				districtCode: currentUsedDistrictCode,
-				polygonsArea: Math.round(currentUsedGridPolygon.getArea())
+				gridArea: Math.round(currentUsedGridPolygon.getArea())
 			}
+		}
+	}
+
+	// 设置marker点
+	function addMarkers(coordinates) {
+		// 清空上次的markers
+		removeMarkers()
+		markers = coordinates.map(([lng, lat]) => {
+			const icon = new AMap.Icon({
+				size: new AMap.Size(24, 24),
+				image: `/src/assets/icons/shop-icon-${1}.png`,
+				imageSize: new AMap.Size(24, 24),
+				imageOffset: new AMap.Pixel(0, 0)
+			})
+			const marker = new AMap.Marker({
+				position: new AMap.LngLat(lng, lat),
+				icon,
+				offset: new AMap.Pixel(-12, -24)
+			})
+			return marker
+		})
+		mapInstance.add([...markers])
+	}
+
+	// 移除marker点
+	function removeMarkers() {
+		markers.length && mapInstance.remove(markers)
+	}
+
+	// 初始化热力图
+	function initHeatMap(options = {}) {
+		if (!isSupportCanvas()) {
+			message.warn('热力图仅对支持canvas的浏览器适用,您所使用的浏览器不能使用热力图功能,请换个浏览器试试~')
+			return
+		}
+		if (!heatmap) {
+			mapInstance.plugin(['AMap.HeatMap'], function () {
+				// 初始化heatmap对象
+				heatmap = new AMap.HeatMap(mapInstance, {
+					radius: 25, // 给定半径
+					opacity: [0, 0.8],
+					gradient: {
+						0.5: 'blue',
+						0.65: 'rgb(117,211,248)',
+						0.7: 'rgb(0, 255, 0)',
+						0.9: '#ffea00',
+						1.0: 'red'
+					},
+					...options
+				})
+			})
 		}
 	}
 
@@ -474,14 +560,16 @@ export function useMap(el, options = {}) {
 			center: [116.397428, 39.90923] // 初始化地图中心点
 		}
 		options = Object.assign({}, defaultOptions, options)
-		console.log(options)
 		mapInstance = new AMap.Map(el, options)
+		// 初始化热力图
+		options?.plugins?.HeatMap && initHeatMap()
 	}
 
 	initMap()
 
 	return {
 		mapInstance,
+		heatmap,
 		isEdit,
 		initMap,
 		drawAdministrationBoundary,
@@ -489,6 +577,10 @@ export function useMap(el, options = {}) {
 		renderPolygons,
 		openPolyEditor,
 		closePolyEditor,
-		getPolygonInfo
+		getPolygonInfo,
+		addMarkers,
+		removeMarkers,
+		initHeatMap,
+		resetGridStyle
 	}
 }

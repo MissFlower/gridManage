@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 14:43:10
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-28 09:45:55
+ * @LastEditTime: 2021-07-07 17:58:24
 -->
 <template>
 	<div class="logo-wrap">
@@ -23,7 +23,7 @@
 		},
 		setup() {
 			const logo = ref('https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png')
-			const title = ref('Vue3-Antd-Admin')
+			const title = import.meta.env.VITE_GLOB_APP_TITLE
 			return {
 				logo,
 				title

@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-30 15:53:40
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-30 18:04:43
+ * @LastEditTime: 2021-07-06 14:59:16
 -->
 <template>
 	<Drawer v-bind="$attrs" class="drawer">
@@ -30,10 +30,11 @@
 		components: {
 			Drawer
 		},
-		emits: ['update:visible', 'save'],
+		emits: ['update:visible', 'save', 'close'],
 		setup(_, { emit }) {
 			const cancelHandle = () => {
 				emit('update:visible', false)
+				emit('close')
 			}
 
 			const saveHandle = () => {

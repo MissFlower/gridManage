@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 18:01:50
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-29 09:53:59
+ * @LastEditTime: 2021-07-07 14:02:56
 -->
 <template>
 	<div class="login-container">
@@ -41,7 +41,6 @@
 	import { useStore } from 'vuex'
 	import { Form, Image, InputPassword } from 'ant-design-vue'
 	import { RedoOutlined } from '@ant-design/icons-vue'
-	import { useForm } from '@ant-design-vue/use'
 	import { getVerifyCode } from 'src/api/System'
 	export default defineComponent({
 		name: 'Login',
@@ -58,6 +57,7 @@
 			const store = useStore()
 			const usernameRef = ref(null)
 			const passwordRef = ref(null)
+			const useForm = Form.useForm
 
 			const redirectRef = reactive({
 				redirect: '',

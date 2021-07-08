@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-01 15:51:26
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-03 14:02:26
+ * @LastEditTime: 2021-07-06 16:30:47
  */
 export function is(val, type) {
 	return Object.prototype.toString.call(val).slice(8, -1) === type
@@ -17,4 +17,10 @@ export function strTransferLngLat(path) {
 		const [lng, lat] = lngLat.split(',')
 		return [+lng, +lat]
 	})
+}
+
+// 是否支持canvas
+export function isSupportCanvas() {
+	const elem = document.createElement('canvas')
+	return !!(elem.getContext && elem.getContext('2d'))
 }
