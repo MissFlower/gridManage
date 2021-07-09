@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 17:51:01
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-01 11:10:57
+ * @LastEditTime: 2021-07-09 16:41:05
 -->
 <template>
 	<section v-show="loading" class="full-loading" :class="{ absolute }">
@@ -52,7 +52,7 @@
 		position: fixed;
 		top: 0;
 		left: 0;
-		z-index: 200;
+		z-index: 2000;
 		display: flex;
 		width: 100%;
 		height: 100%;
@@ -64,7 +64,7 @@
 			position: absolute;
 			top: 0;
 			left: 0;
-			z-index: 300;
+			z-index: 3000;
 		}
 	}
 </style>

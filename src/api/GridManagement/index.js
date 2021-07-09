@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-07 15:57:30
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-08 19:19:28
+ * @LastEditTime: 2021-07-09 15:34:35
  */
 import request from 'src/utils/request'
 
@@ -29,23 +29,31 @@ export function getUserGridsData() {
  * @BackendAuthor 鲍少丹
  * @Date 2021-07-07 17:27:21
  */
-export function getGridData(params) {
+export function getAddGridData(params) {
 	return request.get('/manage/shopGrid/checkGrid', params)
+}
+
+/**
+ * APIURL: 'https://www.tapd.cn/48625949/markdown_wikis/show/#1148625949001003831'
+ ** 获取网格信息 参数 - 说明(是否必填)
+ * @param pointInfo 点位信息(是)
+ * @param area 面积(是)
+ * @param gridId 网格父ID(否)
+ * @FrontendAuthor 艾东阳
+ * @BackendAuthor 鲍少丹
+ * @Date 2021-07-07 17:27:21
+ */
+export function getEditGridData(params) {
+	return request.get('/manage/shopGrid/updateCheckGrid', params)
 }
 
 /**
  * APIURL: 'https://www.tapd.cn/48625949/markdown_wikis/show/#1148625949001003834'
  ** 编辑保存网格 参数 - 说明(是否必填)
  * @param id 	网格ID(是)
- * @param gridName 网格名称(是)
  * @param gridAddress 网格点经纬度(是)
  * @param gridArea 网格面积(是)
- * @param averageFlow 日均流水(是)
- * @param selfShopNum 自营团队门店数(是)
- * @param directShopNum 直营创建门店数(是)
- * @param publicRecommendNum 公海推荐门店数(是)
- * @param publicMapNum 公海地图门店数(是)
- * @param areaCode 网格归属区域code(是)
+ * @param districtCode 网格归属区域code(是)
  * @param mapType 地图类型（1:签约地图 2:维护地图）(是)
  * @FrontendAuthor 艾东阳
  * @BackendAuthor 鲍少丹
@@ -66,7 +74,7 @@ export function editSaveGrid(params) {
  * @param directShopNum 直营创建门店数(是)
  * @param publicRecommendNum 公海推荐门店数(是)
  * @param publicMapNum 公海地图门店数(是)
- * @param areaCode 网格归属区域code(是)
+ * @param districtCode 网格归属区域code(是)
  * @param pid 父网格ID(是)
  * @FrontendAuthor 艾东阳
  * @BackendAuthor 鲍少丹

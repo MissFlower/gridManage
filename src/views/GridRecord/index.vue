@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 14:34:40
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-08 15:19:37
+ * @LastEditTime: 2021-07-09 10:25:19
 -->
 <template>
 	<div>
@@ -230,20 +230,19 @@
 					width: 130
 				}
 			]
-			const getList = () => {
-				validate().then(async () => {
-					const params = {
-						...form,
-						startDate: form.dateTime[0]?.format('YYYY-MM-DD HH:mm:ss'),
-						endDate: form.dateTime[1]?.format('YYYY-MM-DD HH:mm:ss')
-					}
-					const data = await getRecordList(params)
-					tableList.value = []
-					tableList.value = data.map((item, index) => ({
-						index: index + 1,
-						...item
-					}))
-				})
+			const getList = async () => {
+				await validate()
+				const params = {
+					...form,
+					startDate: form.dateTime[0]?.format('YYYY-MM-DD HH:mm:ss'),
+					endDate: form.dateTime[1]?.format('YYYY-MM-DD HH:mm:ss')
+				}
+				const data = await getRecordList(params)
+				tableList.value = []
+				tableList.value = data.map((item, index) => ({
+					index: index + 1,
+					...item
+				}))
 			}
 			// 查询
 			const searchHandle = () => {

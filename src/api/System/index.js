@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-25 15:01:32
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-28 13:25:57
+ * @LastEditTime: 2021-07-09 10:20:13
  */
 import request from 'src/utils/request'
 /**
@@ -34,10 +34,8 @@ export function getVerifyCode(params) {
 }
 
 /**
- * APIURL: ''
+ * APIURL: 'https://www.tapd.cn/48625949/markdown_wikis/show/#1148625949001000949'
  ** 获取用户信息 参数 - 说明(是否必填)
- * @param page 页码(是)
- * @param size 每页条数(是)
  * @FrontendAuthor 艾东阳
  * @BackendAuthor 梁华强
  * @Date 2021-06-26 11:24:41
@@ -55,4 +53,15 @@ export function getUserInfo() {
  */
 export function getMenuList() {
 	return request.get('/auth/getMenuList')
+}
+
+/**
+ * APIURL: 'https://www.tapd.cn/48625949/markdown_wikis/show/#1148625949001000940'
+ ** 登出 参数 - 说明(是否必填)
+ * @FrontendAuthor 艾东阳
+ * @BackendAuthor 梁华强
+ * @Date 2021-07-09 10:14:26
+ */
+export function logout() {
+	return request.post('/auth/logout')
 }

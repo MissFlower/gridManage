@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 17:25:22
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-30 11:33:30
+ * @LastEditTime: 2021-07-09 18:55:11
 -->
 <template>
 	<div class="shop-info-wrapper">
@@ -12,17 +12,14 @@
 			<Avatar :src="infoData.src" shape="square" :size="48" class="shop-img" />
 			<div class="common-info">
 				<div class="info-header">
-					<span class="info-title">黄焖鸡米饭</span>
-					<span class="info-id">门店ID: 123456</span>
+					<span class="info-title">{{ infoData.name }}</span>
+					<span class="info-id">门店ID: {{ infoData.id }}</span>
 				</div>
-				<span class="info-address">北京市朝阳区万东国际文创园北门马路对面</span>
+				<span class="info-address">{{ infoData.locate }}</span>
 			</div>
 		</div>
 		<div class="other-info">
-			<span class="other-info-item"> 门店来源：运营创建 </span>
-			<span class="other-info-item"> 门店来源：运营创建 </span>
-			<span class="other-info-item"> 门店来源：运营创建 </span>
-			<span class="other-info-item aaa"> 门店来源：运营创建 </span>
+			<span v-for="(info, key) in infoData.otherInfo" :key="key" class="other-info-item"> {{ info.title }}: {{ info.text }} </span>
 		</div>
 	</div>
 </template>
@@ -50,7 +47,7 @@
 		position: absolute;
 		top: 10px;
 		left: 10px;
-		width: 300px;
+		width: 320px;
 		padding: 12px;
 		font-size: 12px;
 		background-color: #fff;
@@ -75,6 +72,9 @@
 			.info-title,
 			.info-id {
 				flex: 1;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
 			}
 
 			.info-address {
@@ -89,6 +89,9 @@
 
 			&-item {
 				flex: 0 1 calc(50% - 6px);
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
 			}
 		}
 	}

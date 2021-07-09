@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-26 14:05:01
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-07 16:42:16
+ * @LastEditTime: 2021-07-09 16:18:50
  */
 import { store } from 'src/store'
 import { getToken } from 'src/utils/cookie'
@@ -13,6 +13,10 @@ const whitePathList = ['/login']
 
 export function createPermissionGuard(router) {
 	router.beforeEach(async (to, from, next) => {
+		if (from.path === '/login' && to.path === '/404') {
+			next({ path: '/' })
+			return
+		}
 		// 判断用户是否登录
 		const hasToken = getToken()
 		if (hasToken) {
@@ -20,9 +24,8 @@ export function createPermissionGuard(router) {
 			if (to.path === '/login') {
 				next({ path: '/' })
 			} else {
-				const menuList = store.getters.menuList?.length
 				const userId = store.getters.userInfo.userId
-				if (userId || menuList.length) {
+				if (userId) {
 					next()
 				} else {
 					try {

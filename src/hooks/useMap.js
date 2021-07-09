@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 13:26:36
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-08 19:52:33
+ * @LastEditTime: 2021-07-09 17:43:30
  */
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
@@ -216,7 +216,7 @@ export function useMap(el, options = {}) {
 
 	// 绘制行政区域边界
 	function drawAdministrationBoundary(districtCodes, options = {}, role) {
-		console.log(districtCodes)
+		// console.log(districtCodes)
 		if (!is(districtCodes, 'Array')) {
 			console.error('Administration Code must be Array')
 			return
@@ -231,7 +231,7 @@ export function useMap(el, options = {}) {
 				level: 'district' // 查询行政级别为 市
 			}
 			options = Object.assign({}, defaultOptions, options)
-			console.log(options)
+			// console.log(options)
 			district = new AMap.DistrictSearch(options)
 		}
 		// 行政区查询 绘制行政区域边界
@@ -274,7 +274,7 @@ export function useMap(el, options = {}) {
 	}
 
 	// 绘制多边形(根据后端数据绘制多边形)
-	function renderPolygons(grids, options = {}) {
+	function renderPolygons(grids, options) {
 		console.log(grids)
 		// 清除上次结果
 		console.log(drawedOwnPolygons)
@@ -284,7 +284,7 @@ export function useMap(el, options = {}) {
 		currentUsedGridPolygon = null
 		drawedParentPolygons.length = 0
 		drawedOwnPolygons.length = 0
-		const defaultOptions = {
+		const defaultParentOptions = {
 			fillColor: '#ccebc5',
 			strokeOpacity: 1,
 			fillOpacity: 0.5,
@@ -293,36 +293,50 @@ export function useMap(el, options = {}) {
 			strokeStyle: 'dashed',
 			strokeDasharray: [5, 5]
 		}
-		options = Object.assign({}, defaultOptions, options)
-		grids.forEach(({ gridAddress, role, ...rest }) => {
-			const polygon = new AMap.Polygon({
-				path: gridAddress,
-				zIndex: rolezIndex[role],
-				extData: {
-					role,
-					...rest
-				},
-				...options
+		const defaultOwnOptions = {
+			fillColor: '#ccebc5',
+			strokeOpacity: 1,
+			fillOpacity: 0.5,
+			strokeColor: '#2b8cbe',
+			strokeWeight: 1,
+			strokeStyle: 'dashed',
+			strokeDasharray: [5, 5]
+		}
+		const parentOptions = Object.assign({}, defaultParentOptions, options?.parentOptions || {})
+		const ownOptions = Object.assign({}, defaultOwnOptions, options?.ownOptions || {})
+		const { parentGridList, gridList } = grids
+
+		// 绘制父多边形
+		parentGridList.length &&
+			parentGridList.forEach(({ gridAddress, role, ...rest }) => {
+				const parentPolygon = new AMap.Polygon({
+					path: gridAddress,
+					zIndex: rolezIndex[role],
+					extData: {
+						role,
+						...rest
+					},
+					...parentOptions
+				})
+				mapInstance.add(parentPolygon)
+				drawedParentPolygons.push(parentPolygon)
 			})
-
-			// 收集父级图形和自己的图形数据
-			if (currentRole === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE) {
-				drawedOwnPolygons.push(polygon)
-			} else if (currentRole === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE) {
-				if (role === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE) {
-					drawedParentPolygons.push(polygon)
-				} else if (role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE) {
-					drawedOwnPolygons.push(polygon)
-				}
-			}
-
-			// 当前用户角色下得多边形绑定事件
-			if (role === currentRole) {
-				bindEvent(polygon)
-			}
-
-			mapInstance.add(polygon)
-		})
+		// 绘制自己的多边形
+		gridList.length &&
+			gridList.forEach(({ gridAddress, role, ...rest }) => {
+				const ownPolygon = new AMap.Polygon({
+					path: gridAddress,
+					zIndex: rolezIndex[role],
+					extData: {
+						role,
+						...rest
+					},
+					...ownOptions
+				})
+				mapInstance.add(ownPolygon)
+				drawedOwnPolygons.push(ownPolygon)
+				bindEvent(ownPolygon)
+			})
 
 		function bindEvent(polygon) {
 			polygon.on('mouseover', () => {
@@ -412,8 +426,9 @@ export function useMap(el, options = {}) {
 					data: {
 						gridAddress: currentUsedGridPolygon.toString(),
 						districtCode: currentUsedDistrictCode,
+						gridArea: Math.round(currentUsedGridPolygon.getArea()),
 						pid: currentUsedParentPolygonId,
-						gridArea: Math.round(currentUsedGridPolygon.getArea())
+						id: ''
 					}
 				})
 		}
@@ -483,33 +498,42 @@ export function useMap(el, options = {}) {
 		// 2.关闭编辑工具
 		polyEditor && closePolyEditor()
 		// 3.返回多边形数据
+		console.log(currentUsedGridPolygon.toString())
+		console.log(currentUsedGridPolygon.getExtData()?.originGridAddress)
+		console.log(currentUsedGridPolygon.getExtData())
 		return {
 			code: 200,
 			data: {
+				...currentUsedGridPolygon.getExtData(),
 				gridAddress: currentUsedGridPolygon.toString(),
-				id: currentUsedGridPolygon.getExtData()?.id,
 				districtCode: currentUsedDistrictCode,
-				gridArea: Math.round(currentUsedGridPolygon.getArea())
+				gridArea: Math.round(currentUsedGridPolygon.getArea()),
+				isNOChangeGridAddress: currentUsedGridPolygon.toString() === currentUsedGridPolygon.getExtData()?.originGridAddress
 			}
 		}
 	}
 
 	// 设置marker点
-	function addMarkers(coordinates) {
+	function addMarkers(coordinates, clickHandle) {
 		// 清空上次的markers
 		removeMarkers()
-		markers = coordinates.map(([lng, lat]) => {
+		markers = coordinates.map(item => {
+			const { longitude, latitude, stype } = item
 			const icon = new AMap.Icon({
 				size: new AMap.Size(24, 24),
-				image: `/src/assets/icons/shop-icon-${1}.png`,
+				image: `/src/assets/icons/shop-icon-${stype}.png`,
 				imageSize: new AMap.Size(24, 24),
 				imageOffset: new AMap.Pixel(0, 0)
 			})
 			const marker = new AMap.Marker({
-				position: new AMap.LngLat(lng, lat),
+				position: new AMap.LngLat(longitude, latitude),
 				icon,
-				offset: new AMap.Pixel(-12, -24)
+				offset: new AMap.Pixel(-12, -24),
+				extData: {
+					...item
+				}
 			})
+			marker.on('click', clickHandle)
 			return marker
 		})
 		mapInstance.add([...markers])

@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 16:54:57
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-29 17:41:35
+ * @LastEditTime: 2021-07-09 13:44:27
 -->
 <template>
 	<Dropdown>
@@ -14,18 +14,20 @@
 		</div>
 		<template #overlay>
 			<Menu>
-				<MenuItem> 修改密码 </MenuItem>
+				<MenuItem @click="modifyPasswordHandle"> 修改密码 </MenuItem>
 				<MenuDivider />
-				<MenuItem> 退出登录 </MenuItem>
+				<MenuItem @click="logoutHandle"> 退出登录 </MenuItem>
 			</Menu>
 		</template>
 	</Dropdown>
 </template>
 
 <script>
-	import { defineComponent } from 'vue'
+	import { defineComponent, createVNode } from 'vue'
 	import { useStore } from 'vuex'
-	import { Dropdown, Menu, Avatar } from 'ant-design-vue'
+	import { useRouter } from 'vue-router'
+	import { Dropdown, Menu, Avatar, Modal } from 'ant-design-vue'
+	import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
 	export default defineComponent({
 		name: 'UserDropdown',
 		components: {
@@ -37,10 +39,32 @@
 		},
 		setup() {
 			const store = useStore()
+			const router = useRouter()
 			const { avator, username } = store.getters.userInfo
+
+			// 修改密码
+			const modifyPasswordHandle = () => {
+				console.log('修改密码')
+			}
+
+			// 退出登录
+			const logoutHandle = () => {
+				Modal.confirm({
+					title: '是否退出登录?',
+					icon: createVNode(ExclamationCircleOutlined),
+					width: 350,
+					centered: true,
+					onOk: async () => {
+						await store.dispatch('user/logout')
+						router.push(`/login?redirect=${router.currentRoute.value.fullPath}`)
+					}
+				})
+			}
 			return {
 				avator: avator || 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-				username
+				username,
+				modifyPasswordHandle,
+				logoutHandle
 			}
 		}
 	})

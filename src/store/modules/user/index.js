@@ -4,11 +4,11 @@
  * @Author: AiDongYang
  * @Date: 2021-06-23 11:09:24
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-28 14:26:11
+ * @LastEditTime: 2021-07-09 11:24:30
  */
 import { resetRouter } from 'src/router'
 import { getToken, removeToken, setToken } from 'src/utils/cookie'
-import { login, getUserInfo, getMenuList } from 'src/api/System'
+import { login, getUserInfo, getMenuList, logout } from 'src/api/System'
 import * as types from './types'
 const state = {
 	userInfo: {},
@@ -21,7 +21,7 @@ const mutations = {
 	[types.SET_USERINFO]: (state, userInfo) => {
 		state.userInfo = userInfo
 	},
-	[types.HAS_TOKEN]: (state, hasToken) => {
+	[types.SET_TOKEN]: (state, hasToken) => {
 		state.hasToken = hasToken
 	},
 	[types.SET_BUTTONLIST]: (state, buttonList) => {
@@ -38,7 +38,7 @@ const actions = {
 		return new Promise((resolve, reject) => {
 			login(params)
 				.then(() => {
-					commit(types.HAS_TOKEN, true)
+					commit(types.SET_TOKEN, true)
 					setToken(true)
 					resolve()
 				})
@@ -81,9 +81,10 @@ const actions = {
 	},
 	logout({ commit, state }) {
 		return new Promise((resolve, reject) => {
-			this.logout(state.token)
+			logout(state.token)
 				.then(() => {
 					commit(types.SET_TOKEN, '')
+					commit(types.SET_USERINFO, {})
 					removeToken()
 					resetRouter()
 					// reset visited views and cached views
@@ -99,7 +100,8 @@ const actions = {
 	resetToken({ commit }) {
 		// 重置token
 		return new Promise(resolve => {
-			commit(types.HAS_TOKEN, '')
+			commit(types.SET_TOKEN, '')
+			commit(types.SET_USERINFO, {})
 			removeToken()
 			resolve()
 		})

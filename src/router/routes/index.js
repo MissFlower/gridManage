@@ -4,9 +4,9 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 18:03:13
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-02 09:34:32
+ * @LastEditTime: 2021-07-09 13:23:12
  */
-import basicRoute from './basic'
+import { PAGE_ERROR_ROUTES, REDIRECT_ROUTE } from './basic'
 const modules = import.meta.globEager('./modules/**/*.js')
 
 const routeModuleList = []
@@ -22,13 +22,33 @@ sortModList.forEach(mod => {
 	routeModuleList.push(...routeList)
 })
 
-// Basic routing without permission
-export const basicRoutes = [...basicRoute]
-// Async routing with permission
-export const asyncRoutes = [...routeModuleList]
+export const RootRoute = {
+	path: '/',
+	name: 'Root',
+	redirect: '/grid',
+	hidden: true
+}
+
+export const LoginRoute = {
+	path: '/login',
+	name: 'Login',
+	component: () => import('src/views/System/Login/index.vue'),
+	hidden: true,
+	meta: {
+		title: '登录'
+	}
+}
+
 // not found route
 export const PAGE_NOT_FOUND_ROUTE = {
 	path: '/:pathMatch(.*)*',
+	name: '404NoFountPage',
 	redirect: '/404',
 	hidden: true
 }
+
+// Basic routing without permission
+export const basicRoutes = [RootRoute, LoginRoute, ...PAGE_ERROR_ROUTES, REDIRECT_ROUTE]
+
+// Async routing with permission
+export const asyncRoutes = [...routeModuleList]

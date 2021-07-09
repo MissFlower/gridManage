@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-08 20:22:15
+ * @LastEditTime: 2021-07-09 18:50:57
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -16,7 +16,7 @@
 	</RadioGroup>
 
 	<!-- 门店信息 -->
-	<ShopInfo :info-data="infoData" />
+	<ShopInfo v-show="isShowShopInfo" :info-data="infoData" />
 
 	<!-- 图例信息 -->
 	<LegendInfo />
@@ -47,7 +47,7 @@
 		:grid-info="gridInfo"
 		cancel-text="取消"
 		ok-text="保存"
-		@ok="addSaveGridHandle"
+		@ok="modalSaveGridHandle"
 		@cancel="editGridHandle"
 	/>
 </template>
@@ -61,9 +61,17 @@
 	import GridDrawer from '../components/gridDrawer.vue'
 	import GridInfoModal from '../components/gridInfoModal.vue'
 	import { useMap } from 'src/hooks/useMap'
-	import { ADMIN_ROLE_TYPE, SHOP_TYPE, SHOP_TYPE_NAME, MAP_TYPE } from 'src/common/constant'
+	import { ADMIN_ROLE_TYPE, SHOP_TYPE, SHOP_TYPE_NAME, MAP_TYPE, SHOP_ICON_TYPE } from 'src/common/constant'
 	import { strTransferLngLat } from 'src/utils'
-	import { getUserGridsData, getGridData, addSaveGrid, editSaveGrid, deleteGrid } from 'src/api/GridManagement'
+	import {
+		getUserGridsData,
+		getAddGridData,
+		getEditGridData,
+		addSaveGrid,
+		editSaveGrid,
+		deleteGrid,
+		getNearbyShopForGrid
+	} from 'src/api/GridManagement'
 	export default defineComponent({
 		name: 'SignMap',
 		components: {
@@ -76,14 +84,13 @@
 			RadioButton
 		},
 		setup() {
-			const infoData = reactive({
-				src: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-			})
+			const infoData = ref({})
 			const state = reactive({
 				gridDrawerVisible: false,
 				gridModalVisible: false,
 				isDispatchGrid: false,
-				isEdit: false
+				isEdit: false,
+				isShowShopInfo: false
 			})
 			const mapAttrs = reactive({
 				center: [],
@@ -156,6 +163,7 @@
 			const mapZoomend = () => {
 				const { mapInstance } = map
 				mapAttrs.zoom = mapInstance.getZoom()
+				mapDragend()
 				console.log(`当前地图zoom为${mapAttrs.zoom}`)
 			}
 
@@ -166,10 +174,16 @@
 				console.log(`地图中心点改变了为${mapAttrs.center.toString()}`)
 			}
 
+			// 点击地图
+			const mapClickHandle = () => {
+				state.isShowShopInfo = false
+			}
+
 			// 绑定事件
 			const bindEvent = mapInstance => {
 				mapInstance.on('zoomend', mapZoomend)
 				mapInstance.on('dragend', mapDragend)
+				mapInstance.on('click', mapClickHandle)
 			}
 
 			// 解绑事件
@@ -177,19 +191,46 @@
 				const { mapInstance } = map
 				mapInstance.off('zoomend', mapZoomend)
 				mapInstance.off('dragend', mapDragend)
+				mapInstance.off('click', mapClickHandle)
 			}
 
 			// 绘制行政区域边界
 			const drawAdministrationBoundary = () => {
 				const { regionList, role } = userGridsData
-				map.drawAdministrationBoundary(regionList, {}, role)
+				regionList.length && map.drawAdministrationBoundary(regionList, {}, role)
 			}
 
 			// 绘制网格
 			const drawGrids = () => {
 				const { parentGridList, gridList } = userGridsData
-				const grids = [...parentGridList, ...gridList]
-				grids.length && map.renderPolygons(grids)
+				map.renderPolygons({ parentGridList, gridList })
+			}
+
+			// 获取绘制好的网格信息(闭环查询网格信息)
+			const getGridInfo = async info => {
+				const { id, gridArea, gridAddress, districtCode, pid } = info
+				let data = {}
+				if (!id) {
+					// 新增
+					data = await getAddGridData({
+						gridArea,
+						gridAddress,
+						pid
+					})
+				} else {
+					// 编辑时候坐标变化调用闭环网格信息接口
+					data = await getEditGridData({
+						gridAddress,
+						districtCode,
+						id
+					})
+				}
+				gridInfo.value = {
+					...info,
+					...data,
+					mapType: MAP_TYPE.SIGN_MAP
+				}
+				state.gridModalVisible = true
 			}
 
 			// 创建网格
@@ -204,17 +245,6 @@
 						Message.warn(message)
 					}
 				})
-
-				// 获取绘制好的网格信息
-				async function getGridInfo(params) {
-					const data = await getGridData(params)
-					gridInfo.value = {
-						...data,
-						...params,
-						mapType: MAP_TYPE.SIGN_MAP
-					}
-					state.gridModalVisible = true
-				}
 			}
 
 			// 编辑网格
@@ -223,31 +253,37 @@
 				openPolyEditor()
 			}
 
-			// 保存网格
+			// 保存网格(页面保存按钮)
 			const saveGridHandle = () => {
 				const { getPolygonInfo } = map
 				const { code, message, data } = getPolygonInfo()
 				if (code === 200) {
-					console.log(data)
 					gridInfo.value = {
 						...gridInfo.value,
 						...data
 					}
-					if (data.id) {
-						// 编辑网格
-						editSaveGridHandle()
+					// 获取网格信息(调用闭环接口)
+					if (!data.id || (data.id && !data.isNOChangeGridAddress)) {
+						// 新增
+						getGridInfo(gridInfo.value)
 					} else {
-						// 新增网格
-						addSaveGridHandle()
+						Message.warn('当前网格未改变！')
 					}
 				} else {
 					Message.warn(message)
 				}
 			}
 
-			// 添加保存网格
-			const addSaveGridHandle = async () => {
-				await addSaveGrid(gridInfo.value)
+			// 保存网格(弹窗保存按钮)
+			const modalSaveGridHandle = async () => {
+				console.log(gridInfo.value)
+				if (gridInfo.value.id) {
+					// 编辑网格
+					await editSaveGridHandle()
+				} else {
+					// 新增网格
+					await addSaveGridHandle()
+				}
 				state.gridModalVisible = false
 				// 初始化流程
 				initProcess()
@@ -256,9 +292,11 @@
 			// 编辑保存网格
 			const editSaveGridHandle = async () => {
 				await editSaveGrid(gridInfo.value)
-				state.gridModalVisible = false
-				// 初始化流程
-				initProcess()
+			}
+
+			// 新增保存网格
+			const addSaveGridHandle = async () => {
+				await addSaveGrid(gridInfo.value)
 			}
 
 			// 删除网格
@@ -307,15 +345,150 @@
 			}
 
 			// 获取附近门店坐标
-			const getNearShopCoordinates = () => {
+			const getNearShopCoordinates = async () => {
 				const { addMarkers } = map
-				const markers = [
-					[116.661113, 39.996551],
-					[116.754549, 40.002993],
-					[116.750811, 39.901284],
-					[116.633083, 39.869738]
-				]
-				addMarkers(markers)
+				const { lng, lat } = mapAttrs.center
+				const data = await getNearbyShopForGrid({
+					longitude: lng,
+					latitude: lat,
+					type: mapAttrs.shopType
+				})
+				addMarkers(data, getShopInfo)
+			}
+
+			// 点击门店获取门店信息
+			const getShopInfo = e => {
+				const { stype, id, name, locate, source, type, sellerName, maintainName, phone, starLevel, commentsNum, goodComm, averageNum, cost } =
+					e.target.getExtData()
+
+				const shopInfoConfig = {
+					[SHOP_ICON_TYPE.SELF_SUPPORT_SHOP]: {
+						name,
+						id,
+						locate,
+						otherInfo: [
+							{
+								title: '门店来源',
+								text: source
+							},
+							{
+								title: '业态',
+								text: type
+							},
+							{
+								title: '门店负责人',
+								text: sellerName
+							},
+							{
+								title: '门店维护人',
+								text: maintainName
+							},
+							{
+								title: '门店电话',
+								text: phone
+							}
+						]
+					},
+					[SHOP_ICON_TYPE.DIRECT_SUPPORT_SHOP]: {
+						name,
+						id,
+						locate,
+						otherInfo: [
+							{
+								title: '门店来源',
+								text: source
+							},
+							{
+								title: '业态',
+								text: type
+							},
+							{
+								title: '门店负责人',
+								text: sellerName
+							},
+							{
+								title: '门店维护人',
+								text: maintainName
+							},
+							{
+								title: '门店电话',
+								text: phone
+							}
+						]
+					},
+					[SHOP_ICON_TYPE.SEAS_RECOMMEND_SHOP]: {
+						name,
+						id,
+						locate,
+						otherInfo: [
+							{
+								title: '门店来源',
+								text: source
+							},
+							{
+								title: '业态',
+								text: type
+							},
+							{
+								title: '门店负责人',
+								text: sellerName
+							},
+							{
+								title: '门店维护人',
+								text: maintainName
+							},
+							{
+								title: '门店电话',
+								text: phone
+							},
+							{
+								title: '星级',
+								text: starLevel
+							},
+							{
+								title: '人均消费',
+								text: cost
+							},
+							{
+								title: '评价数',
+								text: commentsNum
+							},
+							{
+								title: '好评数',
+								text: goodComm
+							},
+							{
+								title: '平均分',
+								text: averageNum
+							}
+						]
+					},
+					[SHOP_ICON_TYPE.SEAS_MAP_SHOP]: {
+						name,
+						id,
+						locate,
+						otherInfo: [
+							{
+								title: '门店来源',
+								text: source
+							},
+							{
+								title: '分类',
+								text: type
+							},
+							{
+								title: '门店负责人',
+								text: sellerName
+							},
+							{
+								title: '门店维护人',
+								text: maintainName
+							}
+						]
+					}
+				}
+				infoData.value = shopInfoConfig[stype]
+				state.isShowShopInfo = true
 			}
 
 			// 清除marker点
@@ -333,13 +506,14 @@
 			// 处理网格数据
 			const dealDataHandle = data => {
 				// 处理行政区域列表
-				data.regionList = data.regionList.length && data.regionList.map(region => region.code)
+				data.regionList = (data.regionList.length && data.regionList.map(region => region.code)) || []
 				// 父级的网格角色就是ORGANZITION_ADMIN_ROLE 只有两种角色
 				data.parentGridList =
 					(data.parentGridList.length &&
 						data.parentGridList.map(({ gridAddress, gridArea, ...rest }) => ({
 							...rest,
 							gridAddress: strTransferLngLat(gridAddress),
+							originGridAddress: gridAddress,
 							gridArea,
 							role: ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE
 						}))) ||
@@ -348,6 +522,7 @@
 				data.gridList = data.gridList.map(({ gridAddress, gridArea, ...rest }) => ({
 					...rest,
 					gridAddress: strTransferLngLat(gridAddress),
+					originGridAddress: gridAddress,
 					gridArea,
 					role: data.role
 				}))
@@ -385,7 +560,7 @@
 				createGridHandle,
 				editGridHandle,
 				saveGridHandle,
-				addSaveGridHandle,
+				modalSaveGridHandle,
 				deleteGridHandle,
 				batchDispatchGridHandle,
 				cancelBatchDispatchGridHandle

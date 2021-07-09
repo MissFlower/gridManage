@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-25 13:47:47
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-08 15:21:23
+ * @LastEditTime: 2021-07-09 13:55:35
  */
 import axios from 'axios'
 import qs from 'qs'
@@ -17,6 +17,7 @@ import { UPDATE_REQUEST_COUNT } from 'src/store/modules/common/types'
 const TIMEOUT = 100000
 // const BASE_URL = import.meta.env.VITE_GLOB_API_URL
 const BASE_URL = import.meta.env.VITE_GLOB_LOCAL_URL_BSD
+// const BASE_URL = import.meta.env.VITE_GLOB_LOCAL_URL_LHQ
 
 const http = axios.create({
 	baseURL: BASE_URL,

@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 18:11:03
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-08 16:11:54
+ * @LastEditTime: 2021-07-09 18:17:30
  */
 const [SIGN_MAP, MAINTAIN_MAP] = [1, 2]
 export const MAP_TYPE = {
@@ -34,6 +34,14 @@ export const SHOP_TYPE_NAME = {
 	[SHOP_TYPE.DIRECT]: '直营',
 	[SHOP_TYPE.COMMENT]: '点评',
 	[SHOP_TYPE.RACE]: '竞对'
+}
+
+const [SELF_SUPPORT_SHOP, DIRECT_SUPPORT_SHOP, SEAS_RECOMMEND_SHOP, SEAS_MAP_SHOP] = [0, 1, 2, 3]
+export const SHOP_ICON_TYPE = {
+	SELF_SUPPORT_SHOP,
+	DIRECT_SUPPORT_SHOP,
+	SEAS_RECOMMEND_SHOP,
+	SEAS_MAP_SHOP
 }
 
 const [ORGANZITION_ADMIN_ROLE, BD_ADMIN_ROLE] = [1, 2]
