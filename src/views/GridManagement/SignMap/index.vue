@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-09 18:50:57
+ * @LastEditTime: 2021-07-10 17:31:09
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -16,7 +16,7 @@
 	</RadioGroup>
 
 	<!-- 门店信息 -->
-	<ShopInfo v-show="isShowShopInfo" :info-data="infoData" />
+	<ShopInfo :is-show="isShowShopInfo" :info-data="infoData" />
 
 	<!-- 图例信息 -->
 	<LegendInfo />
@@ -35,7 +35,7 @@
 	/>
 
 	<!-- 网格分配抽屉 -->
-	<GridDrawer v-model:visible="gridDrawerVisible" @close="cancelBatchDispatchGridHandle" />
+	<GridDrawer v-model:visible="gridDrawerVisible" :role="role" :map-type="MAP_TYPE.SIGN_MAP" @close="cancelBatchDispatchGridHandle" />
 
 	<!-- 网格信息弹窗 -->
 	<GridInfoModal
@@ -54,7 +54,7 @@
 
 <script>
 	import { defineComponent, onMounted, reactive, ref, toRefs, watchEffect, watch, onUnmounted, createVNode } from 'vue'
-	import { message as Message, Modal, RadioGroup, RadioButton } from 'ant-design-vue'
+	import { message as Message, Modal, Radio } from 'ant-design-vue'
 	import ShopInfo from '../components/shopInfo.vue'
 	import LegendInfo from '../components/legendInfo.vue'
 	import MapButtonGroup from '../components/mapButtonGroup.vue'
@@ -80,18 +80,11 @@
 			MapButtonGroup,
 			GridDrawer,
 			GridInfoModal,
-			RadioGroup,
-			RadioButton
+			RadioGroup: Radio.Group,
+			RadioButton: Radio.Button
 		},
 		setup() {
 			const infoData = ref({})
-			const state = reactive({
-				gridDrawerVisible: false,
-				gridModalVisible: false,
-				isDispatchGrid: false,
-				isEdit: false,
-				isShowShopInfo: false
-			})
 			const mapAttrs = reactive({
 				center: [],
 				zoom: 5,
@@ -102,6 +95,14 @@
 			const ZOOM_DEMARCATION_VALUE = 10 // zoom分界值
 			let userGridsData = {} // 用户网格数据
 			const gridInfo = ref({}) // 闭环时网格信息
+			const state = reactive({
+				gridDrawerVisible: false,
+				gridModalVisible: false,
+				isDispatchGrid: false,
+				isEdit: false,
+				isShowShopInfo: false,
+				role: userGridsData?.role
+			})
 
 			watch([() => mapAttrs.center, () => mapAttrs.zoom, () => mapAttrs.shopType], ([center, zoom, shopType], [preCenter, preZoom, preShopType]) => {
 				console.log(zoom, preZoom, shopType, preShopType)
@@ -203,7 +204,13 @@
 			// 绘制网格
 			const drawGrids = () => {
 				const { parentGridList, gridList } = userGridsData
-				map.renderPolygons({ parentGridList, gridList })
+				map.renderPolygons({ parentGridList, gridList }, {}, gridClickHandle)
+			}
+
+			// 网格点击事件
+			const gridClickHandle = () => {
+				const { data } = map.getCurrentPolygonInfo()
+				console.log(data)
 			}
 
 			// 获取绘制好的网格信息(闭环查询网格信息)
@@ -255,8 +262,8 @@
 
 			// 保存网格(页面保存按钮)
 			const saveGridHandle = () => {
-				const { getPolygonInfo } = map
-				const { code, message, data } = getPolygonInfo()
+				const { getCurrentPolygonInfo } = map
+				const { code, message, data } = getCurrentPolygonInfo()
 				if (code === 200) {
 					gridInfo.value = {
 						...gridInfo.value,
@@ -301,8 +308,8 @@
 
 			// 删除网格
 			const deleteGridHandle = async () => {
-				const { getPolygonInfo } = map
-				const { code, message, data } = getPolygonInfo()
+				const { getCurrentPolygonInfo } = map
+				const { code, message, data } = getCurrentPolygonInfo()
 				if (code === 200) {
 					await deleteGrid({ id: data.id, mapType: MAP_TYPE.SIGN_MAP })
 					// 初始化流程
@@ -314,7 +321,6 @@
 
 			// 批量分配网格
 			const batchDispatchGridHandle = () => {
-				const { resetGridStyle } = map
 				Modal.confirm({
 					content: createVNode('div', {}, [
 						createVNode('div', { style: 'font-size: 16px;line-height: 24px;' }, '请确认是否批量分配已选网格？'),
@@ -324,16 +330,17 @@
 					cancelText: '取消',
 					centered: true,
 					width: 400,
-					onCancel: () => {
-						cancelBatchDispatchGridHandle()
-					},
-					onOk: () => {
-						resetGridStyle()
-						state.isDispatchGrid = true
-						state.gridDrawerVisible = true
-						console.log('批量分配网格')
-					}
+					onCancel: cancelBatchDispatchGridHandle,
+					onOk: sureBatchDispatchGridHandle
 				})
+			}
+
+			// 取消批量分配网格
+			const sureBatchDispatchGridHandle = () => {
+				map.resetGridStyle()
+				state.isDispatchGrid = true
+				state.gridDrawerVisible = true
+				console.log('批量分配网格')
 			}
 
 			// 取消批量分配网格
@@ -358,8 +365,23 @@
 
 			// 点击门店获取门店信息
 			const getShopInfo = e => {
-				const { stype, id, name, locate, source, type, sellerName, maintainName, phone, starLevel, commentsNum, goodComm, averageNum, cost } =
-					e.target.getExtData()
+				const {
+					stype,
+					id,
+					name,
+					locate,
+					source,
+					type,
+					sellerName,
+					maintainName,
+					phone,
+					starLevel,
+					commentsNum,
+					goodComm,
+					averageNum,
+					cost,
+					sourceStr
+				} = e.target.getExtData()
 
 				const shopInfoConfig = {
 					[SHOP_ICON_TYPE.SELF_SUPPORT_SHOP]: {
@@ -474,7 +496,7 @@
 							},
 							{
 								title: '分类',
-								text: type
+								text: sourceStr
 							},
 							{
 								title: '门店负责人',
@@ -556,6 +578,7 @@
 				shopType: toRefs(mapAttrs).shopType,
 				SHOP_TYPE_NAME,
 				gridInfo,
+				MAP_TYPE,
 				...toRefs(state),
 				createGridHandle,
 				editGridHandle,

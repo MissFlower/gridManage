@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-07 10:39:22
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-07 10:59:42
+ * @LastEditTime: 2021-07-10 17:39:14
 -->
 <template>
 	<DatePicker v-if="dateType === 'Date'" v-bind="$attrs" />
@@ -14,12 +14,12 @@
 <script>
 	// TODO:month week
 	import { defineComponent } from 'vue'
-	import { DatePicker, RangePicker } from 'ant-design-vue'
+	import { DatePicker } from 'ant-design-vue'
 	export default defineComponent({
 		name: 'DatePickerWrapper',
 		components: {
 			DatePicker,
-			RangePicker
+			RangePicker: DatePicker.RangePicker
 		},
 		props: {
 			dateType: {

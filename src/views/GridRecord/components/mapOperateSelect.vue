@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-07 10:02:10
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-07 10:20:42
+ * @LastEditTime: 2021-07-10 17:35:03
 -->
 <template>
 	<Select v-bind="$attrs">
@@ -15,13 +15,13 @@
 
 <script>
 	import { defineComponent } from 'vue'
-	import { Select, SelectOption } from 'ant-design-vue'
+	import { Select } from 'ant-design-vue'
 	import { MAP_OPERATE_TYPE } from 'src/common/constant'
 	export default defineComponent({
 		name: 'MapOperateSelect',
 		components: {
 			Select,
-			SelectOption
+			SelectOption: Select.Option
 		},
 		props: {
 			showAllOption: {

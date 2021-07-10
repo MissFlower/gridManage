@@ -4,13 +4,15 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:01:42
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-29 11:50:08
+ * @LastEditTime: 2021-07-10 17:42:41
  */
+
 import { loadEnv } from 'vite'
 import { resolve } from 'path'
 import { wrapperEnv } from './build/utils'
 import { createProxy } from './build/vite/proxy'
 import { createVitePlugins } from './build/vite/plugin'
+import { OUTPUT_DIR } from './build/constant'
 
 function pathResolve(dir) {
 	return resolve(process.cwd(), '.', dir)
@@ -26,7 +28,7 @@ export default ({ command, mode }) => {
 	const viteEnv = wrapperEnv(env)
 	const isBuild = command === 'build'
 
-	const { VITE_PORT, VITE_PROXY, VITE_PUBLIC_PATH } = viteEnv
+	const { VITE_PORT, VITE_PROXY, VITE_PUBLIC_PATH, VITE_DROP_CONSOLE } = viteEnv
 
 	return {
 		base: VITE_PUBLIC_PATH,
@@ -51,8 +53,19 @@ export default ({ command, mode }) => {
 				}
 			]
 		},
-		define: {
-			'process.env': {}
+		build: {
+			target: 'es2015',
+			outDir: OUTPUT_DIR,
+			terserOptions: {
+				compress: {
+					keep_infinity: true,
+					// 生产环境删除console
+					drop_console: VITE_DROP_CONSOLE
+				}
+			},
+			// 关闭brotliSize显示可以稍微缩短打包时间
+			brotliSize: false,
+			chunkSizeWarningLimit: 2000
 		},
 		css: {
 			preprocessorOptions: {

@@ -4,14 +4,14 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:46:48
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-22 15:54:36
+ * @LastEditTime: 2021-07-10 17:50:55
  */
 /**
  * 生成proxy
  * @param list
  */
 const httpsRE = /^https:\/\//
-export function createProxy(list) {
+export function createProxy(list = []) {
 	const ret = {}
 	for (const [prefix, target] of list) {
 		const isHttps = httpsRE.test(target)
@@ -25,6 +25,5 @@ export function createProxy(list) {
 			...(isHttps ? { secure: false } : {})
 		}
 	}
-	console.log(ret)
 	return ret
 }

@@ -4,10 +4,10 @@
  * @Author: AiDongYang
  * @Date: 2021-06-30 15:30:53
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-30 17:27:44
+ * @LastEditTime: 2021-07-10 17:32:16
 -->
 <template>
-	<Drawer v-bind="$attrs" title="网格分配" :mask="false" :closable="false" @save="saveHandle">
+	<Drawer v-bind="$attrs" title="网格分配" :mask="false" :closable="false" @save="saveHandle" @close="closeHandle">
 		<div class="grid-name-wrap">
 			<p>网格名:</p>
 			<div class="grid-name-content">
@@ -25,27 +25,28 @@
 			<div class="grid-info-item">公海地图门店数: {{ 1 }}</div>
 		</div>
 
-		<Select v-model:value="groupName" class="group-select">
-			<SelectOption value="1">苏州市一组</SelectOption>
-			<SelectOption value="2">苏州市二组</SelectOption>
-			<SelectOption value="3">苏州市三组</SelectOption>
-		</Select>
+		<div v-if="role === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE" class="org-radio-wrapper">
+			<span>机构分配</span>
+			<RadioGroup v-model:value="orgId" class="org-radio-group">
+				<Radio v-for="{ id, orgName } of orgList" :key="id" :value="id" class="radio-item">{{ orgName }}</Radio>
+			</RadioGroup>
+		</div>
 
-		<div class="radio-wrapper">
+		<div v-if="role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE" class="radio-wrapper">
+			<Select v-model:value="orgId" class="group-select">
+				<SelectOption v-for="{ orgName, orgId } of bdList" :key="orgId" :value="orgId">{{ orgName }}</SelectOption>
+			</Select>
+
 			<div class="duty-radio-group">
 				<span>负责人选择</span>
-				<RadioGroup v-model:value="dutyPerson">
-					<Radio value="1" class="radio-item">迈克尔.乔丹</Radio>
-					<Radio value="2" class="radio-item">科比.布莱恩特</Radio>
-					<Radio value="3" class="radio-item">保罗.乔治</Radio>
+				<RadioGroup v-model:value="sellerId">
+					<Radio v-for="{ userId, userName } of currentBdList" :key="userId" :value="userId" class="radio-item">{{ userName }}</Radio>
 				</RadioGroup>
 			</div>
 			<div class="maintain-radio-group">
 				<span>维护人选择</span>
-				<RadioGroup v-model:value="maintainPerson">
-					<Radio value="1" class="radio-item">迈克尔.乔丹</Radio>
-					<Radio value="2" class="radio-item">科比</Radio>
-					<Radio value="3" class="radio-item">保罗.乔治</Radio>
+				<RadioGroup v-model:value="maintainId">
+					<Radio v-for="{ userId, userName } of currentBdList" :key="userId" :value="userId" class="radio-item">{{ userName }}</Radio>
 				</RadioGroup>
 			</div>
 		</div>
@@ -53,31 +54,93 @@
 </template>
 
 <script>
-	import { defineComponent, reactive, toRefs } from 'vue'
-	import { Select, SelectOption, Radio, RadioGroup } from 'ant-design-vue'
+	import { defineComponent, onMounted, reactive, toRefs, watch } from 'vue'
+	import { Select, Radio } from 'ant-design-vue'
 	import Drawer from 'src/components/Drawer/index.vue'
+	import { ADMIN_ROLE_TYPE } from 'src/common/constant'
+	import { getDispatchOrganization, getDispatchBd, dispatchGrid } from 'src/api/GridManagement'
 	export default defineComponent({
 		name: 'GridDrawer',
 		components: {
 			Drawer,
 			Select,
-			SelectOption,
+			SelectOption: Select.Option,
 			Radio,
-			RadioGroup
+			RadioGroup: Radio.Group
 		},
-		setup() {
-			const state = reactive({
-				groupName: '1',
-				dutyPerson: '1',
-				maintainPerson: ''
-			})
-			const saveHandle = () => {
-				// 保存
-				console.log('save drawer')
+		props: {
+			role: {
+				type: Number,
+				default: ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE,
+				validator: v => [ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE, ADMIN_ROLE_TYPE.BD_ADMIN_ROLE].includes(v)
+			},
+			mapType: {
+				type: Number,
+				required: true
 			}
+		},
+		setup(props) {
+			const state = reactive({
+				orgId: '1', // 机构id
+				groupName: '1',
+				sellerId: '1', // 负责人id
+				maintainId: '', // 维护人id
+				orgList: [],
+				bdList: []
+			})
+			let currentBdList = []
+			let gridIds = [] // 网格id
+			const batchDispatchGridMethods = {
+				[ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE]: getDispatchOrganization,
+				[ADMIN_ROLE_TYPE.BD_ADMIN_ROLE]: getDispatchBd
+			}
+
+			props.role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE &&
+				watch(
+					() => state.orgId,
+					newVal => {
+						currentBdList = bdList.find(item => newVal === item.orgId).userList
+					}
+				)
+
+			const getDispatchGridTarget = async () => {
+				const data = await batchDispatchGridMethods[props.role]()
+				if (role === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE) {
+					state.orgList = data
+				} else {
+					state.bdList = data
+				}
+			}
+
+			// 保存
+			const saveHandle = async () => {
+				console.log('save drawer')
+				// const { orgId, sellerId, maintainId } = state
+				// await dispatchGrid({
+				// 	orgId,
+				// 	sellerId,
+				// 	maintainId,
+				// 	gridIds,
+				// 	operation: props.role,
+				// 	mapType: props.mapType
+				// })
+				// gridIds = []
+			}
+
+			// 取消
+			const closeHandle = () => {
+				gridIds = []
+			}
+
+			onMounted(() => {
+				getDispatchGridTarget()
+			})
 			return {
 				...toRefs(state),
-				saveHandle
+				ADMIN_ROLE_TYPE,
+				currentBdList,
+				saveHandle,
+				closeHandle
 			}
 		}
 	})
@@ -102,13 +165,18 @@
 		margin-bottom: 12px;
 	}
 
+	.org-radio-wrapper {
+		display: flex;
+		flex-direction: column;
+	}
+
 	.radio-wrapper {
 		display: flex;
+	}
 
-		.radio-item {
-			display: block;
-			height: 30px;
-			line-height: 30px;
-		}
+	.radio-item {
+		display: block;
+		height: 30px;
+		line-height: 30px;
 	}
 </style>

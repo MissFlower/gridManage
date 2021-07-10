@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 13:26:36
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-09 17:43:30
+ * @LastEditTime: 2021-07-10 14:59:46
  */
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
@@ -64,6 +64,7 @@ export function useMap(el, options = {}) {
 
 	// 检测坐标点属于哪一个网格
 	function judgePointerBelongToWhichGrid(lngLat, polygons, callback) {
+		alert(1)
 		const parentPolygon = polygons.find(polygon => AMap.GeometryUtil.isPointInRing(lngLat, polygon.getPath()))
 		console.log(parentPolygon)
 		if (parentPolygon) {
@@ -274,7 +275,7 @@ export function useMap(el, options = {}) {
 	}
 
 	// 绘制多边形(根据后端数据绘制多边形)
-	function renderPolygons(grids, options) {
+	function renderPolygons(grids, options, callback) {
 		console.log(grids)
 		// 清除上次结果
 		console.log(drawedOwnPolygons)
@@ -285,21 +286,21 @@ export function useMap(el, options = {}) {
 		drawedParentPolygons.length = 0
 		drawedOwnPolygons.length = 0
 		const defaultParentOptions = {
-			fillColor: '#ccebc5',
+			fillColor: '#0000ff',
 			strokeOpacity: 1,
 			fillOpacity: 0.5,
 			strokeColor: '#2b8cbe',
 			strokeWeight: 1,
-			strokeStyle: 'dashed',
+			strokeStyle: 'solid',
 			strokeDasharray: [5, 5]
 		}
 		const defaultOwnOptions = {
-			fillColor: '#ccebc5',
+			fillColor: '#008000',
 			strokeOpacity: 1,
 			fillOpacity: 0.5,
 			strokeColor: '#2b8cbe',
 			strokeWeight: 1,
-			strokeStyle: 'dashed',
+			strokeStyle: 'solid',
 			strokeDasharray: [5, 5]
 		}
 		const parentOptions = Object.assign({}, defaultParentOptions, options?.parentOptions || {})
@@ -363,13 +364,15 @@ export function useMap(el, options = {}) {
 						fillOpacity: 1
 					})
 					currentUsedGridPolygon = polygon
+					const { judgeMethod, polygons } = accordRoleMethods[currentRole]
+					const { lng, lat } = polygon.getPath()[0]
+					// 检测坐标点属于哪一个行政区或父网格
+					judgeMethod([lng, lat], polygons)
+					// 调用回调函数
+					callback && callback()
 				} else {
 					currentUsedGridPolygon = null
 				}
-				const { judgeMethod, polygons } = accordRoleMethods[currentRole]
-				const { lng, lat } = polygon.getPath()[0]
-				// 检测坐标点属于哪一个行政区或父网格
-				judgeMethod([lng, lat], polygons)
 			})
 		}
 	}
@@ -404,8 +407,8 @@ export function useMap(el, options = {}) {
 			const { lng, lat } = e.lnglat
 			const { judgeMethod, polygons } = accordRoleMethods[currentRole]
 
-			mapInstance.off('click', drawPolygonClickHandle)
 			judgeMethod([lng, lat], polygons, callback)
+			mapInstance.off('click', drawPolygonClickHandle)
 		}
 
 		// 绘制完成事件处理
@@ -478,7 +481,7 @@ export function useMap(el, options = {}) {
 	}
 
 	// 获取当前多边形的信息
-	function getPolygonInfo() {
+	function getCurrentPolygonInfo() {
 		if (!currentUsedGridPolygon) {
 			return {
 				code: 10006,
@@ -486,21 +489,22 @@ export function useMap(el, options = {}) {
 				data: {}
 			}
 		}
-		// 1.检测碰撞
-		const checkResult = checkCollide(currentUsedGridPolygon)
-		console.log(checkResult)
-		if (!checkResult) {
-			return
+
+		if (isEdit.value) {
+			// 1.检测碰撞
+			const checkResult = checkCollide(currentUsedGridPolygon)
+			console.log(checkResult)
+			if (!checkResult) {
+				return
+			}
+			if (checkResult?.code && checkResult?.code !== 200) {
+				return checkResult
+			}
+			// 2.关闭编辑工具
+			polyEditor && closePolyEditor()
 		}
-		if (checkResult?.code && checkResult?.code !== 200) {
-			return checkResult
-		}
-		// 2.关闭编辑工具
-		polyEditor && closePolyEditor()
+
 		// 3.返回多边形数据
-		console.log(currentUsedGridPolygon.toString())
-		console.log(currentUsedGridPolygon.getExtData()?.originGridAddress)
-		console.log(currentUsedGridPolygon.getExtData())
 		return {
 			code: 200,
 			data: {
@@ -601,7 +605,7 @@ export function useMap(el, options = {}) {
 		renderPolygons,
 		openPolyEditor,
 		closePolyEditor,
-		getPolygonInfo,
+		getCurrentPolygonInfo,
 		addMarkers,
 		removeMarkers,
 		initHeatMap,

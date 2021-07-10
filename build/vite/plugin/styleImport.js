@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 13:38:55
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-23 17:18:26
+ * @LastEditTime: 2021-07-10 17:21:34
  */
 /**
  * 按需引入组件库样式
@@ -31,5 +31,3 @@ export function configStyleImportPlugin(isBuild) {
 
 	return styleImportPlugin
 }
-
-export default configStyleImportPlugin

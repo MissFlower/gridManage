@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 18:01:50
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-07 14:02:56
+ * @LastEditTime: 2021-07-10 17:28:58
 -->
 <template>
 	<div class="login-container">
@@ -12,7 +12,7 @@
 			<h2 class="title">速绿运营管理后台</h2>
 			<Form :label-col="labelCol" :wrapper-col="wrapperCol" class="form-wrap">
 				<FormItem label="登录账号" v-bind="validateInfos.username">
-					<AInput ref="usernameRef" v-model:value.trim="modelRef.username" placeholder="请输入登录账号" @focus="clearValidateHandle" />
+					<Input ref="usernameRef" v-model:value.trim="modelRef.username" placeholder="请输入登录账号" @focus="clearValidateHandle" />
 				</FormItem>
 				<FormItem label="登录密码" v-bind="validateInfos.password">
 					<InputPassword
@@ -24,12 +24,12 @@
 					/>
 				</FormItem>
 				<FormItem label="验证码" v-bind="validateInfos.code" class="verify">
-					<AInput v-model:value.trim="modelRef.code" @focus="clearValidateHandle" />
+					<Input v-model:value.trim="modelRef.code" @focus="clearValidateHandle" />
 					<Image v-if="modelRef.verifyImage" :width="100" :height="32" :src="modelRef.verifyImage" :preview="false" @click="verifyCodeHandle" />
 					<RedoOutlined v-else @click="verifyCodeHandle" />
 				</FormItem>
-				<AButton type="link">忘记密码？</AButton>
-				<AButton type="primary" block class="login-btn" @click.prevent="loginHandle">登录</AButton>
+				<Button type="link">忘记密码？</Button>
+				<Button type="primary" block class="login-btn" @click.prevent="loginHandle">登录</Button>
 			</Form>
 		</div>
 	</div>
@@ -39,16 +39,18 @@
 	import { defineComponent, ref, reactive, onMounted, watch } from 'vue'
 	import { useRouter, useRoute } from 'vue-router'
 	import { useStore } from 'vuex'
-	import { Form, Image, InputPassword } from 'ant-design-vue'
+	import { Form, Image, Input, Button } from 'ant-design-vue'
 	import { RedoOutlined } from '@ant-design/icons-vue'
 	import { getVerifyCode } from 'src/api/System'
 	export default defineComponent({
 		name: 'Login',
 		components: {
 			Form,
+			Input,
+			Button,
 			FormItem: Form.Item,
 			Image,
-			InputPassword,
+			InputPassword: Input.Password,
 			RedoOutlined
 		},
 		setup() {

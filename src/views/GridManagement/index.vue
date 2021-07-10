@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 14:31:46
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-06 17:34:58
+ * @LastEditTime: 2021-07-10 17:30:00
 -->
 <template>
 	<div class="grid-container">
@@ -24,7 +24,7 @@
 
 <script>
 	import { defineComponent, ref, watchEffect, shallowRef } from 'vue'
-	import { RadioGroup, RadioButton } from 'ant-design-vue'
+	import { Radio } from 'ant-design-vue'
 	import SignMap from './SignMap/index.vue'
 	import MaintainMap from './MaintainMap/index.vue'
 	import HeatMap from './HeatMap/index.vue'
@@ -35,8 +35,8 @@
 			SignMap,
 			MaintainMap,
 			HeatMap,
-			RadioGroup,
-			RadioButton
+			RadioGroup: Radio.Group,
+			RadioButton: Radio.Button
 		},
 		setup() {
 			const mapComp = {

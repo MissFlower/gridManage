@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-07 15:57:30
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-09 15:34:35
+ * @LastEditTime: 2021-07-10 12:50:17
  */
 import request from 'src/utils/request'
 
@@ -135,7 +135,7 @@ export function getShopInfo(params) {
  * @Date 2021-07-07 17:45:19
  */
 export function getHeatMapList(params) {
-	return request.post('/manage/hotMap/getHotMapList', params, { baseURL: '/lhq' })
+	return request.post('/manage/hotMap/getHotMapList', params)
 }
 
 /**
@@ -153,8 +153,46 @@ export function getHeatMapList(params) {
  * @Date 2021-07-07 17:47:45
  */
 export function getRecordList(params) {
-	return request.post('/manage/shopGridChangeLog/getRecordList', params, { baseURL: '/lhq' })
+	return request.post('/manage/shopGridChangeLog/getRecordList', params)
 }
-export function getRecordList1(params) {
-	return request.post('/manage/organization/listOrgForGrid', params, { baseURL: '/lhq' })
+
+/**
+ * APIURL: 'https://www.tapd.cn/48625949/markdown_wikis/show/#1148625949001003854'
+ ** 获取可以分配网格给机构(CM给网格分配小组时使用) 参数 - 说明(是否必填)
+ * @param regionCode 行政区域编码(是)
+ * @FrontendAuthor 艾东阳
+ * @BackendAuthor 胡文
+ * @Date 2021-07-10 12:39:25
+ */
+export function getDispatchOrganization(params) {
+	return request.get('/manage/organization/listOrgForGrid', params)
+}
+
+/**
+ * APIURL: 'https://www.tapd.cn/48625949/markdown_wikis/show/#1148625949001003855'
+ ** 获取可以分配网格的销售(BDM给网格分配负责人维护人时使用) 参数 - 说明(是否必填)
+ * @param regionCode 行政区域编码(是)
+ * @FrontendAuthor 艾东阳
+ * @BackendAuthor 胡文
+ * @Date 2021-07-10 12:43:17
+ */
+export function getDispatchBd(params) {
+	return request.get('/manage/authUser/listUserForGrid', params)
+}
+
+/**
+ * APIURL: 'https://www.tapd.cn/48625949/markdown_wikis/show/#1148625949001003856'
+ ** 分配网格的负责人,维护人,机构 参数 - 说明(是否必填)
+ * @param sellerId 负责人ID 操作类型为用户是负责人和维护人必须有一个(否)
+ * @param maintainId 维护人ID 操作类型为用户是负责人和维护人必须有一个(否)
+ * @param orgId 机构ID 操作类型为机构时必填(否)
+ * @param gridIds 网格ID(是)
+ * @param operation 操作类型 1用户(负责人,维护人),2机构(是)
+ * @param mapType 地图类型(是)
+ * @FrontendAuthor 艾东阳
+ * @BackendAuthor 胡文
+ * @Date 2021-07-10 12:45:01
+ */
+export function dispatchGrid(params) {
+	return request.get('/manage/shopGrid/saveGridAuthOrg', params)
 }

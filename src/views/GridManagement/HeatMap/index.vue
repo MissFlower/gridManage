@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:06:08
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-08 11:43:22
+ * @LastEditTime: 2021-07-10 17:31:48
 -->
 <template>
 	<!-- 热力图容器 -->
@@ -24,14 +24,14 @@
 <script>
 	import { defineComponent, onMounted, toRefs, reactive, watch, onUnmounted } from 'vue'
 	import { useMap } from 'src/hooks/useMap'
-	import { RadioGroup, RadioButton } from 'ant-design-vue'
+	import { Radio } from 'ant-design-vue'
 	import { SHOP_TYPE, SHOP_TYPE_NAME } from 'src/common/constant'
 	import { getHeatMapList } from 'src/api/GridManagement'
 	export default defineComponent({
 		name: 'HeatMap',
 		components: {
-			RadioGroup,
-			RadioButton
+			RadioGroup: Radio.Group,
+			RadioButton: Radio.Button
 		},
 		setup() {
 			let map = null

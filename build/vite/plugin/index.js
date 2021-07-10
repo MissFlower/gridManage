@@ -4,14 +4,13 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 13:35:40
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-29 11:49:21
+ * @LastEditTime: 2021-07-10 17:36:43
  */
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
-import configStyleImportPlugin from './styleImport'
-
 import { configHtmlPlugin } from './html'
+import { configStyleImportPlugin } from './styleImport'
 
 export function createVitePlugins(viteEnv, isBuild) {
 	const vitePlugins = [
@@ -21,11 +20,11 @@ export function createVitePlugins(viteEnv, isBuild) {
 		vueJsx()
 	]
 
-	// vite-plugin-style-import
-	vitePlugins.push(configStyleImportPlugin(isBuild))
-
 	// vite-plugin-html
 	vitePlugins.push(configHtmlPlugin(viteEnv, isBuild))
+
+	// vite-plugin-style-import
+	vitePlugins.push(configStyleImportPlugin(isBuild))
 
 	return vitePlugins
 }

@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 14:34:40
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-09 10:25:19
+ * @LastEditTime: 2021-07-10 17:34:42
 -->
 <template>
 	<div>
@@ -19,15 +19,15 @@
 				</FormItem>
 
 				<FormItem label="操作人" name="optUserName" v-bind="validateInfos.optUserName">
-					<AInput v-model:value="form.optUserName" />
+					<Input v-model:value="form.optUserName" />
 				</FormItem>
 
 				<FormItem label="操作机构" name="optOrgName" v-bind="validateInfos.optOrgName">
-					<AInput v-model:value="form.optOrgName" />
+					<Input v-model:value="form.optOrgName" />
 				</FormItem>
 
 				<FormItem label="操作网格" name="gridName" v-bind="validateInfos.gridName">
-					<AInput v-model:value="form.gridName" />
+					<Input v-model:value="form.gridName" />
 				</FormItem>
 
 				<FormItem label="操作时间" name="dateTime">
@@ -36,8 +36,8 @@
 			</Form>
 
 			<template #searchBtn>
-				<AButton type="primary" @click="searchHandle">查询</AButton>
-				<AButton @click="resetHandle">重置</AButton>
+				<Button type="primary" @click="searchHandle">查询</Button>
+				<Button @click="resetHandle">重置</Button>
 			</template>
 		</SearchFormBox>
 		<TableListBox>
@@ -48,7 +48,7 @@
 
 <script>
 	import { defineComponent, reactive, ref } from 'vue'
-	import { Form, FormItem, Table } from 'ant-design-vue'
+	import { Form, Table, Button, Input } from 'ant-design-vue'
 	import SearchFormBox from 'src/components/SearchFormBox/index.vue'
 	import TableListBox from 'src/components/TableListBox/index.vue'
 	import MapTypeSelect from './components/mapTypeSelect.vue'
@@ -61,8 +61,10 @@
 			SearchFormBox,
 			TableListBox,
 			Form,
-			FormItem,
+			FormItem: Form.Item,
 			Table,
+			Input,
+			Button,
 			MapTypeSelect,
 			MapOperateSelect,
 			DatePicker
