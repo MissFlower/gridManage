@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-10 17:31:09
+ * @LastEditTime: 2021-07-12 20:16:21
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -35,7 +35,14 @@
 	/>
 
 	<!-- 网格分配抽屉 -->
-	<GridDrawer v-model:visible="gridDrawerVisible" :role="role" :map-type="MAP_TYPE.SIGN_MAP" @close="cancelBatchDispatchGridHandle" />
+	<GridDrawer
+		v-model:visible="isDispatchGrid"
+		:role="role"
+		:map-type="MAP_TYPE.SIGN_MAP"
+		:org-orbd-list="orgOrbdList"
+		:grid-info-list="gridInfoList"
+		@close="cancelBatchDispatchGridHandle"
+	/>
 
 	<!-- 网格信息弹窗 -->
 	<GridInfoModal
@@ -70,7 +77,9 @@
 		addSaveGrid,
 		editSaveGrid,
 		deleteGrid,
-		getNearbyShopForGrid
+		getNearbyShopForGrid,
+		getDispatchOrganization,
+		getDispatchBd
 	} from 'src/api/GridManagement'
 	export default defineComponent({
 		name: 'SignMap',
@@ -96,12 +105,13 @@
 			let userGridsData = {} // 用户网格数据
 			const gridInfo = ref({}) // 闭环时网格信息
 			const state = reactive({
-				gridDrawerVisible: false,
 				gridModalVisible: false,
 				isDispatchGrid: false,
 				isEdit: false,
 				isShowShopInfo: false,
-				role: userGridsData?.role
+				role: ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE,
+				orgOrbdList: [], // 机构或者bd列表
+				gridInfoList: [] // 网格信息列表 用于批量分配网格展示信息
 			})
 
 			watch([() => mapAttrs.center, () => mapAttrs.zoom, () => mapAttrs.shopType], ([center, zoom, shopType], [preCenter, preZoom, preShopType]) => {
@@ -204,13 +214,38 @@
 			// 绘制网格
 			const drawGrids = () => {
 				const { parentGridList, gridList } = userGridsData
-				map.renderPolygons({ parentGridList, gridList }, {}, gridClickHandle)
+				map.renderPolygons({ parentGridList, gridList }, { state }, gridClickHandle)
 			}
 
 			// 网格点击事件
-			const gridClickHandle = () => {
-				const { data } = map.getCurrentPolygonInfo()
-				console.log(data)
+			const gridClickHandle = async gridInfo => {
+				if (!state.isDispatchGrid) {
+					return
+				}
+				if (userGridsData.role === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE) {
+					state.gridInfoList = [gridInfo]
+					state.orgOrbdList = (await getDispatchOrganization({ regionCode: gridInfo.districtCode })) || []
+					return
+				}
+
+				if (userGridsData.role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE) {
+					const index = state.gridInfoList.findIndex(grid => grid.id === gridInfo.id)
+					if (gridInfo.isChecked) {
+						// 添加
+						!~index && state.gridInfoList.push(gridInfo)
+					} else {
+						// 删除
+						state.gridInfoList.splice(index, 1)
+					}
+				}
+			}
+
+			// 获取bdm角色下的用户数据 用于批量分配网格
+			const getBdUserList = async () => {
+				console.log(userGridsData.role)
+				if (userGridsData.role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE) {
+					state.orgOrbdList = (await getDispatchBd()) || []
+				}
 			}
 
 			// 获取绘制好的网格信息(闭环查询网格信息)
@@ -283,7 +318,6 @@
 
 			// 保存网格(弹窗保存按钮)
 			const modalSaveGridHandle = async () => {
-				console.log(gridInfo.value)
 				if (gridInfo.value.id) {
 					// 编辑网格
 					await editSaveGridHandle()
@@ -335,19 +369,20 @@
 				})
 			}
 
-			// 取消批量分配网格
+			// 确定批量分配网格
 			const sureBatchDispatchGridHandle = () => {
 				map.resetGridStyle()
 				state.isDispatchGrid = true
-				state.gridDrawerVisible = true
 				console.log('批量分配网格')
 			}
 
 			// 取消批量分配网格
 			const cancelBatchDispatchGridHandle = () => {
+				map.resetGridStyle()
 				state.isDispatchGrid = false
-				state.gridDrawerVisible = false
 				mapButtonGroupRef.value.batchDispatchGridFlag = true
+				// 重置选中的网格信息列表
+				state.gridInfoList = []
 				console.log('取消批量分配网格')
 			}
 
@@ -355,6 +390,7 @@
 			const getNearShopCoordinates = async () => {
 				const { addMarkers } = map
 				const { lng, lat } = mapAttrs.center
+				state.isShowShopInfo = false
 				const data = await getNearbyShopForGrid({
 					longitude: lng,
 					latitude: lat,
@@ -380,7 +416,8 @@
 					goodComm,
 					averageNum,
 					cost,
-					sourceStr
+					sourceStr,
+					averageFlow
 				} = e.target.getExtData()
 
 				const shopInfoConfig = {
@@ -408,6 +445,10 @@
 							{
 								title: '门店电话',
 								text: phone
+							},
+							{
+								title: '近30天日均流水',
+								text: averageFlow
 							}
 						]
 					},
@@ -523,6 +564,7 @@
 			const getUserGrids = async () => {
 				const data = await getUserGridsData()
 				userGridsData = dealDataHandle(data)
+				state.role = userGridsData.role
 			}
 
 			// 处理网格数据
@@ -561,11 +603,13 @@
 				drawGrids()
 			}
 
-			onMounted(() => {
+			onMounted(async () => {
 				// 渲染地图
 				renderMap()
 				// 初始化流程
-				initProcess()
+				await initProcess()
+				// 若当前用户为bdm则获取bdm下的得bd人员用于分配网格(ADMIN_ROLE_TYPE.BD_ADMIN_ROLE角色固定列表只拉取一次 ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE及以上点击网格获取)
+				getBdUserList()
 			})
 
 			onUnmounted(() => {

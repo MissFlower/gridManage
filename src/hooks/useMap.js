@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 13:26:36
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-10 14:59:46
+ * @LastEditTime: 2021-07-12 18:03:09
  */
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
@@ -51,7 +51,7 @@ export function useMap(el, options = {}) {
 			// 如果点存在某个行政区域内 则找出该行政区域
 			const { code, polygons } = currentUsedDistrict
 			currentUsedDistrictCode = code
-			currentUsedDistrictPolygon = polygons[0].getPath()
+			currentUsedDistrictPolygon = polygons[0]
 		} else {
 			notQualifyGraphHandle(true)
 			callback &&
@@ -64,7 +64,6 @@ export function useMap(el, options = {}) {
 
 	// 检测坐标点属于哪一个网格
 	function judgePointerBelongToWhichGrid(lngLat, polygons, callback) {
-		alert(1)
 		const parentPolygon = polygons.find(polygon => AMap.GeometryUtil.isPointInRing(lngLat, polygon.getPath()))
 		console.log(parentPolygon)
 		if (parentPolygon) {
@@ -72,7 +71,7 @@ export function useMap(el, options = {}) {
 			const { districtCode, id } = parentPolygon.getExtData()
 			currentUsedDistrictCode = districtCode
 			currentUsedParentPolygonId = id
-			currentUsedParentPolygon = parentPolygon.getPath()
+			currentUsedParentPolygon = parentPolygon
 		} else {
 			notQualifyGraphHandle(true)
 			callback &&
@@ -147,10 +146,9 @@ export function useMap(el, options = {}) {
 	function checkCollide(polygon, callback) {
 		// 1.检测绘制图形是否在行政区域内
 		const currentPolygon = polygon.getPath()
-		console.log(currentUsedDistrictPolygon, currentUsedParentPolygon)
 		const isRingInRingOrIntersectWithDistrictOrParent = judgeIsInDistrictOrParentPolygons(
 			currentPolygon,
-			currentRole === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE ? currentUsedDistrictPolygon : currentUsedParentPolygon
+			(currentRole === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE ? currentUsedDistrictPolygon : currentUsedParentPolygon).getPath()
 		)
 		if (isRingInRingOrIntersectWithDistrictOrParent) {
 			const res = {
@@ -198,7 +196,8 @@ export function useMap(el, options = {}) {
 	// 处理不符合图形
 	function notQualifyGraphHandle(isDeleteGraph = false) {
 		// 关闭绘图工具 true 参数为true直接删除图形
-		!polyEditor?.editable && mouseTool.close(isDeleteGraph)
+		// !polyEditor?.editable && mouseTool.close(isDeleteGraph)
+		mouseTool && mouseTool.close(isDeleteGraph)
 		// 地图设置鼠标样式为default
 		mapInstance.setDefaultCursor('default')
 	}
@@ -355,9 +354,13 @@ export function useMap(el, options = {}) {
 			})
 
 			polygon.on('click', () => {
+				const { role, isDispatchGrid } = options.state
 				const lastOpacity = polygon.getOptions().fillOpacity
 				// 重置网格样式
-				resetGridStyle()
+				// 如果当前用户不是BD_ADMIN_ROLE或者是BD_ADMIN_ROLE没有在分配网格需要重置样式
+				if (role !== ADMIN_ROLE_TYPE.BD_ADMIN_ROLE || !isDispatchGrid) {
+					resetGridStyle()
+				}
 				// 设置当前使用的多边形和透明度
 				if (lastOpacity === 0.5) {
 					polygon.setOptions({
@@ -369,9 +372,24 @@ export function useMap(el, options = {}) {
 					// 检测坐标点属于哪一个行政区或父网格
 					judgeMethod([lng, lat], polygons)
 					// 调用回调函数
-					callback && callback()
+					callback &&
+						callback({
+							...polygon.getExtData(),
+							isChecked: true
+						})
 				} else {
 					currentUsedGridPolygon = null
+					if (role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE && isDispatchGrid) {
+						polygon.setOptions({
+							fillOpacity: 0.5
+						})
+						// 调用回调函数
+						callback &&
+							callback({
+								...polygon.getExtData(),
+								isChecked: false
+							})
+					}
 				}
 			})
 		}
@@ -467,8 +485,14 @@ export function useMap(el, options = {}) {
 		if (isOpenAdsorb) {
 			// 获取当前用户同一区域或同一网格下的兄弟网格
 			const drawedBrotherGridPolygons = getBrotherGridPolygons(drawedOwnPolygons)
-			// 将兄弟网格添加到吸附网格中
-			polyEditor.addAdsorbPolygons(drawedBrotherGridPolygons)
+			if (currentRole === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE) {
+				drawedBrotherGridPolygons.push(currentUsedDistrictPolygon)
+			}
+			if (currentRole === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE) {
+				drawedBrotherGridPolygons.push(currentUsedParentPolygon)
+			}
+			// 将兄弟和父网格或行政区域添加到吸附网格中
+			polyEditor.addAdsorbPolygons([...drawedBrotherGridPolygons])
 		}
 		polyEditor.open()
 		isEdit.value = polyEditor.editable

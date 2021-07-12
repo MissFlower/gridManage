@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-07 15:57:30
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-10 12:50:17
+ * @LastEditTime: 2021-07-12 18:12:21
  */
 import request from 'src/utils/request'
 
@@ -194,5 +194,5 @@ export function getDispatchBd(params) {
  * @Date 2021-07-10 12:45:01
  */
 export function dispatchGrid(params) {
-	return request.get('/manage/shopGrid/saveGridAuthOrg', params)
+	return request.post('/manage/shopGrid/saveGridAuthOrg', params)
 }

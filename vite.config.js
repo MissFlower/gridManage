@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:01:42
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-10 17:42:41
+ * @LastEditTime: 2021-07-12 10:02:17
  */
 
 import { loadEnv } from 'vite'
@@ -64,7 +64,8 @@ export default ({ command, mode }) => {
 				}
 			},
 			// 关闭brotliSize显示可以稍微缩短打包时间
-			brotliSize: false,
+			brotliSize: true,
+			// chunk 大小警告的限制（以 kbs 为单位）默认500
 			chunkSizeWarningLimit: 2000
 		},
 		css: {

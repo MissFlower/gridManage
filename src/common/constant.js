@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 18:11:03
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-09 18:17:30
+ * @LastEditTime: 2021-07-12 13:37:00
  */
 const [SIGN_MAP, MAINTAIN_MAP] = [1, 2]
 export const MAP_TYPE = {

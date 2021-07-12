@@ -4,61 +4,78 @@
  * @Author: AiDongYang
  * @Date: 2021-06-30 15:30:53
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-10 17:32:16
+ * @LastEditTime: 2021-07-12 20:12:40
 -->
 <template>
 	<Drawer v-bind="$attrs" title="网格分配" :mask="false" :closable="false" @save="saveHandle" @close="closeHandle">
-		<div class="grid-name-wrap">
-			<p>网格名:</p>
-			<div class="grid-name-content">
-				<span class="grid-name-item">苏州市一组001</span>
-				<span class="grid-name-item">苏州市一组001</span>
-				<span class="grid-name-item">苏州市一组001</span>
+		<Form>
+			<div class="grid-name-wrap">
+				<p>网格名:</p>
+				<FormItem v-bind="validateInfos.gridIds">
+					<div v-show="gridInfoList.length" class="grid-name-content">
+						<span v-for="{ id, gridName } of gridInfoList" :key="id" class="grid-name-item">{{ gridName }}</span>
+					</div>
+				</FormItem>
 			</div>
-		</div>
 
-		<div class="grid-info-wrap">
-			<div class="grid-info-item">自营团队门店数: {{ 1 }}</div>
-			<div class="grid-info-item">店日均流水总和: {{ 1 }}</div>
-			<div class="grid-info-item">直营创建门店数: {{ 1 }}</div>
-			<div class="grid-info-item">公海推荐门店数: {{ 1 }}</div>
-			<div class="grid-info-item">公海地图门店数: {{ 1 }}</div>
-		</div>
-
-		<div v-if="role === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE" class="org-radio-wrapper">
-			<span>机构分配</span>
-			<RadioGroup v-model:value="orgId" class="org-radio-group">
-				<Radio v-for="{ id, orgName } of orgList" :key="id" :value="id" class="radio-item">{{ orgName }}</Radio>
-			</RadioGroup>
-		</div>
-
-		<div v-if="role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE" class="radio-wrapper">
-			<Select v-model:value="orgId" class="group-select">
-				<SelectOption v-for="{ orgName, orgId } of bdList" :key="orgId" :value="orgId">{{ orgName }}</SelectOption>
-			</Select>
-
-			<div class="duty-radio-group">
-				<span>负责人选择</span>
-				<RadioGroup v-model:value="sellerId">
-					<Radio v-for="{ userId, userName } of currentBdList" :key="userId" :value="userId" class="radio-item">{{ userName }}</Radio>
-				</RadioGroup>
+			<div class="grid-info-wrap">
+				<div class="grid-info-item">自营团队门店数: {{ selfSupportShopCount }}</div>
+				<div class="grid-info-item">店日均流水总和: {{ averageFlows }}</div>
+				<div class="grid-info-item">直营创建门店数: {{ redictSupportShopCount }}</div>
+				<div class="grid-info-item">公海推荐门店数: {{ seasRecommendShopCount }}</div>
+				<div class="grid-info-item">公海地图门店数: {{ seasMapShopCount }}</div>
 			</div>
-			<div class="maintain-radio-group">
-				<span>维护人选择</span>
-				<RadioGroup v-model:value="maintainId">
-					<Radio v-for="{ userId, userName } of currentBdList" :key="userId" :value="userId" class="radio-item">{{ userName }}</Radio>
-				</RadioGroup>
+			<div v-if="role === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE" class="org-radio-wrapper">
+				<span>机构分配</span>
+				<FormItem v-bind="validateInfos.orgId">
+					<RadioGroup v-model:value="orgId" class="org-radio-group">
+						<Radio v-for="{ id, orgName } of orgOrbdList" :key="id" :value="id" class="radio-item">{{ orgName }}</Radio>
+					</RadioGroup>
+				</FormItem>
 			</div>
-		</div>
+
+			<div v-if="role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE">
+				<FormItem v-bind="validateInfos.orgId">
+					<Select v-model:value="orgId" placeholder="请选择机构" class="group-select">
+						<SelectOption v-for="{ orgName, orgId } of orgOrbdList" :key="orgId" :value="orgId">{{ orgName }}</SelectOption>
+					</Select>
+				</FormItem>
+
+				<div class="radio-wrapper">
+					<div class="duty-radio-group">
+						<span>负责人选择</span>
+
+						<FormItem v-bind="validateInfos.sellerId">
+							<RadioGroup v-model:value="sellerId">
+								<Radio v-for="{ userId, userName } of currentBdList" :key="userId" :value="userId" class="radio-item">{{ userName }}</Radio>
+							</RadioGroup>
+						</FormItem>
+					</div>
+					<div class="maintain-radio-group">
+						<span>维护人选择</span>
+						<FormItem v-bind="validateInfos.maintainId">
+							<RadioGroup v-model:value="maintainId">
+								<Radio v-for="{ userId, userName } of currentBdList" :key="userId" :value="userId" class="radio-item">{{ userName }}</Radio>
+							</RadioGroup>
+						</FormItem>
+					</div>
+				</div>
+			</div>
+		</Form>
 	</Drawer>
 </template>
 
 <script>
-	import { defineComponent, onMounted, reactive, toRefs, watch } from 'vue'
-	import { Select, Radio } from 'ant-design-vue'
+	import { defineComponent, nextTick, reactive, toRefs, watch } from 'vue'
+	import { Form, Select, Radio } from 'ant-design-vue'
 	import Drawer from 'src/components/Drawer/index.vue'
 	import { ADMIN_ROLE_TYPE } from 'src/common/constant'
-	import { getDispatchOrganization, getDispatchBd, dispatchGrid } from 'src/api/GridManagement'
+	import { dispatchGrid } from 'src/api/GridManagement'
+
+	const DISPATCH_ROLE = {
+		[ADMIN_ROLE_TYPE.BD_ADMIN_ROLE]: 1, // 给用户分配
+		[ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE]: 2 // 给机构分配
+	}
 	export default defineComponent({
 		name: 'GridDrawer',
 		components: {
@@ -66,7 +83,9 @@
 			Select,
 			SelectOption: Select.Option,
 			Radio,
-			RadioGroup: Radio.Group
+			RadioGroup: Radio.Group,
+			Form,
+			FormItem: Form.Item
 		},
 		props: {
 			role: {
@@ -77,68 +96,122 @@
 			mapType: {
 				type: Number,
 				required: true
+			},
+			orgOrbdList: {
+				type: Object,
+				required: true
+			},
+			gridInfoList: {
+				type: Array,
+				required: true
 			}
 		},
-		setup(props) {
-			const state = reactive({
-				orgId: '1', // 机构id
-				groupName: '1',
-				sellerId: '1', // 负责人id
+		emits: ['close'],
+		setup(props, { emit }) {
+			let state = reactive({
+				orgId: undefined, // 机构id
+				sellerId: '', // 负责人id
 				maintainId: '', // 维护人id
-				orgList: [],
-				bdList: []
+				gridIds: [], // 网格id
+				currentBdList: [],
+				selfSupportShopCount: 0, // 自营门店数
+				averageFlows: 0, // 日均门店流水总和
+				redictSupportShopCount: 0, // 自营门店数
+				seasRecommendShopCount: 0, // 公海推荐门店数
+				seasMapShopCount: 0 // 公海地图门店数
 			})
-			let currentBdList = []
-			let gridIds = [] // 网格id
-			const batchDispatchGridMethods = {
-				[ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE]: getDispatchOrganization,
-				[ADMIN_ROLE_TYPE.BD_ADMIN_ROLE]: getDispatchBd
-			}
+			const useForm = Form.useForm
 
-			props.role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE &&
-				watch(
-					() => state.orgId,
-					newVal => {
-						currentBdList = bdList.find(item => newVal === item.orgId).userList
-					}
-				)
-
-			const getDispatchGridTarget = async () => {
-				const data = await batchDispatchGridMethods[props.role]()
-				if (role === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE) {
-					state.orgList = data
+			const checkGridIds = async (rule, value) => {
+				if (!value.length) {
+					return Promise.reject('请选择网格！')
 				} else {
-					state.bdList = data
+					return Promise.resolve()
 				}
 			}
+			const rulesRef = reactive({
+				orgId: [{ required: true, message: '请选择机构' }],
+				sellerId: [{ required: true, message: '请选择负责人' }],
+				maintainId: [{ required: true, message: '请选择维护人' }],
+				gridIds: [{ validator: checkGridIds, message: '请选择网格' }]
+			})
+
+			watch(
+				() => state.orgId,
+				newVal => {
+					if (props.role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE && newVal !== undefined) {
+						state.currentBdList = props.orgOrbdList.find(item => newVal === item.orgId).userList
+					}
+				}
+			)
+
+			watch(
+				() => props.gridInfoList,
+				newVal => {
+					if (newVal.length === 0) {
+						state.selfSupportShopCount = 0
+						state.averageFlows = 0
+						state.redictSupportShopCount = 0
+						state.seasRecommendShopCount = 0
+						state.seasMapShopCount = 0
+					}
+					state = newVal.reduce((prev, cur, index) => {
+						if (index === 0) {
+							prev.selfSupportShopCount = 0
+							prev.averageFlows = 0
+							prev.redictSupportShopCount = 0
+							prev.seasRecommendShopCount = 0
+							prev.seasMapShopCount = 0
+						}
+						prev.selfSupportShopCount += cur.selfShopNum
+						prev.averageFlows += cur.averageFlow
+						prev.redictSupportShopCount += cur.directShopNum
+						prev.seasRecommendShopCount += cur.publicRecommendNum
+						prev.seasMapShopCount += cur.publicMapNum
+						return prev
+					}, state)
+				},
+				{
+					deep: true
+				}
+			)
+
+			const { resetFields, validate, validateInfos } = useForm(state, rulesRef)
 
 			// 保存
 			const saveHandle = async () => {
-				console.log('save drawer')
-				// const { orgId, sellerId, maintainId } = state
-				// await dispatchGrid({
-				// 	orgId,
-				// 	sellerId,
-				// 	maintainId,
-				// 	gridIds,
-				// 	operation: props.role,
-				// 	mapType: props.mapType
-				// })
-				// gridIds = []
+				state.gridIds = props.gridInfoList.map(grid => grid.id)
+
+				const { orgId, sellerId, maintainId, gridIds } = state
+
+				await nextTick()
+				if (props.role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE) {
+					await validate()
+				}
+				if (props.role === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE) {
+					await validate(['orgId', 'gridIds'])
+				}
+				await dispatchGrid({
+					orgId,
+					sellerId,
+					maintainId,
+					gridIds,
+					operation: DISPATCH_ROLE[props.role],
+					mapType: props.mapType
+				})
+				emit('close')
 			}
 
 			// 取消
 			const closeHandle = () => {
-				gridIds = []
+				resetFields()
+				emit('close')
 			}
 
-			onMounted(() => {
-				getDispatchGridTarget()
-			})
 			return {
 				...toRefs(state),
 				ADMIN_ROLE_TYPE,
-				currentBdList,
+				validateInfos,
 				saveHandle,
 				closeHandle
 			}
@@ -153,10 +226,18 @@
 		flex-direction: column;
 	}
 
+	.grid-name-item {
+		font-weight: 600;
+	}
+
 	.grid-info-item {
 		height: 24px;
 		margin-top: 12px;
 		line-height: 24px;
+
+		&:first-child {
+			margin-top: 0;
+		}
 	}
 
 	.group-select {
@@ -168,10 +249,16 @@
 	.org-radio-wrapper {
 		display: flex;
 		flex-direction: column;
+		margin-top: 24px;
 	}
 
 	.radio-wrapper {
 		display: flex;
+
+		.duty-radio-group,
+		.maintain-radio-group {
+			flex: 1;
+		}
 	}
 
 	.radio-item {
