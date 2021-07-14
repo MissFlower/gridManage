@@ -4,12 +4,12 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 14:04:20
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-24 17:09:22
+ * @LastEditTime: 2021-07-13 14:49:53
 -->
 <template>
 	<div class="header-wrap">
 		<div class="header-left">
-			<Logo />
+			<Logo :is-active="isCollapsed" />
 			<Toggle :is-active="isCollapsed" @toggleClick="toggleHandle" />
 			<Breadcrumb />
 		</div>

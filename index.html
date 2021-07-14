@@ -4,14 +4,13 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title><%= title %></title>
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=864e0b88db3a4f27cfff0d2f33a81578&&plugin=AMap.Scale,AMap.HawkEye,AMap.ToolBar,AMap.ControlBar,AMap.DistrictSearch,AMap.MouseTool,AMap.PolygonEditor" async></script>
     <script type="text/javascript">
       document.oncontextmenu = function(){
       　return false;
       }
     </script>
-<script src="https://a.amap.com/jsapi_demos/static/resource/heatmapData.js"></script>
   </head>
   <body>
     <div id="app">
@@ -64,9 +63,10 @@
 
         .app-loading .app-loading-logo {
           display: block;
-          width: 90px;
+          width: 160px;
           margin: 0 auto;
-          margin-bottom: 20px;
+
+          /* margin-bottom: 20px; */
         }
 
         .dot {
@@ -144,7 +144,7 @@
       </style>
       <div class="app-loading">
         <div class="app-loading-wrap">
-          <img src="src/assets/images/logo.png" class="app-loading-logo" alt="Logo" />
+          <img src="src/assets/images/bg_logo.png" class="app-loading-logo" alt="Logo" />
           <div class="app-loading-dots">
             <span class="dot dot-spin"><i></i><i></i><i></i><i></i></span>
           </div>

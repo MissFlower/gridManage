@@ -4,8 +4,9 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 18:11:03
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-12 13:37:00
+ * @LastEditTime: 2021-07-13 13:57:06
  */
+// 地图类型
 const [SIGN_MAP, MAINTAIN_MAP] = [1, 2]
 export const MAP_TYPE = {
 	SIGN_MAP,
@@ -22,6 +23,7 @@ export const SIZE_TYPE = {
 	LARGE: 'large'
 }
 
+// 门店类型
 const [ALL, DIRECT, COMMENT, RACE] = [0, 1, 2, 3]
 export const SHOP_TYPE = {
 	ALL,
@@ -44,6 +46,7 @@ export const SHOP_ICON_TYPE = {
 	SEAS_MAP_SHOP
 }
 
+// 角色
 const [ORGANZITION_ADMIN_ROLE, BD_ADMIN_ROLE] = [1, 2]
 export const ADMIN_ROLE_TYPE = {
 	ORGANZITION_ADMIN_ROLE, // cm及以上角色 在行政区域内绘制网格
@@ -61,12 +64,13 @@ export const GRID_AREA_TYPE = {
 	}
 }
 // 负责人变更、维护人变更、网格变更、新增网格、删除网格
-const [ADD_GRID, CHANGE_GRID, CHANGE_LEADER, CHANGE_MAINTAINER, CHANGE_PERSONNEL, DELETE_GRID] = [1, 2, 3, 4, 5, 6]
+const [ADD_GRID, CHANGE_GRID, CHANGE_LEADER, CHANGE_MAINTAINER, CHANGE_PERSONNEL, DELETE_GRID, CHANGE_ORGANZITION] = [1, 2, 3, 4, 5, 6, 7]
 export const MAP_OPERATE_TYPE = {
 	[ADD_GRID]: '新增网格',
 	[CHANGE_GRID]: '网格变更',
 	[CHANGE_LEADER]: '负责人变更',
 	[CHANGE_MAINTAINER]: '维护人变更',
 	[CHANGE_PERSONNEL]: '人员变更',
-	[DELETE_GRID]: '删除网格'
+	[DELETE_GRID]: '删除网格',
+	[CHANGE_ORGANZITION]: '机构变更'
 }

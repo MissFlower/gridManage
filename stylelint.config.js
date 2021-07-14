@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:26:33
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-24 20:11:22
+ * @LastEditTime: 2021-07-13 17:51:45
  */
 module.exports = {
 	root: true,
@@ -20,22 +20,13 @@ module.exports = {
 		'selector-pseudo-class-no-unknown': [
 			true,
 			{
-				ignorePseudoClasses: ['export', 'deep']
+				ignorePseudoClasses: ['global', 'export', 'deep']
 			}
 		],
 		'property-no-unknown': [
 			true,
 			{
-				ignoreProperties: [
-					'menuText',
-					'menuActiveText',
-					'subMenuActiveText',
-					'menuBg',
-					'menuHover',
-					'subMenuBg',
-					'subMenuHover',
-					'sideBarWidth'
-				]
+				ignoreProperties: ['menuText', 'menuActiveText', 'subMenuActiveText', 'menuBg', 'menuHover', 'subMenuBg', 'subMenuHover', 'sideBarWidth']
 			}
 		],
 		'at-rule-no-unknown': [

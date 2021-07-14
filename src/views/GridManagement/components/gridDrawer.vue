@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-30 15:30:53
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-12 20:12:40
+ * @LastEditTime: 2021-07-13 16:26:33
 -->
 <template>
 	<Drawer v-bind="$attrs" title="网格分配" :mask="false" :closable="false" @save="saveHandle" @close="closeHandle">
@@ -73,8 +73,8 @@
 	import { dispatchGrid } from 'src/api/GridManagement'
 
 	const DISPATCH_ROLE = {
-		[ADMIN_ROLE_TYPE.BD_ADMIN_ROLE]: 1, // 给用户分配
-		[ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE]: 2 // 给机构分配
+		[ADMIN_ROLE_TYPE.BD_ADMIN_ROLE]: 0, // 给用户分配
+		[ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE]: 1 // 给机构分配
 	}
 	export default defineComponent({
 		name: 'GridDrawer',
@@ -102,11 +102,11 @@
 				required: true
 			},
 			gridInfoList: {
-				type: Array,
+				type: Object,
 				required: true
 			}
 		},
-		emits: ['close'],
+		emits: ['close', 'dispatched'],
 		setup(props, { emit }) {
 			let state = reactive({
 				orgId: undefined, // 机构id
@@ -199,11 +199,15 @@
 					operation: DISPATCH_ROLE[props.role],
 					mapType: props.mapType
 				})
+				state.currentBdList = []
+				resetFields()
 				emit('close')
+				emit('dispatched')
 			}
 
 			// 取消
 			const closeHandle = () => {
+				state.currentBdList = []
 				resetFields()
 				emit('close')
 			}

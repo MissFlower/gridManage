@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 14:34:40
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-10 17:34:42
+ * @LastEditTime: 2021-07-13 15:53:32
 -->
 <template>
 	<div>
@@ -41,7 +41,7 @@
 			</template>
 		</SearchFormBox>
 		<TableListBox>
-			<Table row-key="id" :data-source="tableList" :columns="columns" :scroll="{ x: true }" bordered :pagination="false" size="small" />
+			<Table row-key="id" :data-source="tableList" :columns="columns" :scroll="{ x: true }" bordered :pagination="pagination" size="small" />
 		</TableListBox>
 	</div>
 </template>
@@ -54,6 +54,7 @@
 	import MapTypeSelect from './components/mapTypeSelect.vue'
 	import MapOperateSelect from './components/mapOperateSelect.vue'
 	import DatePicker from 'src/components/DatePicker/index.vue'
+	import { MAP_TYPE_NAME, MAP_OPERATE_TYPE } from 'src/common/constant'
 	import { getRecordList } from 'src/api/GridManagement'
 	export default defineComponent({
 		name: 'GridRecord',
@@ -94,6 +95,22 @@
 				]
 			})
 			const tableList = ref([])
+
+			const pageChangeHandle = page => {
+				pagination.current = page
+			}
+			const pagination = reactive({
+				pageSizeOptions: ['10', '20', '30', '40', '50'],
+				current: 1,
+				total: 0,
+				showQuickJumper: true,
+				showLessItems: true,
+				showSizeChanger: true,
+				hideOnSinglePage: true,
+				showTotal: () => `共${pagination.total}条`,
+				size: 'default',
+				onChange: pageChangeHandle
+			})
 			const useForm = Form.useForm
 			const { resetFields, validate, validateInfos } = useForm(form, rules)
 
@@ -102,7 +119,8 @@
 					title: '序号',
 					dataIndex: 'index',
 					key: 'index',
-					width: 60
+					width: 60,
+					align: 'center'
 				},
 				{
 					title: '操作时间',
@@ -114,13 +132,15 @@
 					title: '操作地图',
 					dataIndex: 'mapType',
 					key: 'mapType',
-					width: 100
+					width: 100,
+					customRender: ({ text }) => MAP_TYPE_NAME[text]
 				},
 				{
 					title: '操作类型',
 					dataIndex: 'optType',
 					key: 'optType',
-					width: 100
+					width: 100,
+					customRender: ({ text }) => MAP_OPERATE_TYPE[text]
 				},
 				{
 					title: '操作人',
@@ -175,61 +195,71 @@
 					title: '原自营团队门店数',
 					dataIndex: 'oldSelfShopNum',
 					key: 'oldSelfShopNum',
-					width: 140
+					width: 140,
+					align: 'center'
 				},
 				{
 					title: '现自营团队门店数',
 					dataIndex: 'selfShopNum',
 					key: 'selfShopNum',
-					width: 130
+					width: 130,
+					align: 'center'
 				},
 				{
 					title: '原店自营流水总和',
 					dataIndex: 'oldAverageFlow',
 					key: 'oldAverageFlow',
-					width: 130
+					width: 130,
+					align: 'center'
 				},
 				{
 					title: '现店自营流水总和',
 					dataIndex: 'averageFlow',
 					key: 'averageFlow',
-					width: 130
+					width: 130,
+					align: 'center'
 				},
 				{
 					title: '原直营创建门店数',
 					dataIndex: 'oldDirectShopNum',
 					key: 'oldDirectShopNum',
-					width: 130
+					width: 130,
+					align: 'center'
 				},
 				{
 					title: '现直营创建门店数',
 					dataIndex: 'directShopNum',
 					key: 'directShopNum',
-					width: 130
+					width: 130,
+					align: 'center'
 				},
 				{
 					title: '原公海门店推荐数',
 					dataIndex: 'oldPublicRecommendNum',
 					key: 'oldPublicRecommendNum',
-					width: 130
+					width: 130,
+					align: 'center'
 				},
 				{
 					title: '现公海门店推荐数',
 					dataIndex: 'publicRecommendNum',
 					key: 'publicRecommendNum',
-					width: 130
+					width: 130,
+					align: 'center'
 				},
 				{
 					title: '原公海地图门店数',
 					dataIndex: 'oldPublicMapNum',
 					key: 'oldPublicMapNum',
-					width: 130
+					width: 130,
+					align: 'center'
 				},
 				{
 					title: '现公海地图门店数',
 					dataIndex: 'publicMapNum',
 					key: 'publicMapNum',
-					width: 130
+					width: 130,
+					align: 'center'
 				}
 			]
 			const getList = async () => {
@@ -245,6 +275,7 @@
 					index: index + 1,
 					...item
 				}))
+				pagination.total = tableList.value.length
 			}
 			// 查询
 			const searchHandle = () => {
@@ -252,8 +283,9 @@
 			}
 
 			// 重置
-			const resetHandle = () => {
-				resetFields()
+			const resetHandle = async () => {
+				await resetFields()
+				pagination.current = 1
 				getList()
 			}
 
@@ -262,6 +294,7 @@
 				tableList,
 				columns,
 				validateInfos,
+				pagination,
 				searchHandle,
 				resetHandle
 			}

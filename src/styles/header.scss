@@ -19,11 +19,10 @@
     align-items: center;
     width: $sideBarWidth !important;
     height: 100%;
-    padding-left: 5px;
+    // transition: all 0.2s;
 
     .ant-image {
       display: flex;
-      margin-right: 10px;
     }
 
     .logo {
@@ -34,7 +33,17 @@
       font-weight: 600;
       vertical-align: middle;
     }
+
+    .title {
+      margin-left: 10px;
+      font-size: 20px;
+      font-weight: 600;
+    }
   }
+
+  // .logo-wrap-hide {
+  //   width: 60px !important;
+  // }
     
   .toggle-container {
     margin-right: 15px;
@@ -63,7 +72,6 @@
       display: flex;
       height: 100%;
       padding-right: 10px;
-      padding-left: 5px;
       cursor: pointer;
       align-items: center;
 

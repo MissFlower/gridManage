@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 18:01:50
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-10 17:28:58
+ * @LastEditTime: 2021-07-13 15:14:16
 -->
 <template>
 	<div class="login-container">
@@ -24,11 +24,11 @@
 					/>
 				</FormItem>
 				<FormItem label="验证码" v-bind="validateInfos.code" class="verify">
-					<Input v-model:value.trim="modelRef.code" @focus="clearValidateHandle" />
+					<Input v-model:value.trim="modelRef.code" @focus="clearValidateHandle" @pressEnter="loginHandle" />
 					<Image v-if="modelRef.verifyImage" :width="100" :height="32" :src="modelRef.verifyImage" :preview="false" @click="verifyCodeHandle" />
 					<RedoOutlined v-else @click="verifyCodeHandle" />
 				</FormItem>
-				<Button type="link">忘记密码？</Button>
+				<!-- <Button type="link">忘记密码？</Button> -->
 				<Button type="primary" block class="login-btn" @click.prevent="loginHandle">登录</Button>
 			</Form>
 		</div>

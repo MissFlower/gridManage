@@ -4,28 +4,32 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 14:43:10
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-07 17:58:24
+ * @LastEditTime: 2021-07-13 14:58:14
 -->
 <template>
-	<div class="logo-wrap">
-		<Image v-if="logo" :width="50" :height="50" :src="logo" />
-		<div>{{ title }}</div>
+	<div :class="['logo-wrap', isActive ? 'logo-wrap-hide' : '']">
+		<Image :width="60" :height="60" src="src/assets/images/logo.jpg" />
+		<div class="title">{{ title }}</div>
 	</div>
 </template>
 
 <script>
-	import { defineComponent, ref } from 'vue'
+	import { defineComponent } from 'vue'
 	import { Image } from 'ant-design-vue'
 	export default defineComponent({
 		name: 'LogoWrapper',
 		components: {
 			Image
 		},
+		props: {
+			isActive: {
+				type: Boolean,
+				default: false
+			}
+		},
 		setup() {
-			const logo = ref('https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png')
 			const title = import.meta.env.VITE_GLOB_APP_TITLE
 			return {
-				logo,
 				title
 			}
 		}

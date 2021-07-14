@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:06:08
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-10 17:31:48
+ * @LastEditTime: 2021-07-13 11:30:15
 -->
 <template>
 	<!-- 热力图容器 -->
@@ -12,7 +12,7 @@
 
 	<!-- 选择门店类型RadioGroup -->
 	<RadioGroup v-model:value="shopType" button-style="solid" class="shop-radio-group">
-		<RadioButton v-for="(shopTypeName, key) of SHOP_TYPE_NAME" :key="key" :value="+key" class="radio-shop">{{ shopTypeName }}</RadioButton>
+		<RadioButton v-for="(shopTypeName, key) in SHOP_TYPE_NAME" :key="key" :value="+key" class="radio-shop">{{ shopTypeName }}</RadioButton>
 	</RadioGroup>
 
 	<div class="legend-wrap">
@@ -71,6 +71,8 @@
 				// 获取热力图数据
 				getHeatMapData()
 			})
+
+			delete SHOP_TYPE_NAME[SHOP_TYPE.RACE]
 
 			// 渲染地图
 			const renderMap = async () => {

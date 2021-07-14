@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 16:54:57
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-09 13:44:27
+ * @LastEditTime: 2021-07-13 15:13:45
 -->
 <template>
 	<Dropdown>
@@ -14,8 +14,8 @@
 		</div>
 		<template #overlay>
 			<Menu>
-				<MenuItem @click="modifyPasswordHandle"> 修改密码 </MenuItem>
-				<MenuDivider />
+				<!-- <MenuItem @click="modifyPasswordHandle"> 修改密码 </MenuItem>
+				<MenuDivider /> -->
 				<MenuItem @click="logoutHandle"> 退出登录 </MenuItem>
 			</Menu>
 		</template>
@@ -34,7 +34,7 @@
 			Dropdown,
 			Menu,
 			MenuItem: Menu.Item,
-			MenuDivider: Menu.Divider,
+			// MenuDivider: Menu.Divider,
 			Avatar
 		},
 		setup() {
@@ -43,9 +43,9 @@
 			const { avator, username } = store.getters.userInfo
 
 			// 修改密码
-			const modifyPasswordHandle = () => {
-				console.log('修改密码')
-			}
+			// const modifyPasswordHandle = () => {
+			// 	console.log('修改密码')
+			// }
 
 			// 退出登录
 			const logoutHandle = () => {
@@ -63,7 +63,7 @@
 			return {
 				avator: avator || 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
 				username,
-				modifyPasswordHandle,
+				// modifyPasswordHandle,
 				logoutHandle
 			}
 		}

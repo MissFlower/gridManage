@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-12 20:16:21
+ * @LastEditTime: 2021-07-14 13:30:18
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -42,6 +42,7 @@
 		:org-orbd-list="orgOrbdList"
 		:grid-info-list="gridInfoList"
 		@close="cancelBatchDispatchGridHandle"
+		@dispatched="dispatchedHandle"
 	/>
 
 	<!-- 网格信息弹窗 -->
@@ -208,7 +209,8 @@
 			// 绘制行政区域边界
 			const drawAdministrationBoundary = () => {
 				const { regionList, role } = userGridsData
-				regionList.length && map.drawAdministrationBoundary(regionList, {}, role)
+				map.setRole(role)
+				regionList.length && map.drawAdministrationBoundary(regionList, {})
 			}
 
 			// 绘制网格
@@ -217,8 +219,34 @@
 				map.renderPolygons({ parentGridList, gridList }, { state }, gridClickHandle)
 			}
 
+			// 添加文本标记
+			const addTextMarkers = () => {
+				const { gridList, role } = userGridsData
+				const textMarkerList = []
+				gridList.forEach(grid => {
+					if (role === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE && grid.orgId && grid.centerPoint) {
+						const [longitude, latitude] = grid.centerPoint?.split(',')
+						textMarkerList.push({
+							longitude,
+							latitude,
+							text: grid.gridOrg
+						})
+					}
+					if (role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE && grid.sellerId) {
+						const [longitude, latitude] = grid.centerPoint?.split(',')
+						textMarkerList.push({
+							longitude,
+							latitude,
+							text: grid.sellerName
+						})
+					}
+				})
+				textMarkerList.length && map.addTextMarkers(textMarkerList)
+			}
+
 			// 网格点击事件
 			const gridClickHandle = async gridInfo => {
+				console.log(gridInfo)
 				if (!state.isDispatchGrid) {
 					return
 				}
@@ -251,6 +279,7 @@
 			// 获取绘制好的网格信息(闭环查询网格信息)
 			const getGridInfo = async info => {
 				const { id, gridArea, gridAddress, districtCode, pid } = info
+				console.log(info)
 				let data = {}
 				if (!id) {
 					// 新增
@@ -263,6 +292,7 @@
 					// 编辑时候坐标变化调用闭环网格信息接口
 					data = await getEditGridData({
 						gridAddress,
+						gridArea,
 						districtCode,
 						id
 					})
@@ -299,6 +329,7 @@
 			const saveGridHandle = () => {
 				const { getCurrentPolygonInfo } = map
 				const { code, message, data } = getCurrentPolygonInfo()
+				console.log(data)
 				if (code === 200) {
 					gridInfo.value = {
 						...gridInfo.value,
@@ -384,6 +415,11 @@
 				// 重置选中的网格信息列表
 				state.gridInfoList = []
 				console.log('取消批量分配网格')
+			}
+
+			// 分配完成
+			const dispatchedHandle = () => {
+				initProcess()
 			}
 
 			// 获取附近门店坐标
@@ -599,8 +635,10 @@
 				await getUserGrids()
 				// 绘制行政区域边界
 				drawAdministrationBoundary()
-				// // 绘制网格
+				// 绘制网格
 				drawGrids()
+				// 添加文本标记
+				addTextMarkers()
 			}
 
 			onMounted(async () => {
@@ -630,7 +668,8 @@
 				modalSaveGridHandle,
 				deleteGridHandle,
 				batchDispatchGridHandle,
-				cancelBatchDispatchGridHandle
+				cancelBatchDispatchGridHandle,
+				dispatchedHandle
 			}
 		}
 	})

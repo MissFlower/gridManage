@@ -129,6 +129,27 @@ a:focus {
   width: inherit !important;
 }
 
+.ellipsis {
+  display: -webkit-box;    
+  overflow: hidden;
+  text-overflow: ellipsis; 
+  white-space: nowrap;   
+}
+
+.ellipsis-2 {
+  display: -webkit-box;    
+  overflow: hidden;    
+  -webkit-box-orient: vertical;    
+  -webkit-line-clamp: 2;
+}
+
+.ellipsis-3 {
+  display: -webkit-box;    
+  overflow: hidden;    
+  -webkit-box-orient: vertical;    
+  -webkit-line-clamp: 3;
+}
+
 /* 定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸 */
 ::-webkit-scrollbar {
   width: 10px;

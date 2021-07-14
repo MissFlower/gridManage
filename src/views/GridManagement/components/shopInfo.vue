@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 17:25:22
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-10 11:11:35
+ * @LastEditTime: 2021-07-13 16:00:53
 -->
 <template>
 	<div class="shop-info-wrapper" :class="[isShow ? 'active' : '']">
@@ -16,11 +16,11 @@
 						<span class="info-title">{{ infoData.name }}</span>
 						<span class="info-id">门店ID: {{ infoData.id }}</span>
 					</div>
-					<span class="info-address">{{ infoData.locate }}</span>
+					<span class="info-address ellipsis-2">{{ infoData.locate }}</span>
 				</div>
 			</div>
 			<div class="other-info">
-				<span v-for="(info, key) of infoData.otherInfo" :key="key" class="other-info-item"> {{ info.title }}: {{ info.text }} </span>
+				<span v-for="{ title, text } of infoData.otherInfo" :key="title" class="other-info-item"> {{ title }}: {{ text }} </span>
 			</div>
 		</div>
 	</div>
@@ -67,6 +67,7 @@
 		}
 
 		.shop-img {
+			width: 48px !important;
 			margin-right: 8px;
 		}
 
@@ -81,11 +82,14 @@
 				display: flex;
 			}
 
-			.info-title,
-			.info-id {
+			.info-title {
+				width: 140px;
 				overflow: hidden;
 				text-overflow: ellipsis;
 				white-space: nowrap;
+			}
+
+			.info-id {
 				flex: 1;
 			}
 
