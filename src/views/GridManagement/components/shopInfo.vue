@@ -4,13 +4,13 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 17:25:22
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-13 16:00:53
+ * @LastEditTime: 2021-07-14 16:03:54
 -->
 <template>
 	<div class="shop-info-wrapper" :class="[isShow ? 'active' : '']">
 		<div class="shop-info-content">
 			<div class="base-info">
-				<Avatar src="src/assets/images/shop_default.png" shape="square" :size="48" class="shop-img" />
+				<Avatar :src="shopImg" shape="square" :size="48" class="shop-img" />
 				<div class="common-info">
 					<div class="info-header">
 						<span class="info-title">{{ infoData.name }}</span>
@@ -29,6 +29,7 @@
 <script>
 	import { defineComponent } from 'vue'
 	import { Avatar } from 'ant-design-vue'
+	import shopImg from 'src/assets/images/shop_default.png'
 	export default defineComponent({
 		name: 'ShopInfo',
 		components: {
@@ -44,7 +45,11 @@
 				default: false
 			}
 		},
-		setup() {}
+		setup() {
+			return {
+				shopImg
+			}
+		}
 	})
 </script>
 

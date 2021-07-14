@@ -4,11 +4,11 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 14:43:10
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-13 14:58:14
+ * @LastEditTime: 2021-07-14 15:45:21
 -->
 <template>
 	<div :class="['logo-wrap', isActive ? 'logo-wrap-hide' : '']">
-		<Image :width="60" :height="60" src="src/assets/images/logo.jpg" />
+		<Image :width="60" :height="60" :src="LogoImg" />
 		<div class="title">{{ title }}</div>
 	</div>
 </template>
@@ -16,6 +16,7 @@
 <script>
 	import { defineComponent } from 'vue'
 	import { Image } from 'ant-design-vue'
+	import LogoImg from 'src/assets/images/logo.jpg'
 	export default defineComponent({
 		name: 'LogoWrapper',
 		components: {
@@ -30,7 +31,8 @@
 		setup() {
 			const title = import.meta.env.VITE_GLOB_APP_TITLE
 			return {
-				title
+				title,
+				LogoImg
 			}
 		}
 	})

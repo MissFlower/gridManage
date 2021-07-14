@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-14 13:30:18
+ * @LastEditTime: 2021-07-14 15:55:57
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -284,8 +284,8 @@
 				if (!id) {
 					// 新增
 					data = await getAddGridData({
-						gridArea,
 						gridAddress,
+						gridArea,
 						pid
 					})
 				} else {
