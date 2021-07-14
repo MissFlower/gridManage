@@ -4,11 +4,11 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 17:59:33
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-14 17:43:04
+ * @LastEditTime: 2021-07-14 18:30:44
 -->
 <template>
 	<div class="no-fount-wrapper">
-		<Image :src="errorPage" class="img" />
+		<Image :src="errorPage" :preview="false" class="img" />
 		<div class="tips-container">
 			<div class="tip-text">您暂无访问权限</div>
 			<div class="tip-text">很抱歉，您访问的页面暂无权限，请联系管理员获取权限后访问</div>
