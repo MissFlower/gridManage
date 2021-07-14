@@ -8,7 +8,7 @@
 -->
 <template>
 	<div class="no-fount-wrapper">
-		<Image src="src/assets/svg/404.svg" class="img" />
+		<Image :rc="errorPage" class="img" />
 		<div class="tips-container">
 			<div class="tip-text">您的访问出错了</div>
 			<div class="tip-text">很抱歉，您访问的页面不存在，请检查您输入的地址是否正确</div>
@@ -21,6 +21,7 @@
 	import { defineComponent } from 'vue'
 	import { Image, Button } from 'ant-design-vue'
 	import { useRouter } from 'vue-router'
+	import errorPage from 'src/assets/svg/404.svg'
 	export default defineComponent({
 		name: 'ErrorPage404',
 		components: {
@@ -36,6 +37,7 @@
 			}
 
 			return {
+				errorPage,
 				backHome
 			}
 		}

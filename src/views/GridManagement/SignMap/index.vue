@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-14 16:16:18
+ * @LastEditTime: 2021-07-14 17:34:17
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -25,6 +25,7 @@
 	<MapButtonGroup
 		ref="mapButtonGroupRef"
 		:is-edit="isEdit"
+		:is-create="isCreate"
 		:is-dispatch-grid="isDispatchGrid"
 		@create-grid="createGridHandle"
 		@edit-grid="editGridHandle"
@@ -108,6 +109,7 @@
 			const state = reactive({
 				gridModalVisible: false,
 				isDispatchGrid: false,
+				isCreate: false,
 				isEdit: false,
 				isShowShopInfo: false,
 				role: ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE,
@@ -309,9 +311,10 @@
 			const createGridHandle = () => {
 				const { drawPolygon } = map
 				console.log('开始创建网格')
-
+				state.isCreate = true
 				drawPolygon(({ code, message, data }) => {
 					if (code === 200) {
+						state.isCreate = false
 						getGridInfo(data)
 					} else {
 						Message.warn(message)
