@@ -4,8 +4,12 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 18:11:03
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-13 13:57:06
+ * @LastEditTime: 2021-07-14 16:26:21
  */
+import SELF_SUPPORT_SHOP_ICON from 'src/assets/icons/shop-icon-0.png'
+import DIRECT_SUPPORT_SHOP_ICON from 'src/assets/icons/shop-icon-1.png'
+import SEAS_RECOMMEND_SHOP_ICON from 'src/assets/icons/shop-icon-2.png'
+import SEAS_MAP_SHOP_ICON from 'src/assets/icons/shop-icon-3.png'
 // 地图类型
 const [SIGN_MAP, MAINTAIN_MAP] = [1, 2]
 export const MAP_TYPE = {
@@ -44,6 +48,12 @@ export const SHOP_ICON_TYPE = {
 	DIRECT_SUPPORT_SHOP,
 	SEAS_RECOMMEND_SHOP,
 	SEAS_MAP_SHOP
+}
+export const MARKER_TYPE_ICON = {
+	[SHOP_ICON_TYPE.SELF_SUPPORT_SHOP]: SELF_SUPPORT_SHOP_ICON,
+	[SHOP_ICON_TYPE.DIRECT_SUPPORT_SHOP]: DIRECT_SUPPORT_SHOP_ICON,
+	[SHOP_ICON_TYPE.SEAS_RECOMMEND_SHOP]: SEAS_RECOMMEND_SHOP_ICON,
+	[SHOP_ICON_TYPE.SEAS_MAP_SHOP]: SEAS_MAP_SHOP_ICON
 }
 
 // 角色

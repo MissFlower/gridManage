@@ -4,12 +4,12 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 13:26:36
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-14 13:42:54
+ * @LastEditTime: 2021-07-14 16:23:10
  */
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { is, isSupportCanvas } from 'src/utils'
-import { ADMIN_ROLE_TYPE, GRID_AREA_TYPE } from 'src/common/constant'
+import { ADMIN_ROLE_TYPE, GRID_AREA_TYPE, MARKER_TYPE_ICON } from 'src/common/constant'
 const rolezIndex = {
 	[ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE]: 100,
 	[ADMIN_ROLE_TYPE.BD_ADMIN_ROLE]: 1000
@@ -625,7 +625,7 @@ export function useMap(el, options = {}) {
 			const { longitude, latitude, stype } = item
 			const icon = new AMap.Icon({
 				size: new AMap.Size(24, 24),
-				image: `/src/assets/icons/shop-icon-${stype}.png`,
+				image: MARKER_TYPE_ICON[stype],
 				imageSize: new AMap.Size(24, 24),
 				imageOffset: new AMap.Pixel(0, 0)
 			})
