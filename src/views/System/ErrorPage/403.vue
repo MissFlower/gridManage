@@ -52,7 +52,7 @@
 
 		.ant-image {
 			position: absolute;
-			top: -20%;
+			top: -24%;
 			right: 0;
 			bottom: 0;
 			left: 0;

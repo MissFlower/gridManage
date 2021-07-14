@@ -4,11 +4,11 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 15:07:22
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-13 16:23:58
+ * @LastEditTime: 2021-07-14 18:23:21
 -->
 <template>
 	<div class="no-fount-wrapper">
-		<Image :rc="errorPage" class="img" />
+		<Image src="src/assets/svg/404.svg" class="img" />
 		<div class="tips-container">
 			<div class="tip-text">您的访问出错了</div>
 			<div class="tip-text">很抱歉，您访问的页面不存在，请检查您输入的地址是否正确</div>
@@ -49,10 +49,11 @@
 		position: relative;
 		width: 100%;
 		height: 100%;
+		transform: translate(0, 0);
 
 		.ant-image {
 			position: absolute;
-			top: -20%;
+			top: -24%;
 			right: 0;
 			bottom: 0;
 			left: 0;
