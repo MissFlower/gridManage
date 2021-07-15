@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:01:42
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-14 14:17:49
+ * @LastEditTime: 2021-07-15 11:18:52
  */
 
 import { loadEnv } from 'vite'
@@ -72,6 +72,9 @@ export default ({ command, mode }) => {
 			preprocessorOptions: {
 				scss: {
 					// additionalData: `@import 'src/styles/reset.scss'` // 引用公共样式，使用vite搭建项目只安装sass即可，不需要安装node-sass,sass-loader
+				},
+				less: {
+					javascriptEnabled: true
 				}
 			}
 		},

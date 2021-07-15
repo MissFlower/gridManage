@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 13:38:55
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-14 14:23:27
+ * @LastEditTime: 2021-07-15 11:19:12
  */
 /**
  * 按需引入组件库样式
@@ -23,7 +23,7 @@ export function configStyleImportPlugin(isBuild) {
 				libraryName: 'ant-design-vue',
 				esModule: true,
 				resolveStyle: name => {
-					return `ant-design-vue/es/${name}/style/css`
+					return `ant-design-vue/es/${name}/style/index`
 				}
 			}
 		]

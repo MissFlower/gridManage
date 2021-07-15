@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:04:55
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-14 17:33:51
+ * @LastEditTime: 2021-07-15 11:15:02
 -->
 <template>
 	<!-- 维护地图容器 -->
@@ -64,6 +64,7 @@
 <script>
 	import { defineComponent, onMounted, reactive, ref, toRefs, watchEffect, watch, onUnmounted, createVNode } from 'vue'
 	import { message as Message, Modal, Radio } from 'ant-design-vue'
+	import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
 	import ShopInfo from '../components/shopInfo.vue'
 	import LegendInfo from '../components/legendInfo.vue'
 	import MapButtonGroup from '../components/mapButtonGroup.vue'
@@ -262,6 +263,10 @@
 					const index = state.gridInfoList.findIndex(grid => grid.id === gridInfo.id)
 					if (gridInfo.isChecked) {
 						// 添加
+						if (state.gridInfoList >= 50) {
+							Message.warn('批量分配最多选择50个网格!')
+							return
+						}
 						!~index && state.gridInfoList.push(gridInfo)
 					} else {
 						// 删除
@@ -376,15 +381,25 @@
 
 			// 删除网格
 			const deleteGridHandle = async () => {
-				const { getCurrentPolygonInfo } = map
-				const { code, message, data } = getCurrentPolygonInfo()
-				if (code === 200) {
-					await deleteGrid({ id: data.id, mapType: MAP_TYPE.MAINTAIN_MAP })
-					// 初始化流程
-					initProcess()
-				} else {
-					Message.warn(message)
-				}
+				Modal.confirm({
+					title: '是否确认删除该网格？',
+					icon: createVNode(ExclamationCircleOutlined),
+					okText: '确认',
+					cancelText: '取消',
+					centered: true,
+					width: 400,
+					onOk: async () => {
+						const { getCurrentPolygonInfo } = map
+						const { code, message, data } = getCurrentPolygonInfo()
+						if (code === 200) {
+							await deleteGrid({ id: data.id, mapType: MAP_TYPE.MAINTAIN_MAP })
+							// 初始化流程
+							initProcess()
+						} else {
+							Message.warn(message)
+						}
+					}
+				})
 			}
 
 			// 批量分配网格
