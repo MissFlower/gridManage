@@ -8,6 +8,7 @@
     "build": "vite build",
     "serve": "npm run dev",
     "preview": "npm run build && vite preview",
+    "preview:dev": "vite build --mode dev && vite preview",
     "preview:dist": "vite preview"
   },
   "dependencies": {
@@ -33,7 +34,6 @@
     "eslint-define-config": "^1.0.8",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-vue": "^7.11.1",
-    "less": "^4.1.1",
     "path-to-regexp": "^6.2.0",
     "postcss": "^8.3.5",
     "prettier": "^2.3.1",

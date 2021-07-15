@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-15 11:16:43
+ * @LastEditTime: 2021-07-15 14:13:47
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -460,12 +460,12 @@
 					id,
 					name,
 					locate,
-					source,
-					type,
+					sTypeStr,
+					typeStr,
 					sellerName,
 					maintainName,
 					phone,
-					starLevel,
+					starLevelStr,
 					commentsNum,
 					goodComm,
 					averageNum,
@@ -482,11 +482,11 @@
 						otherInfo: [
 							{
 								title: '门店来源',
-								text: source
+								text: sTypeStr
 							},
 							{
 								title: '业态',
-								text: type
+								text: typeStr
 							},
 							{
 								title: '门店负责人',
@@ -513,11 +513,11 @@
 						otherInfo: [
 							{
 								title: '门店来源',
-								text: source
+								text: sTypeStr
 							},
 							{
 								title: '业态',
-								text: type
+								text: typeStr
 							},
 							{
 								title: '门店负责人',
@@ -540,11 +540,11 @@
 						otherInfo: [
 							{
 								title: '门店来源',
-								text: source
+								text: sTypeStr
 							},
 							{
 								title: '业态',
-								text: type
+								text: typeStr
 							},
 							{
 								title: '门店负责人',
@@ -560,7 +560,7 @@
 							},
 							{
 								title: '星级',
-								text: starLevel
+								text: starLevelStr
 							},
 							{
 								title: '人均消费',
@@ -587,7 +587,7 @@
 						otherInfo: [
 							{
 								title: '门店来源',
-								text: source
+								text: sTypeStr
 							},
 							{
 								title: '分类',
