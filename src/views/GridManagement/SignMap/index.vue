@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-15 14:13:47
+ * @LastEditTime: 2021-07-16 10:06:54
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -318,8 +318,8 @@
 				console.log('开始创建网格')
 				state.isCreate = true
 				drawPolygon(({ code, message, data }) => {
+					state.isCreate = false
 					if (code === 200) {
-						state.isCreate = false
 						getGridInfo(data)
 					} else {
 						Message.warn(message)

@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 13:26:36
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-15 19:34:08
+ * @LastEditTime: 2021-07-16 10:57:42
  */
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
@@ -75,7 +75,7 @@ export function useMap(el, options = {}) {
 	// 检测坐标点属于哪一个网格
 	function judgePointerBelongToWhichGrid(lngLat, polygons, callback) {
 		const parentPolygon = polygons.find(polygon => AMap.GeometryUtil.isPointInRing(lngLat, polygon.getPath()))
-		console.log(parentPolygon)
+		// console.log(parentPolygon)
 		if (parentPolygon) {
 			// 如果点存在某个行政区域内 则找出该行政区域
 			const { districtCode, id } = parentPolygon.getExtData()
@@ -93,9 +93,21 @@ export function useMap(el, options = {}) {
 		}
 	}
 
-	// 检测绘制图形是否在当前的行政区域或父网格内(检测父子两个图形的位置关系)
+	// 获取当前用户同一区域或同一网格下的兄弟网格(优化对比数据)
+	function getBrotherGridPolygons(drawedPolygons) {
+		if (currentRole === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE) {
+			// 如果当前用户角色是ORGANZITION_ADMIN_ROLE 找当前所在的行政区域下的所有被绘制过的多边形
+			drawedPolygons = drawedPolygons.filter(polygon => +polygon.getExtData().districtCode === +currentUsedDistrictCode)
+		} else if (currentRole === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE) {
+			// 如果当前用户角色是BD_ADMIN_ROLE 找当前所在父级网格下的所有被绘制过的多边形
+			drawedPolygons = drawedPolygons.filter(polygon => polygon.getExtData().pid === currentUsedParentPolygonId)
+		}
+		return drawedPolygons
+	}
+
+	// 检测父子两个图形的位置关系
 	function judgePolygonRelation(polygon1, polygon2) {
-		console.log(polygon1, polygon2)
+		// console.log(polygon1, polygon2)
 		if (!polygon2) {
 			return true
 		}
@@ -104,12 +116,12 @@ export function useMap(el, options = {}) {
 
 		// 绘制图形是否和行政区域相交
 		let doesRingRingIntersect = AMap.GeometryUtil.doesRingRingIntersect(polygon1Path, polygon2Path)
-		console.log('相交', doesRingRingIntersect)
+		// console.log('相交', doesRingRingIntersect)
 		// 如果相交 判断相交的面积和当前绘制图形面积是否一样 一样则不认为是相交
 		if (doesRingRingIntersect) {
 			const ringRingClip = AMap.GeometryUtil.ringRingClip(polygon1Path, polygon2Path)
 			const ringArea = Math.floor(AMap.GeometryUtil.ringArea(ringRingClip))
-			console.log(ringArea, Math.floor(polygon1.getArea()))
+			// console.log(ringArea, Math.floor(polygon1.getArea()))
 			// true 相交 false 不相交
 			doesRingRingIntersect = ringArea < Math.floor(polygon1.getArea())
 		}
@@ -126,6 +138,7 @@ export function useMap(el, options = {}) {
 		const polygon1Path = polygon1.getPath()
 		const polygon2Path = polygon2.getPath()
 		const isRingInRing = AMap.GeometryUtil.isRingInRing(polygon1Path, polygon2Path)
+		// console.log('brother', isRingInRing)
 		let doesRingRingIntersect = true
 		if (!isRingInRing) {
 			// 判断两个图形是否相交
@@ -134,14 +147,15 @@ export function useMap(el, options = {}) {
 			if (doesRingRingIntersect) {
 				const ringRingClip = AMap.GeometryUtil.ringRingClip(polygon1Path, polygon2Path)
 				const ringArea = Math.floor(AMap.GeometryUtil.ringArea(ringRingClip))
-				console.log(ringArea)
+				// console.log(ringArea)
 				doesRingRingIntersect = !!ringArea
 			}
 		}
+		// console.log(isRingInRing || doesRingRingIntersect)
 		return isRingInRing || doesRingRingIntersect
 	}
 
-	// 检测绘制图形和已绘制的图形位置关系 是否存在相交和被包含情况
+	// 检测绘制图形和同一行政区域或父网格下兄弟图形位置关系 是否存在相交和被包含情况
 	function judgePolygonsPositionRelation(currentPolygon, drawedPolygons) {
 		if (drawedPolygons.length === 0) {
 			return false
@@ -155,7 +169,7 @@ export function useMap(el, options = {}) {
 		const drawedBrotherGridPolygons = getBrotherGridPolygons(drawedPolygons)
 		// 检测是否被包含或相交
 		const isRingInRingOrIntersect = !!drawedBrotherGridPolygons.find(drawedPolygon => {
-			if (+drawedPolygon.getExtData().area > currentPolygonArea) {
+			if (+drawedPolygon.getExtData().gridArea > currentPolygonArea) {
 				return judgeBrotherPolygonRelation(currentPolygon, drawedPolygon)
 			} else {
 				return judgeBrotherPolygonRelation(drawedPolygon, currentPolygon)
@@ -212,7 +226,7 @@ export function useMap(el, options = {}) {
 		if (!isInArea) {
 			const res = {
 				code: 10002,
-				message: `当前绘制的网格面积为${polygonsArea}平方米,不在规定区间${min}-${max}平方米之间！`
+				message: `当前绘制的网格面积为${(polygonsArea / 1000000).toFixed(2)}平方千米,不在规定区间${min / 1000000}-${max / 1000000}平方千米之间！`
 			}
 			callback && callback(res)
 			notQualifyGraphHandle(true)
@@ -238,21 +252,10 @@ export function useMap(el, options = {}) {
 	function notQualifyGraphHandle(isDeleteGraph = false) {
 		// 关闭绘图工具 true 参数为true直接删除图形
 		polyEditor?.editable && polyEditor.close()
+		isEdit.value = false
 		mouseTool && mouseTool.close(isDeleteGraph)
 		// 地图设置鼠标样式为default
 		mapInstance.setDefaultCursor('default')
-	}
-
-	// 获取当前用户同一区域或同一网格下的兄弟网格(优化对比数据)
-	function getBrotherGridPolygons(drawedPolygons) {
-		if (currentRole === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE) {
-			// 如果当前用户角色是ORGANZITION_ADMIN_ROLE 找当前所在的行政区域下的所有被绘制过的多边形
-			drawedPolygons = drawedPolygons.filter(polygon => +polygon.getExtData().districtCode === +currentUsedDistrictCode)
-		} else if (currentRole === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE) {
-			// 如果当前用户角色是BD_ADMIN_ROLE 找当前所在父级网格下的所有被绘制过的多边形
-			drawedPolygons = drawedPolygons.filter(polygon => polygon.getExtData().pid === currentUsedParentPolygonId)
-		}
-		return drawedPolygons
 	}
 
 	// 绘制行政区域边界
@@ -289,7 +292,7 @@ export function useMap(el, options = {}) {
 							const polygon = new AMap.Polygon({
 								strokeWeight: 1,
 								path: bounds[i],
-								fillOpacity: 0.3,
+								fillOpacity: PARENT_GRID_OPACITY,
 								fillColor: '#80d8ff',
 								strokeColor: '#0091ea'
 							})
@@ -326,7 +329,7 @@ export function useMap(el, options = {}) {
 			fillColor: '#0000ff',
 			strokeOpacity: 1,
 			fillOpacity: PARENT_GRID_OPACITY,
-			strokeColor: '#0000ff',
+			strokeColor: '#095cd9',
 			strokeWeight: 1,
 			strokeStyle: 'solid'
 		}
@@ -384,7 +387,6 @@ export function useMap(el, options = {}) {
 			})
 
 			polygon.on('mouseout', () => {
-				console.log(polygon.getExtData().isChecked)
 				if (!polygon.getExtData().isChecked) {
 					polygon.setOptions({
 						cursor: 'default',
@@ -396,9 +398,7 @@ export function useMap(el, options = {}) {
 			polygon.on('click', () => {
 				const { role, isDispatchGrid } = options.state
 				const extData = polygon.getExtData()
-				console.log(extData)
 				const { isChecked } = extData
-				console.log(isChecked)
 				// 重置网格样式
 				// 如果当前用户不是BD_ADMIN_ROLE或者是BD_ADMIN_ROLE没有在分配网格需要重置样式
 				if (role !== ADMIN_ROLE_TYPE.BD_ADMIN_ROLE || !isDispatchGrid) {
@@ -413,7 +413,6 @@ export function useMap(el, options = {}) {
 						...extData,
 						isChecked: true
 					})
-					console.log(polygon.getExtData())
 					currentUsedGridPolygon = polygon
 					const { judgeMethod, polygons } = accordRoleMethods[currentRole]
 					const { lng, lat } = polygon.getPath()[0]

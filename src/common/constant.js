@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 18:11:03
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-14 16:26:21
+ * @LastEditTime: 2021-07-16 11:08:19
  */
 import SELF_SUPPORT_SHOP_ICON from 'src/assets/icons/shop-icon-0.png'
 import DIRECT_SUPPORT_SHOP_ICON from 'src/assets/icons/shop-icon-1.png'
@@ -65,7 +65,7 @@ export const ADMIN_ROLE_TYPE = {
 // 单位：平方米
 export const GRID_AREA_TYPE = {
 	[ORGANZITION_ADMIN_ROLE]: {
-		MIN: 1000,
+		MIN: 1000000,
 		MAX: 10000000000
 	},
 	[BD_ADMIN_ROLE]: {
