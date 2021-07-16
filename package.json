@@ -10,7 +10,6 @@
     "preview": "npm run build && vite preview",
     "preview:dev": "vite build --mode dev && vite preview",
     "preview:dist": "vite preview",
-    "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.js",
     "prepare": "husky install",
     "lint-staged": "lint-staged"
   },
