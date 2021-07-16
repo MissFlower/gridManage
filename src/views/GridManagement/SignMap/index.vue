@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-16 15:56:09
+ * @LastEditTime: 2021-07-16 16:23:55
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -336,7 +336,7 @@
 			const saveGridHandle = () => {
 				const { getCurrentPolygonInfo } = map
 				const { code, message, data } = getCurrentPolygonInfo()
-				// console.log(data)
+				console.log(data)
 				if (code === 200) {
 					gridInfo.value = {
 						...gridInfo.value,
