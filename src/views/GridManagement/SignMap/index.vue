@@ -336,7 +336,7 @@
 			const saveGridHandle = () => {
 				const { getCurrentPolygonInfo } = map
 				const { code, message, data } = getCurrentPolygonInfo()
-				console.log(data)
+				// console.log(data)
 				if (code === 200) {
 					gridInfo.value = {
 						...gridInfo.value,
