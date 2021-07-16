@@ -11,12 +11,17 @@
     "preview:dev": "vite build --mode dev && vite preview",
     "preview:dist": "vite preview",
     "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.js",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "lint-staged": "lint-staged"
   },
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
+  },
+  "lint-staged": {
+    "src/**/*.js": "eslint --ext .js",
+    "src/**/*.vue": "eslint --ext .vue"
   },
   "dependencies": {
     "@vueuse/core": "^5.0.3",
