@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-16 15:32:29
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-16 17:52:44
+ * @LastEditTime: 2021-07-16 18:17:43
  */
 module.exports = {
 	// ignores: [commit => commit.includes('init')],

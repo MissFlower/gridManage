@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-16 17:01:25
+ * @LastEditTime: 2021-07-16 18:07:19
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -186,7 +186,7 @@
 			const mapDragend = () => {
 				const { mapInstance } = map
 				mapAttrs.center = mapInstance.getCenter()
-				// console.log(`地图中心点改变了为${mapAttrs.center.toString()}`)
+				console.log(`地图中心点改变了为${mapAttrs.center.toString()}`)
 			}
 
 			// 点击地图
