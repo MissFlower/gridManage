@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-07 15:57:30
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-13 10:27:24
+ * @LastEditTime: 2021-07-16 17:50:04
  */
 import request from 'src/utils/request'
 
@@ -108,7 +108,7 @@ export function deleteGrid(params) {
  * @Date 2021-07-07 17:40:29
  */
 export function getNearbyShopForGrid(params) {
-	return request.get('/manage/shopGrid/queryNearbyShopForGrid', params)
+	return request.get('/manage/shopGrid/queryNearbyShopForGrid', params, { loading: false })
 }
 
 /**

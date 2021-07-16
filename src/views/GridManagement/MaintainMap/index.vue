@@ -263,7 +263,7 @@
 					const index = state.gridInfoList.findIndex(grid => grid.id === gridInfo.id)
 					if (gridInfo.isChecked) {
 						// 添加
-						if (state.gridInfoList >= 50) {
+						if (state.gridInfoList.length >= 50) {
 							Message.warn('批量分配最多选择50个网格!')
 							return
 						}
