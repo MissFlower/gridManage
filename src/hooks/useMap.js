@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 13:26:36
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-16 10:57:42
+ * @LastEditTime: 2021-07-16 11:10:39
  */
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
@@ -329,7 +329,7 @@ export function useMap(el, options = {}) {
 			fillColor: '#0000ff',
 			strokeOpacity: 1,
 			fillOpacity: PARENT_GRID_OPACITY,
-			strokeColor: '#095cd9',
+			strokeColor: '#0089ff',
 			strokeWeight: 1,
 			strokeStyle: 'solid'
 		}
