@@ -11,13 +11,7 @@
     "preview:dev": "vite build --mode dev && vite preview",
     "preview:dist": "vite preview",
     "prepare": "husky install",
-    "lint-staged": "lint-staged"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E $HUSKY_GIT_PARAMS",
-      "pre-commit": "npm run lint-staged"
-    }
+    "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.js"
   },
   "lint-staged": {
     "src/**/*.js": "eslint --ext .js",
