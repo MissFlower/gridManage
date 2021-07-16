@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 17:25:22
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-14 16:03:54
+ * @LastEditTime: 2021-07-16 13:17:41
 -->
 <template>
 	<div class="shop-info-wrapper" :class="[isShow ? 'active' : '']">

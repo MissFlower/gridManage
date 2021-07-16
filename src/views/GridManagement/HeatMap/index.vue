@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:06:08
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-13 11:30:15
+ * @LastEditTime: 2021-07-16 15:31:55
 -->
 <template>
 	<!-- 热力图容器 -->
@@ -12,7 +12,7 @@
 
 	<!-- 选择门店类型RadioGroup -->
 	<RadioGroup v-model:value="shopType" button-style="solid" class="shop-radio-group">
-		<RadioButton v-for="(shopTypeName, key) in SHOP_TYPE_NAME" :key="key" :value="+key" class="radio-shop">{{ shopTypeName }}</RadioButton>
+		<RadioButton v-for="(shopTypeName, key) in HEAT_SHOP_TYPE_NAME" :key="key" :value="+key" class="radio-shop">{{ shopTypeName }}</RadioButton>
 	</RadioGroup>
 
 	<div class="legend-wrap">
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-	import { defineComponent, onMounted, toRefs, reactive, watch, onUnmounted } from 'vue'
+	import { defineComponent, onMounted, toRefs, reactive, watch, onUnmounted, onActivated } from 'vue'
 	import { useMap } from 'src/hooks/useMap'
 	import { Radio } from 'ant-design-vue'
 	import { SHOP_TYPE, SHOP_TYPE_NAME } from 'src/common/constant'
@@ -72,8 +72,8 @@
 				getHeatMapData()
 			})
 
-			delete SHOP_TYPE_NAME[SHOP_TYPE.RACE]
-
+			const HEAT_SHOP_TYPE_NAME = { ...SHOP_TYPE_NAME }
+			delete HEAT_SHOP_TYPE_NAME[SHOP_TYPE.RACE]
 			// 渲染地图
 			const renderMap = async () => {
 				const { zoom, center } = state
@@ -154,6 +154,9 @@
 				renderMap()
 				// 获取地图的边界范围坐标
 				getMapBounds()
+			})
+
+			onActivated(() => {
 				// 获取热力图数据
 				getHeatMapData()
 			})
@@ -164,7 +167,7 @@
 
 			return {
 				...toRefs(state),
-				SHOP_TYPE_NAME
+				HEAT_SHOP_TYPE_NAME
 			}
 		}
 	})

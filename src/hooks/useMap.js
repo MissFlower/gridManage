@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 13:26:36
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-16 11:10:39
+ * @LastEditTime: 2021-07-16 14:53:59
  */
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
@@ -75,7 +75,7 @@ export function useMap(el, options = {}) {
 	// 检测坐标点属于哪一个网格
 	function judgePointerBelongToWhichGrid(lngLat, polygons, callback) {
 		const parentPolygon = polygons.find(polygon => AMap.GeometryUtil.isPointInRing(lngLat, polygon.getPath()))
-		// console.log(parentPolygon)
+		console.log(parentPolygon)
 		if (parentPolygon) {
 			// 如果点存在某个行政区域内 则找出该行政区域
 			const { districtCode, id } = parentPolygon.getExtData()
@@ -107,7 +107,7 @@ export function useMap(el, options = {}) {
 
 	// 检测父子两个图形的位置关系
 	function judgePolygonRelation(polygon1, polygon2) {
-		// console.log(polygon1, polygon2)
+		console.log(polygon1, polygon2)
 		if (!polygon2) {
 			return true
 		}
@@ -116,12 +116,12 @@ export function useMap(el, options = {}) {
 
 		// 绘制图形是否和行政区域相交
 		let doesRingRingIntersect = AMap.GeometryUtil.doesRingRingIntersect(polygon1Path, polygon2Path)
-		// console.log('相交', doesRingRingIntersect)
+		console.log('相交', doesRingRingIntersect)
 		// 如果相交 判断相交的面积和当前绘制图形面积是否一样 一样则不认为是相交
 		if (doesRingRingIntersect) {
 			const ringRingClip = AMap.GeometryUtil.ringRingClip(polygon1Path, polygon2Path)
 			const ringArea = Math.floor(AMap.GeometryUtil.ringArea(ringRingClip))
-			// console.log(ringArea, Math.floor(polygon1.getArea()))
+			console.log(ringArea, Math.floor(polygon1.getArea()))
 			// true 相交 false 不相交
 			doesRingRingIntersect = ringArea < Math.floor(polygon1.getArea())
 		}
@@ -138,7 +138,7 @@ export function useMap(el, options = {}) {
 		const polygon1Path = polygon1.getPath()
 		const polygon2Path = polygon2.getPath()
 		const isRingInRing = AMap.GeometryUtil.isRingInRing(polygon1Path, polygon2Path)
-		// console.log('brother', isRingInRing)
+		console.log('brother', isRingInRing)
 		let doesRingRingIntersect = true
 		if (!isRingInRing) {
 			// 判断两个图形是否相交
@@ -147,11 +147,11 @@ export function useMap(el, options = {}) {
 			if (doesRingRingIntersect) {
 				const ringRingClip = AMap.GeometryUtil.ringRingClip(polygon1Path, polygon2Path)
 				const ringArea = Math.floor(AMap.GeometryUtil.ringArea(ringRingClip))
-				// console.log(ringArea)
+				console.log(ringArea)
 				doesRingRingIntersect = !!ringArea
 			}
 		}
-		// console.log(isRingInRing || doesRingRingIntersect)
+		console.log(isRingInRing || doesRingRingIntersect)
 		return isRingInRing || doesRingRingIntersect
 	}
 
@@ -258,6 +258,62 @@ export function useMap(el, options = {}) {
 		mapInstance.setDefaultCursor('default')
 	}
 
+	// 多边形绑定事件
+	function bindEvent(polygon, options, callback) {
+		polygon.on('mouseover', () => {
+			polygon.setOptions({
+				cursor: 'pointer',
+				fillOpacity: OWN_GRID_OPACITY_CHECKED
+			})
+		})
+
+		polygon.on('mouseout', () => {
+			if (!polygon.getExtData().isChecked) {
+				polygon.setOptions({
+					cursor: 'default',
+					fillOpacity: OWN_GRID_OPACITY_DEFAULT
+				})
+			}
+		})
+
+		polygon.on('click', () => {
+			const { role, isDispatchGrid } = options.state
+			const extData = polygon.getExtData()
+			const { isChecked } = extData
+			// 重置网格样式
+			// 如果当前用户不是BD_ADMIN_ROLE或者是BD_ADMIN_ROLE没有在分配网格需要重置样式
+			if (role !== ADMIN_ROLE_TYPE.BD_ADMIN_ROLE || !isDispatchGrid) {
+				resetGridStyle()
+			}
+			// 设置当前使用的多边形和透明度
+			if (!isChecked) {
+				polygon.setOptions({
+					fillOpacity: OWN_GRID_OPACITY_CHECKED
+				})
+				polygon.setExtData({
+					...extData,
+					isChecked: true
+				})
+				currentUsedGridPolygon = polygon
+				const { judgeMethod, polygons } = accordRoleMethods[currentRole]
+				const { lng, lat } = polygon.getPath()[0]
+				// 检测坐标点属于哪一个行政区或父网格
+				judgeMethod([lng, lat], polygons)
+			} else {
+				currentUsedGridPolygon = null
+				polygon.setOptions({
+					fillOpacity: OWN_GRID_OPACITY_DEFAULT
+				})
+				polygon.setExtData({
+					...extData,
+					isChecked: false
+				})
+			}
+			// 调用回调函数
+			callback && callback(polygon.getExtData())
+		})
+	}
+
 	// 绘制行政区域边界
 	function drawAdministrationBoundary(districtCodes, options = {}) {
 		// console.log(districtCodes)
@@ -292,7 +348,7 @@ export function useMap(el, options = {}) {
 							const polygon = new AMap.Polygon({
 								strokeWeight: 1,
 								path: bounds[i],
-								fillOpacity: PARENT_GRID_OPACITY,
+								fillOpacity: 0.3,
 								fillColor: '#80d8ff',
 								strokeColor: '#0091ea'
 							})
@@ -329,7 +385,7 @@ export function useMap(el, options = {}) {
 			fillColor: '#0000ff',
 			strokeOpacity: 1,
 			fillOpacity: PARENT_GRID_OPACITY,
-			strokeColor: '#0089ff',
+			strokeColor: '#0000ff',
 			strokeWeight: 1,
 			strokeStyle: 'solid'
 		}
@@ -375,65 +431,8 @@ export function useMap(el, options = {}) {
 				})
 				mapInstance.add(ownPolygon)
 				drawedOwnPolygons.push(ownPolygon)
-				bindEvent(ownPolygon)
+				bindEvent(ownPolygon, options, callback)
 			})
-
-		function bindEvent(polygon) {
-			polygon.on('mouseover', () => {
-				polygon.setOptions({
-					cursor: 'pointer',
-					fillOpacity: OWN_GRID_OPACITY_CHECKED
-				})
-			})
-
-			polygon.on('mouseout', () => {
-				if (!polygon.getExtData().isChecked) {
-					polygon.setOptions({
-						cursor: 'default',
-						fillOpacity: OWN_GRID_OPACITY_DEFAULT
-					})
-				}
-			})
-
-			polygon.on('click', () => {
-				const { role, isDispatchGrid } = options.state
-				const extData = polygon.getExtData()
-				const { isChecked } = extData
-				// 重置网格样式
-				// 如果当前用户不是BD_ADMIN_ROLE或者是BD_ADMIN_ROLE没有在分配网格需要重置样式
-				if (role !== ADMIN_ROLE_TYPE.BD_ADMIN_ROLE || !isDispatchGrid) {
-					resetGridStyle()
-				}
-				// 设置当前使用的多边形和透明度
-				if (!isChecked) {
-					polygon.setOptions({
-						fillOpacity: OWN_GRID_OPACITY_CHECKED
-					})
-					polygon.setExtData({
-						...extData,
-						isChecked: true
-					})
-					currentUsedGridPolygon = polygon
-					const { judgeMethod, polygons } = accordRoleMethods[currentRole]
-					const { lng, lat } = polygon.getPath()[0]
-					// 检测坐标点属于哪一个行政区或父网格
-					judgeMethod([lng, lat], polygons)
-					// 调用回调函数
-					callback && callback(polygon.getExtData())
-				} else {
-					currentUsedGridPolygon = null
-					polygon.setOptions({
-						fillOpacity: OWN_GRID_OPACITY_DEFAULT
-					})
-					polygon.setExtData({
-						...extData,
-						isChecked: false
-					})
-					// 调用回调函数
-					callback && callback(polygon.getExtData())
-				}
-			})
-		}
 	}
 
 	// 绘制多边形(用户手动绘制)

@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:04:55
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-15 14:48:49
+ * @LastEditTime: 2021-07-16 15:29:03
 -->
 <template>
 	<!-- 维护地图容器 -->
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-	import { defineComponent, onMounted, reactive, ref, toRefs, watchEffect, watch, onUnmounted, createVNode } from 'vue'
+	import { defineComponent, onMounted, reactive, ref, toRefs, watchEffect, watch, onUnmounted, createVNode, onActivated } from 'vue'
 	import { message as Message, Modal, Radio } from 'ant-design-vue'
 	import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
 	import ShopInfo from '../components/shopInfo.vue'
@@ -352,6 +352,7 @@
 					}
 				} else {
 					Message.warn(message)
+					initProcess()
 				}
 			}
 
@@ -659,13 +660,16 @@
 				addTextMarkers()
 			}
 
-			onMounted(async () => {
+			onMounted(() => {
 				// 渲染地图
 				renderMap()
+			})
+
+			onActivated(async () => {
 				// 初始化流程
 				await initProcess()
 				// 若当前用户为bdm则获取bdm下的得bd人员用于分配网格(ADMIN_ROLE_TYPE.BD_ADMIN_ROLE角色固定列表只拉取一次 ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE及以上点击网格获取)
-				getBdUserList()
+				!state.orgOrbdList.length && getBdUserList()
 			})
 
 			onUnmounted(() => {
