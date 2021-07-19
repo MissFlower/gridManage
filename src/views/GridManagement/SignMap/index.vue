@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-19 15:19:30
+ * @LastEditTime: 2021-07-19 16:22:09
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -469,7 +469,7 @@
 					latitude: lat,
 					type: mapAttrs.shopType
 				})
-				addMarkers(data, getShopInfo)
+				mapAttrs.zoom > SHOP_ZOOM_DEMARCATION_VALUE && addMarkers(data, getShopInfo)
 			}
 
 			// 点击门店获取门店信息

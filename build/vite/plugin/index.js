@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 13:35:40
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-19 15:53:07
+ * @LastEditTime: 2021-07-19 18:09:08
  */
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
@@ -14,6 +14,7 @@ import { configHtmlPlugin } from './html'
 import { configStyleImportPlugin } from './styleImport'
 import { configVisualizerConfig } from './visualizer'
 import { configCompressPlugin } from './compress'
+import { configSvgIconsPlugin } from './svgSprite'
 
 export function createVitePlugins(viteEnv, isBuild) {
 	const { VITE_LEGACY, VITE_BUILD_COMPRESS, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE } = viteEnv
@@ -28,6 +29,9 @@ export function createVitePlugins(viteEnv, isBuild) {
 
 	// vite-plugin-html
 	vitePlugins.push(configHtmlPlugin(viteEnv, isBuild))
+
+	// vite-plugin-svg-icons
+	vitePlugins.push(configSvgIconsPlugin(isBuild))
 
 	// vite-plugin-style-import
 	vitePlugins.push(configStyleImportPlugin(isBuild))

@@ -4,12 +4,12 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 18:11:03
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-16 11:08:19
+ * @LastEditTime: 2021-07-19 18:10:08
  */
-import SELF_SUPPORT_SHOP_ICON from 'src/assets/icons/shop-icon-0.png'
-import DIRECT_SUPPORT_SHOP_ICON from 'src/assets/icons/shop-icon-1.png'
-import SEAS_RECOMMEND_SHOP_ICON from 'src/assets/icons/shop-icon-2.png'
-import SEAS_MAP_SHOP_ICON from 'src/assets/icons/shop-icon-3.png'
+import SELF_SUPPORT_SHOP_ICON from 'src/assets/images/shop-icon-0.png'
+import DIRECT_SUPPORT_SHOP_ICON from 'src/assets/images/shop-icon-1.png'
+import SEAS_RECOMMEND_SHOP_ICON from 'src/assets/images/shop-icon-2.png'
+import SEAS_MAP_SHOP_ICON from 'src/assets/images/shop-icon-3.png'
 // 地图类型
 const [SIGN_MAP, MAINTAIN_MAP] = [1, 2]
 export const MAP_TYPE = {
