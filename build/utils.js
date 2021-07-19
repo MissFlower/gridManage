@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:13:17
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-22 15:52:04
+ * @LastEditTime: 2021-07-19 14:05:26
  */
 // 提取环境变量并转换
 export function wrapperEnv(envConf) {
@@ -31,4 +31,11 @@ export function wrapperEnv(envConf) {
 	}
 
 	return ret
+}
+
+/**
+ * 是否生成预览包
+ */
+export function isReportMode() {
+	return process.env.REPORT === 'true'
 }

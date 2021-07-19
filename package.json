@@ -10,6 +10,7 @@
 		"preview": "npm run build && vite preview",
 		"preview:dev": "vite build --mode dev && vite preview",
 		"preview:dist": "vite preview",
+		"report": "cross-env REPORT=true npm run build",
 		"prepare": "husky install",
 		"lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.js"
 	},
@@ -33,6 +34,7 @@
 		"@vitejs/plugin-vue-jsx": "^1.1.5",
 		"@vue/compiler-sfc": "^3.0.5",
 		"autoprefixer": "^10.3.1",
+		"cross-env": "^7.0.3",
 		"eslint": "^7.28.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-define-config": "^1.0.8",
@@ -43,6 +45,7 @@
 		"path-to-regexp": "^6.2.0",
 		"postcss": "^8.3.5",
 		"prettier": "^2.3.1",
+		"rollup-plugin-visualizer": "^5.5.2",
 		"sass": "^1.35.1",
 		"stylelint": "^13.13.1",
 		"stylelint-config-prettier": "^8.0.2",
