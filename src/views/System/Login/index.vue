@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 18:01:50
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-13 15:14:16
+ * @LastEditTime: 2021-07-19 11:00:55
 -->
 <template>
 	<div class="login-container">
@@ -114,6 +114,8 @@
 							router.push({ path: redirectRef.redirect || '/', query: redirectRef.otherQuery })
 						})
 						.catch(error => {
+							modelRef.code = ''
+							verifyCodeHandle()
 							console.log(error)
 						})
 				} catch (error) {

@@ -2,9 +2,9 @@
  * @Description: 维护地图
  * @Version: 0.1.0
  * @Author: AiDongYang
- * @Date: 2021-06-29 15:04:55
+ * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-16 15:29:03
+ * @LastEditTime: 2021-07-19 13:39:47
 -->
 <template>
 	<!-- 维护地图容器 -->
@@ -104,7 +104,8 @@
 			})
 			const mapButtonGroupRef = ref(null)
 			let map = null
-			const ZOOM_DEMARCATION_VALUE = 10 // zoom分界值
+			const SHOP_ZOOM_DEMARCATION_VALUE = 10 // 门店展示zoom分界值
+			const TEXT_MARKER_ZOOM_DEMARCATION_VALUE = 12 // 文本标记zoom分界值
 			let userGridsData = {} // 用户网格数据
 			const gridInfo = ref({}) // 闭环时网格信息
 			const state = reactive({
@@ -121,28 +122,41 @@
 			watch([() => mapAttrs.center, () => mapAttrs.zoom, () => mapAttrs.shopType], ([center, zoom, shopType], [preCenter, preZoom, preShopType]) => {
 				console.log(zoom, preZoom, shopType, preShopType)
 				if (
-					(zoom > ZOOM_DEMARCATION_VALUE && shopType !== preShopType) ||
-					(preZoom <= ZOOM_DEMARCATION_VALUE && zoom > ZOOM_DEMARCATION_VALUE) ||
-					(zoom > ZOOM_DEMARCATION_VALUE && center.toString() !== preCenter.toString())
+					(zoom > SHOP_ZOOM_DEMARCATION_VALUE && shopType !== preShopType) ||
+					(preZoom <= SHOP_ZOOM_DEMARCATION_VALUE && zoom > SHOP_ZOOM_DEMARCATION_VALUE) ||
+					(zoom > SHOP_ZOOM_DEMARCATION_VALUE && center.toString() !== preCenter.toString())
 				) {
 					if (shopType !== preShopType) {
 						console.log('门店类型改变调用门店坐标接口')
 					}
-					if (preZoom <= ZOOM_DEMARCATION_VALUE && zoom > ZOOM_DEMARCATION_VALUE) {
+					if (preZoom <= SHOP_ZOOM_DEMARCATION_VALUE && zoom > SHOP_ZOOM_DEMARCATION_VALUE) {
 						console.log('zoom改变调用门店坐标接口')
 					}
-					if (zoom > ZOOM_DEMARCATION_VALUE && center.toString() !== preCenter.toString()) {
+					if (zoom > SHOP_ZOOM_DEMARCATION_VALUE && center.toString() !== preCenter.toString()) {
 						console.log('中心点坐标改变调用门店坐标接口')
 					}
 					getNearShopCoordinates()
 					return
 				}
 
-				if (zoom <= ZOOM_DEMARCATION_VALUE && preZoom > ZOOM_DEMARCATION_VALUE) {
+				if (zoom <= SHOP_ZOOM_DEMARCATION_VALUE && preZoom > SHOP_ZOOM_DEMARCATION_VALUE) {
 					console.log('地图缩放比例小于规定比例')
 					removeMarkers()
 				}
 			})
+
+			watch(
+				() => mapAttrs.zoom,
+				(zoom, preZoom) => {
+					if (zoom > TEXT_MARKER_ZOOM_DEMARCATION_VALUE && preZoom <= TEXT_MARKER_ZOOM_DEMARCATION_VALUE) {
+						addTextMarkers()
+						return
+					}
+					if (zoom <= TEXT_MARKER_ZOOM_DEMARCATION_VALUE && preZoom > TEXT_MARKER_ZOOM_DEMARCATION_VALUE) {
+						removeTextMarkers()
+					}
+				}
+			)
 
 			// 添加控件
 			const addControl = mapInstance => {
@@ -247,9 +261,13 @@
 				textMarkerList.length && map.addTextMarkers(textMarkerList)
 			}
 
+			// 清除text marker点
+			const removeTextMarkers = () => {
+				map.removeTextMarkers()
+			}
+
 			// 网格点击事件
 			const gridClickHandle = async gridInfo => {
-				console.log(gridInfo)
 				if (!state.isDispatchGrid) {
 					return
 				}
@@ -263,7 +281,7 @@
 					const index = state.gridInfoList.findIndex(grid => grid.id === gridInfo.id)
 					if (gridInfo.isChecked) {
 						// 添加
-						if (state.gridInfoList.length >= 50) {
+						if (state.gridInfoList.length >= 5) {
 							Message.warn('批量分配最多选择50个网格!')
 							return
 						}
@@ -277,7 +295,6 @@
 
 			// 获取bdm角色下的用户数据 用于批量分配网格
 			const getBdUserList = async () => {
-				console.log(userGridsData.role)
 				if (userGridsData.role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE) {
 					state.orgOrbdList = (await getDispatchBd()) || []
 				}
@@ -291,8 +308,8 @@
 				if (!id) {
 					// 新增
 					data = await getAddGridData({
-						gridArea,
 						gridAddress,
+						gridArea,
 						pid
 					})
 				} else {
@@ -318,9 +335,9 @@
 				console.log('开始创建网格')
 				state.isCreate = true
 				drawPolygon(({ code, message, data }) => {
+					state.isCreate = false
 					if (code === 200) {
 						getGridInfo(data)
-						state.isCreate = false
 					} else {
 						Message.warn(message)
 					}
@@ -337,7 +354,7 @@
 			const saveGridHandle = () => {
 				const { getCurrentPolygonInfo } = map
 				const { code, message, data } = getCurrentPolygonInfo()
-				console.log(data)
+				// console.log(data)
 				if (code === 200) {
 					gridInfo.value = {
 						...gridInfo.value,
@@ -381,7 +398,7 @@
 			}
 
 			// 删除网格
-			const deleteGridHandle = async () => {
+			const deleteGridHandle = () => {
 				Modal.confirm({
 					title: '是否确认删除该网格？',
 					icon: createVNode(ExclamationCircleOutlined),
@@ -611,8 +628,7 @@
 
 			// 清除marker点
 			const removeMarkers = () => {
-				const { removeMarkers } = map
-				removeMarkers()
+				map.removeMarkers()
 			}
 
 			// 获取用户下的网格数据
@@ -656,8 +672,6 @@
 				drawAdministrationBoundary()
 				// 绘制网格
 				drawGrids()
-				// 添加文本标记
-				addTextMarkers()
 			}
 
 			onMounted(() => {

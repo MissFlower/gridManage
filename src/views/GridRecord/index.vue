@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 14:34:40
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-13 15:53:32
+ * @LastEditTime: 2021-07-19 11:06:15
 -->
 <template>
 	<div>
@@ -31,7 +31,11 @@
 				</FormItem>
 
 				<FormItem label="操作时间" name="dateTime">
-					<DatePicker v-model:value="form.dateTime" show-time format="YYYY-MM-DD HH:mm:ss" />
+					<DatePicker
+						v-model:value="form.dateTime"
+						:show-time="{ defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')] }"
+						format="YYYY-MM-DD HH:mm:ss"
+					/>
 				</FormItem>
 			</Form>
 
@@ -49,6 +53,7 @@
 <script>
 	import { defineComponent, reactive, ref } from 'vue'
 	import { Form, Table, Button, Input } from 'ant-design-vue'
+	import moment from 'moment'
 	import SearchFormBox from 'src/components/SearchFormBox/index.vue'
 	import TableListBox from 'src/components/TableListBox/index.vue'
 	import MapTypeSelect from './components/mapTypeSelect.vue'
@@ -295,6 +300,7 @@
 				columns,
 				validateInfos,
 				pagination,
+				moment,
 				searchHandle,
 				resetHandle
 			}
