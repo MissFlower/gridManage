@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-19 13:23:46
+ * @LastEditTime: 2021-07-19 14:49:04
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -232,8 +232,8 @@
 
 			// 绘制网格
 			const drawGrids = () => {
-				const { parentGridList, gridList } = userGridsData
-				map.renderPolygons({ parentGridList, gridList }, { state }, gridClickHandle)
+				const { parentGridList, gridList, childrenGridList } = userGridsData
+				map.renderPolygons({ parentGridList, gridList, childrenGridList }, { state }, gridClickHandle)
 			}
 
 			// 添加文本标记
@@ -641,10 +641,10 @@
 			// 处理网格数据
 			const dealDataHandle = data => {
 				// 处理行政区域列表
-				data.regionList = (data.regionList.length && data.regionList.map(region => region.code)) || []
+				data.regionList = (data.regionList?.length && data.regionList.map(region => region.code)) || []
 				// 父级的网格角色就是ORGANZITION_ADMIN_ROLE 只有两种角色
 				data.parentGridList =
-					(data.parentGridList.length &&
+					(data.parentGridList?.length &&
 						data.parentGridList.map(({ gridAddress, gridArea, ...rest }) => ({
 							...rest,
 							gridAddress: strTransferLngLat(gridAddress),
@@ -661,6 +661,17 @@
 					gridArea,
 					role: data.role
 				}))
+				// 子网格角色就是BD_ADMIN_ROLE
+				data.childrenGridList =
+					(data.childrenGridList?.length &&
+						data.childrenGridList.map(({ gridAddress, gridArea, ...rest }) => ({
+							...rest,
+							gridAddress: strTransferLngLat(gridAddress),
+							originGridAddress: gridAddress,
+							gridArea,
+							role: ADMIN_ROLE_TYPE.BD_ADMIN_ROLE
+						}))) ||
+					[]
 				return data
 			}
 

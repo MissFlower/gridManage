@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 13:26:36
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-19 11:22:17
+ * @LastEditTime: 2021-07-19 14:52:58
  */
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
@@ -12,7 +12,7 @@ import { is, isSupportCanvas } from 'src/utils'
 import { ADMIN_ROLE_TYPE, GRID_AREA_TYPE, MARKER_TYPE_ICON } from 'src/common/constant'
 const rolezIndex = {
 	[ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE]: 100,
-	[ADMIN_ROLE_TYPE.BD_ADMIN_ROLE]: 1000
+	[ADMIN_ROLE_TYPE.BD_ADMIN_ROLE]: 101
 }
 const PARENT_GRID_OPACITY = 0.2
 const OWN_GRID_OPACITY_DEFAULT = 0.4
@@ -397,9 +397,18 @@ export function useMap(el, options = {}) {
 			strokeWeight: 0,
 			strokeStyle: 'solid'
 		}
+		const defaultChildrenOptions = {
+			fillColor: '#ffeb00',
+			strokeOpacity: 1,
+			fillOpacity: OWN_GRID_OPACITY_DEFAULT,
+			strokeColor: '#2b8cbe',
+			strokeWeight: 0,
+			strokeStyle: 'solid'
+		}
 		const parentOptions = Object.assign({}, defaultParentOptions, options?.parentOptions || {})
 		const ownOptions = Object.assign({}, defaultOwnOptions, options?.ownOptions || {})
-		const { parentGridList, gridList } = grids
+		const childrenOptions = Object.assign({}, defaultChildrenOptions, options?.childrenOptions || {})
+		const { parentGridList, gridList, childrenGridList } = grids
 
 		// 绘制父多边形
 		parentGridList.length &&
@@ -432,6 +441,21 @@ export function useMap(el, options = {}) {
 				mapInstance.add(ownPolygon)
 				drawedOwnPolygons.push(ownPolygon)
 				bindEvent(ownPolygon, options, callback)
+			})
+		// 绘制子多边形
+		childrenGridList.length &&
+			childrenGridList.forEach(({ gridAddress, role, ...rest }) => {
+				const parentPolygon = new AMap.Polygon({
+					path: gridAddress,
+					zIndex: rolezIndex[role],
+					extData: {
+						role,
+						...rest
+					},
+					...childrenOptions
+				})
+				mapInstance.add(parentPolygon)
+				drawedParentPolygons.push(parentPolygon)
 			})
 	}
 

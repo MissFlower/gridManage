@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-25 13:47:47
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-15 16:18:34
+ * @LastEditTime: 2021-07-19 14:38:20
  */
 import axios from 'axios'
 import qs from 'qs'
@@ -93,7 +93,8 @@ http.interceptors.response.use(
 			switch (error.response.status) {
 				case 401:
 					if (!getToken()) {
-						return
+						console.log(error.response)
+						return Promise.reject(error.response)
 					}
 					removeToken()
 
