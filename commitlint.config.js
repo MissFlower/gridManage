@@ -4,10 +4,10 @@
  * @Author: AiDongYang
  * @Date: 2021-07-16 15:32:29
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-19 09:49:11
+ * @LastEditTime: 2021-07-19 10:43:33
  */
 module.exports = {
-	// ignores: [commit => commit.includes('init')],
+	ignores: [commit => commit.includes('init')],
 	extends: ['@commitlint/config-conventional'],
 	rules: {
 		'body-leading-blank': [2, 'always'],
