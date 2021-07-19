@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 14:34:40
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-19 11:06:15
+ * @LastEditTime: 2021-07-19 15:41:23
 -->
 <template>
 	<div>
@@ -33,7 +33,7 @@
 				<FormItem label="操作时间" name="dateTime">
 					<DatePicker
 						v-model:value="form.dateTime"
-						:show-time="{ defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')] }"
+						:show-time="{ defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')] }"
 						format="YYYY-MM-DD HH:mm:ss"
 					/>
 				</FormItem>
