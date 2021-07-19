@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-19 14:49:04
+ * @LastEditTime: 2021-07-19 15:19:30
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -152,7 +152,7 @@
 						addTextMarkers()
 						return
 					}
-					if (zoom <= TEXT_MARKER_ZOOM_DEMARCATION_VALUE && preZoom > TEXT_MARKER_ZOOM_DEMARCATION_VALUE) {
+					if (zoom <= TEXT_MARKER_ZOOM_DEMARCATION_VALUE) {
 						removeTextMarkers()
 					}
 				}
@@ -454,8 +454,9 @@
 			}
 
 			// 分配完成
-			const dispatchedHandle = () => {
-				initProcess()
+			const dispatchedHandle = async () => {
+				await initProcess()
+				addTextMarkers()
 			}
 
 			// 获取附近门店坐标
