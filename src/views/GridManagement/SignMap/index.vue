@@ -186,7 +186,7 @@
 			const mapDragend = () => {
 				const { mapInstance } = map
 				mapAttrs.center = mapInstance.getCenter()
-				console.log(`地图中心点改变了为${mapAttrs.center.toString()}`)
+				// console.log(`地图中心点改变了为${mapAttrs.center.toString()}`)
 			}
 
 			// 点击地图

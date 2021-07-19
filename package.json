@@ -13,6 +13,10 @@
     "prepare": "husky install",
     "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.js"
   },
+  "hooks": {
+    "pre-commit": "lint-staged",
+    "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+  },
   "lint-staged": {
     "src/**/*.js": "eslint --ext .js",
     "src/**/*.vue": "eslint --ext .vue"
