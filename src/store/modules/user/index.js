@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-23 11:09:24
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-09 11:24:30
+ * @LastEditTime: 2021-07-19 18:27:29
  */
 import { resetRouter } from 'src/router'
 import { getToken, removeToken, setToken } from 'src/utils/cookie'
@@ -60,6 +60,7 @@ const actions = {
 					resolve()
 				})
 				.catch(error => {
+					console.log(error)
 					reject(error)
 				})
 		})

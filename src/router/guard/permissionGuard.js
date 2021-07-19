@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-26 14:05:01
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-15 16:18:08
+ * @LastEditTime: 2021-07-19 18:25:54
  */
 import { store } from 'src/store'
 import { getToken } from 'src/utils/cookie'
@@ -40,8 +40,9 @@ export function createPermissionGuard(router) {
 						next({ ...to, replace: true })
 					} catch (error) {
 						// 清除token重新登录
+						console.log(error)
 						await store.dispatch('user/resetToken')
-						message.error(error || 'Has Error')
+						message.error(error?.msg || 'Has Error')
 						next(`/login?redirect=${to.path}`)
 					}
 				}
