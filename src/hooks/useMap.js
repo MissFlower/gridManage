@@ -8,7 +8,7 @@
  */
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
-import { is, isSupportCanvas } from 'src/utils'
+import { is, isSupportCanvas } from 'src/utils/is'
 import { ADMIN_ROLE_TYPE, GRID_AREA_TYPE, MARKER_TYPE_ICON } from 'src/common/constant'
 const rolezIndex = {
 	[ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE]: 100,

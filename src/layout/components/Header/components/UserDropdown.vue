@@ -4,12 +4,13 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 16:54:57
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-15 11:11:49
+ * @LastEditTime: 2021-07-20 16:01:31
 -->
 <template>
 	<Dropdown>
 		<div>
-			<Avatar :width="24" :height="24" :src="avator" />
+			<Avatar v-if="avator" :width="24" :height="24" :src="avator" />
+			<IconFont v-else type="icon-morentouxiang" class="default-avator" />
 			<span class="username">{{ username }}</span>
 		</div>
 		<template #overlay>
@@ -61,7 +62,7 @@
 				})
 			}
 			return {
-				avator: avator || 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+				avator,
 				username,
 				// modifyPasswordHandle,
 				logoutHandle

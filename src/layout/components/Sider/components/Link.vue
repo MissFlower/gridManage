@@ -4,11 +4,11 @@
  * @Author: AiDongYang
  * @Date: 2021-06-23 10:46:36
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-23 15:53:11
+ * @LastEditTime: 2021-07-20 12:37:58
 -->
 <template>
 	<component :is="type" v-bind="linkProps(to)">
-		<slot></slot>
+		<slot />
 	</component>
 </template>
 

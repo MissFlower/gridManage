@@ -4,12 +4,8 @@
  * @Author: AiDongYang
  * @Date: 2021-07-01 15:51:26
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-09 16:27:16
+ * @LastEditTime: 2021-07-20 15:28:05
  */
-export function is(val, type) {
-	return Object.prototype.toString.call(val).slice(8, -1) === type
-}
-
 // 高德多边形字符串转经纬度数据
 export function strTransferLngLat(path) {
 	return path.split(';').map(lngLat => {
@@ -18,8 +14,13 @@ export function strTransferLngLat(path) {
 	})
 }
 
-// 是否支持canvas
-export function isSupportCanvas() {
-	const elem = document.createElement('canvas')
-	return !!(elem.getContext && elem.getContext('2d'))
+export const withInstall = (component, alias) => {
+	const comp = component
+	comp.install = app => {
+		app.component(comp.name || comp.displayName, component)
+		if (alias) {
+			app.config.globalProperties[alias] = component
+		}
+	}
+	return component
 }

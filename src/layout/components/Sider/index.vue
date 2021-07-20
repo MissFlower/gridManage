@@ -4,19 +4,22 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 14:04:49
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-07 16:40:29
+ * @LastEditTime: 2021-07-20 15:38:33
 -->
 <template>
-	<Menu
-		v-model:selected-keys="selectedKeys"
-		v-model:open-keys="openKeys"
-		mode="inline"
-		theme="dark"
-		class="sidebar-container"
-		@openChange="onOpenChange"
-	>
-		<SiderItem v-for="route in permission_routes" :key="route.path" :item="route" />
-	</Menu>
+	<Logo :collapse="collapsed" />
+	<ScrollContainer style="height: calc(100% - 48px)">
+		<Menu
+			v-model:selected-keys="selectedKeys"
+			v-model:open-keys="openKeys"
+			mode="inline"
+			theme="dark"
+			class="sidebar-container"
+			@openChange="onOpenChange"
+		>
+			<SiderItem v-for="route in permission_routes" :key="route.path" :item="route" />
+		</Menu>
+	</ScrollContainer>
 </template>
 
 <script>
@@ -24,10 +27,14 @@
 	import { Menu } from 'ant-design-vue'
 	import { useStore } from 'vuex'
 	import { useRoute } from 'vue-router'
+	import ScrollContainer from 'src/components/Scrollbar'
 	import SiderItem from './components/SiderItem.vue'
+	import Logo from './components/Logo.vue'
 	export default defineComponent({
 		name: 'SiderWrapper',
 		components: {
+			ScrollContainer,
+			Logo,
 			Menu,
 			SiderItem
 		},
@@ -142,6 +149,7 @@
 
 			return {
 				permission_routes,
+				collapsed,
 				...toRefs(state),
 				onOpenChange
 			}

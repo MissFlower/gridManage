@@ -4,23 +4,14 @@
  * @Author: AiDongYang
  * @Date: 2021-06-23 10:42:40
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-24 16:44:32
+ * @LastEditTime: 2021-07-20 12:38:05
 -->
 <template>
 	<template v-if="!item.hidden">
-		<template
-			v-if="
-				hasOneShowingChild(item.children, item) &&
-				(!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
-				!item.alwaysShow
-			"
-		>
+		<template v-if="hasOneShowingChild(item.children, item) && (!onlyOneChild.children || onlyOneChild.noShowingChildren) && !item.alwaysShow">
 			<MenuItem :key="onlyOneChild.fullPath">
 				<AppLink v-if="onlyOneChild.meta" :to="onlyOneChild.fullPath">
-					<Item
-						:icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)"
-						:title="onlyOneChild.meta.title"
-					/>
+					<Item :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)" :title="onlyOneChild.meta.title" />
 				</AppLink>
 			</MenuItem>
 		</template>

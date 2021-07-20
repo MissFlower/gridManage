@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-26 14:05:01
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-19 18:25:54
+ * @LastEditTime: 2021-07-20 14:47:49
  */
 import { store } from 'src/store'
 import { getToken } from 'src/utils/cookie'
@@ -37,6 +37,11 @@ export function createPermissionGuard(router) {
 						accessRoutes.forEach(route => {
 							router.addRoute(route)
 						})
+						console.log(accessRoutes)
+						if (accessRoutes?.length === 1) {
+							next({ path: '/403' })
+							return
+						}
 						next({ ...to, replace: true })
 					} catch (error) {
 						// 清除token重新登录

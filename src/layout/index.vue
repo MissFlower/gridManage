@@ -4,18 +4,18 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 13:59:31
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-06-28 17:23:56
+ * @LastEditTime: 2021-07-20 12:33:07
 -->
 <template>
 	<Layout class="app-wrapper">
-		<LayoutHeader class="header">
-			<Header />
-		</LayoutHeader>
+		<LayoutSider v-model:collapsed="collapsed" :collapsed-width="48" :width="sideBarWidth" :trigger="null" collapsible>
+			<Sider />
+		</LayoutSider>
 
 		<Layout>
-			<LayoutSider v-model:collapsed="collapsed" :collapsed-width="60" :width="sideBarWidth" :trigger="null" collapsible>
-				<Sider />
-			</LayoutSider>
+			<LayoutHeader class="header">
+				<Header />
+			</LayoutHeader>
 
 			<Layout>
 				<LayoutContent class="content-wrapper">

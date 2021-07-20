@@ -1,0 +1,52 @@
+.ant-layout-sider .ant-menu-inline-collapsed .ant-menu-submenu-selected {
+	position: relative;
+
+	.ant-menu-submenu-title::before {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 3px;
+		height: 100%;
+		background-color: #0960bd;
+		content: '';
+	}
+}
+
+.ant-layout-sider {
+	.ant-menu-submenu-title {
+		padding-left: 16px !important;
+	}
+
+	.ant-menu-item {
+		padding-left: 40px !important;
+	}
+}
+
+.logo-wrap {
+	display: flex;
+	height: 48px;
+	padding-left: 7px;
+	cursor: pointer;
+	transition: 0.2s all ease;
+	align-items: center;
+
+	.logo {
+		display: inline-block;
+		width: 32px;
+		height: 32px;
+		font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
+		font-size: 14px;
+		font-weight: 600;
+		vertical-align: middle;
+	}
+
+	.title {
+		margin-bottom: 0;
+		margin-left: 10px;
+		font-size: 20px;
+		font-weight: 600;
+		letter-spacing: 2px;
+		color: #fff;
+		transition: 0.5s all;
+	}
+}

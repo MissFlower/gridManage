@@ -1,97 +1,80 @@
 .header-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: 100%;
-  color: #001529;
-  background-color: #FFF;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	height: 100%;
+	color: #001529;
+	background-color: #fff;
 
-  .header-left {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    height: 100%;
-  }
+	.header-left {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		height: 100%;
+	}
 
-  .logo-wrap {
-    display: flex;
-    align-items: center;
-    width: $sideBarWidth !important;
-    height: 100%;
-    // transition: all 0.2s;
+	.ant-breadcrumb {
+		padding: 5px;
+		line-height: 1;
+	}
 
-    .ant-image {
-      display: flex;
-    }
+	.toggle-container {
+		display: flex;
+		padding: 0 15px;
+		align-items: center;
 
-    .logo {
-      display: inline-block;
-      margin-right: 10px;
-      font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      vertical-align: middle;
-    }
+		.toggle {
+			display: inline-block;
+			width: 20px;
+			height: 20px;
+			vertical-align: middle;
+			cursor: pointer;
+			transform: rotate(180deg);
+		}
 
-    .title {
-      margin-left: 10px;
-      font-size: 20px;
-      font-weight: 600;
-    }
-  }
+		.toggle.is-active {
+			transform: rotate(0deg);
+		}
+	}
 
-  // .logo-wrap-hide {
-  //   width: 60px !important;
-  // }
-    
-  .toggle-container {
-    margin-right: 15px;
+	.header-right {
+		display: flex;
+		height: 100%;
+		margin-right: 16px;
+		align-items: center;
 
-    .toggle {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      vertical-align: middle;
-      cursor: pointer;
-      transform: rotate(180deg);
-    }
-  
-    .toggle.is-active {
-      transform: rotate(0deg);
-    }
-  }
+		.ant-dropdown-trigger {
+			display: flex;
+			height: 100%;
+			padding-right: 10px;
+			cursor: pointer;
+			align-items: center;
 
-  .header-right {
-    display: flex;
-    height: 100%;
-    margin-right: 24px;
-    align-items: center;
+			.ant-avatar {
+				margin-right: 5px;
+				margin-left: 5px;
+			}
 
-    .ant-dropdown-trigger {
-      display: flex;
-      height: 100%;
-      padding-right: 10px;
-      cursor: pointer;
-      align-items: center;
+			.default-avator {
+				margin-right: 5px;
+				margin-left: 5px;
+				font-size: 32px;
+			}
 
-      .ant-avatar {
-        margin-right: 5px;
-      }
+			.username {
+				display: flex;
+				align-items: center;
+				height: 100%;
+			}
 
-      .username {
-        display: flex;
-        align-items: center;
-        height: 100%;
-      }
+			&:hover {
+				background-color: #f6f6f6;
+			}
+		}
 
-      &:hover {
-        background-color: #f6f6f6;
-      }
-    }
-
-    .ant-dropdown-menu {
-      text-align: center;
-    }
-  }
+		.ant-dropdown-menu {
+			text-align: center;
+		}
+	}
 }
