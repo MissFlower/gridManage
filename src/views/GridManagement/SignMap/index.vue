@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-20 16:21:56
+ * @LastEditTime: 2021-07-20 16:52:25
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -149,6 +149,7 @@
 				() => mapAttrs.zoom,
 				(zoom, preZoom) => {
 					if (zoom > TEXT_MARKER_ZOOM_DEMARCATION_VALUE && preZoom <= TEXT_MARKER_ZOOM_DEMARCATION_VALUE) {
+						console.log(123213123)
 						addTextMarkers()
 						return
 					}
@@ -238,6 +239,7 @@
 
 			// 添加文本标记
 			const addTextMarkers = () => {
+				console.log('开始绘制文本标记')
 				const { gridList, role } = userGridsData
 				const textMarkerList = []
 				gridList.forEach(grid => {
@@ -693,10 +695,9 @@
 				renderMap()
 			})
 
-			onActivated(async () => {
+			onActivated(() => {
 				// 初始化流程
-				await initProcess()
-				addTextMarkers()
+				initProcess()
 				// 若当前用户为bdm则获取bdm下的得bd人员用于分配网格(ADMIN_ROLE_TYPE.BD_ADMIN_ROLE角色固定列表只拉取一次 ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE及以上点击网格获取)
 				!state.orgOrbdList.length && getBdUserList()
 			})
