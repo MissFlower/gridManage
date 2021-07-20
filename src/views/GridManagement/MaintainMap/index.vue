@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-19 16:24:00
+ * @LastEditTime: 2021-07-20 16:23:46
 -->
 <template>
 	<!-- 维护地图容器 -->
@@ -351,7 +351,7 @@
 			}
 
 			// 保存网格(页面保存按钮)
-			const saveGridHandle = () => {
+			const saveGridHandle = async () => {
 				const { getCurrentPolygonInfo } = map
 				const { code, message, data } = getCurrentPolygonInfo()
 				// console.log(data)
@@ -369,7 +369,8 @@
 					}
 				} else {
 					Message.warn(message)
-					initProcess()
+					await initProcess()
+					addTextMarkers()
 				}
 			}
 
@@ -412,7 +413,8 @@
 						if (code === 200) {
 							await deleteGrid({ id: data.id, mapType: MAP_TYPE.MAINTAIN_MAP })
 							// 初始化流程
-							initProcess()
+							await initProcess()
+							addTextMarkers()
 						} else {
 							Message.warn(message)
 						}
@@ -454,8 +456,9 @@
 			}
 
 			// 分配完成
-			const dispatchedHandle = () => {
-				initProcess()
+			const dispatchedHandle = async () => {
+				await initProcess()
+				addTextMarkers()
 			}
 
 			// 获取附近门店坐标
@@ -693,6 +696,7 @@
 			onActivated(async () => {
 				// 初始化流程
 				await initProcess()
+				addTextMarkers()
 				// 若当前用户为bdm则获取bdm下的得bd人员用于分配网格(ADMIN_ROLE_TYPE.BD_ADMIN_ROLE角色固定列表只拉取一次 ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE及以上点击网格获取)
 				!state.orgOrbdList.length && getBdUserList()
 			})
