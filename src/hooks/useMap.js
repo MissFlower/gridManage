@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 13:26:36
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-19 14:52:58
+ * @LastEditTime: 2021-07-21 09:51:16
  */
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
@@ -560,6 +560,9 @@ export function useMap(el, options = {}) {
 		}
 		polyEditor.open()
 		isEdit.value = polyEditor.editable
+		polyEditor.on('end', ({ target }) => {
+			!target.getArea() && (isEdit.value = false)
+		})
 	}
 
 	// 关闭多边形编辑器
