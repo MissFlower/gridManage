@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-23 10:42:40
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-20 12:38:05
+ * @LastEditTime: 2021-07-21 16:56:18
 -->
 <template>
 	<template v-if="!item.hidden">
@@ -20,7 +20,7 @@
 			<template #title>
 				<Item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
 			</template>
-			<SiderItem v-for="child in item.children" :key="child.fullPath" :item="child" />
+			<SiderItem v-for="child in item.children" :key="child.fullPath" :is-nest="true" :item="child" />
 		</SubMenu>
 	</template>
 </template>
@@ -42,6 +42,10 @@
 			item: {
 				type: Object,
 				required: true
+			},
+			isNest: {
+				type: Boolean,
+				default: false
 			}
 		},
 		setup() {
@@ -57,7 +61,7 @@
 						return true
 					}
 				})
-				// console.log(showingChildren)
+				// console.log(onlyOneChild.value)
 
 				// 当只有一个子路由器时，默认显示子路由器
 				if (showingChildren.length === 1) {

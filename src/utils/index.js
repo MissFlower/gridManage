@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-01 15:51:26
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-20 15:28:05
+ * @LastEditTime: 2021-07-21 11:20:15
  */
 // 高德多边形字符串转经纬度数据
 export function strTransferLngLat(path) {
@@ -23,4 +23,14 @@ export const withInstall = (component, alias) => {
 		}
 	}
 	return component
+}
+
+export function openWindow(url, opt) {
+	const { target = '__blank', noopener = true, noreferrer = true } = opt || {}
+	const feature = []
+
+	noopener && feature.push('noopener=yes')
+	noreferrer && feature.push('noreferrer=yes')
+
+	window.open(url, target, feature.join(','))
 }

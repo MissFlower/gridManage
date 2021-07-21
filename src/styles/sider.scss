@@ -1,10 +1,27 @@
-.ant-layout-sider .ant-menu-inline-collapsed .ant-menu-submenu-selected {
-	position: relative;
+.ant-layout-sider-collapsed {
+	.ant-menu-submenu-selected {
+		position: relative;
 
-	.ant-menu-submenu-title::before {
+		.ant-menu-submenu-title::before {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 3px;
+			height: 100%;
+			background-color: #0960bd;
+			content: '';
+		}
+	}
+
+	.ant-menu-item {
+		background-color: #001529 !important;
+	}
+
+	.ant-menu-item-selected.ant-menu-item a::after {
 		position: absolute;
 		top: 0;
 		left: 0;
+		width: 100%;
 		width: 3px;
 		height: 100%;
 		background-color: #0960bd;
@@ -13,12 +30,23 @@
 }
 
 .ant-layout-sider {
+	.ant-menu-item,
 	.ant-menu-submenu-title {
 		padding-left: 16px !important;
 	}
 
-	.ant-menu-item {
+	.ant-menu-sub .ant-menu-item {
 		padding-left: 40px !important;
+	}
+}
+
+.ant-menu-inline-collapsed-tooltip {
+	.anticon {
+		display: none;
+	}
+
+	.side-item-title {
+		color: #fff;
 	}
 }
 
