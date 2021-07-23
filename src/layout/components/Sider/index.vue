@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 14:04:49
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-20 15:38:33
+ * @LastEditTime: 2021-07-23 14:25:25
 -->
 <template>
 	<Logo :collapse="collapsed" />
@@ -17,7 +17,7 @@
 			class="sidebar-container"
 			@openChange="onOpenChange"
 		>
-			<SiderItem v-for="route in permission_routes" :key="route.path" :item="route" />
+			<SiderItem v-for="route in routes" :key="route.path" :item="route" />
 		</Menu>
 	</ScrollContainer>
 </template>
@@ -27,6 +27,7 @@
 	import { Menu } from 'ant-design-vue'
 	import { useStore } from 'vuex'
 	import { useRoute } from 'vue-router'
+	import { REDIRECT_NAME } from 'src/router/constant'
 	import ScrollContainer from 'src/components/Scrollbar'
 	import SiderItem from './components/SiderItem.vue'
 	import Logo from './components/Logo.vue'
@@ -40,7 +41,7 @@
 		},
 		setup() {
 			const store = useStore()
-			const permission_routes = computed(() => store.getters.permission_routes)
+			const routes = computed(() => store.getters.routes)
 			const collapsed = computed(() => store.state.app.sidebar.collapsed)
 
 			const route = useRoute()
@@ -79,6 +80,9 @@
 						}
 
 						const pathList = newPath.split('/')
+						if (pathList.includes(REDIRECT_NAME.toLowerCase())) {
+							return
+						}
 						const pathListLen = pathList.length
 						state.selectedKeys = [newPath]
 
@@ -111,7 +115,7 @@
 
 			const _onlyOneChildren = path => {
 				// 筛选路由中有且仅有一个子路由的路由集合
-				const oneChildrenRoute = permission_routes.value.filter(item => {
+				const oneChildrenRoute = routes.value.filter(item => {
 					return item.children && !item.children.children && item.children.length === 1
 				})
 				// 将仅有一个子路由的路由集合过滤出和当前路径一致的路由
@@ -126,7 +130,7 @@
 			}
 
 			const _getParentPath = path => {
-				const parentPath = permission_routes.value.filter(item => {
+				const parentPath = routes.value.filter(item => {
 					return item.children?.[0].fullPath === path
 				})
 				return parentPath
@@ -148,7 +152,7 @@
 			}
 
 			return {
-				permission_routes,
+				routes,
 				collapsed,
 				...toRefs(state),
 				onOpenChange

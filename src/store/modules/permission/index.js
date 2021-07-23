@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-23 11:06:53
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-09 11:49:24
+ * @LastEditTime: 2021-07-22 21:36:24
  */
 import path from 'path-browserify'
 import { basicRoutes, asyncRoutes, PAGE_NOT_FOUND_ROUTE } from 'src/router/routes'
@@ -71,7 +71,7 @@ const state = {
 const mutations = {
 	[types.SET_ROUTES]: (state, routes) => {
 		state.addRoutes = routes
-		state.routes = routes.concat(withFullPathContantRoutes)
+		state.routes = withFullPathContantRoutes.concat(routes)
 	}
 }
 

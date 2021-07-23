@@ -385,7 +385,8 @@
 				}
 				state.gridModalVisible = false
 				// 初始化流程
-				initProcess()
+				await initProcess()
+				addTextMarkers()
 			}
 
 			// 编辑保存网格

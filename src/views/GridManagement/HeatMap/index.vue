@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:06:08
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-16 15:31:55
+ * @LastEditTime: 2021-07-23 13:41:10
 -->
 <template>
 	<!-- 热力图容器 -->
@@ -53,14 +53,14 @@
 				() => state.zoom,
 				(newVal, preVal) => {
 					if (newVal <= ZOOM_DEMARCATION_VALUE && preVal > ZOOM_DEMARCATION_VALUE) {
-						// 调用一级热力图数据
-						state.mapZoom = HEAT_MAP_DEMARCATION_TYPE.ONE_LEVEL
+						// 调用二级热力图数据
+						state.mapZoom = HEAT_MAP_DEMARCATION_TYPE.TWO_LEVEL
 						getHeatMapData()
 						return
 					}
 					if (newVal > ZOOM_DEMARCATION_VALUE && preVal <= ZOOM_DEMARCATION_VALUE) {
-						// 调用二级热力图数据
-						state.mapZoom = HEAT_MAP_DEMARCATION_TYPE.TWO_LEVEL
+						// 调用一级热力图数据
+						state.mapZoom = HEAT_MAP_DEMARCATION_TYPE.ONE_LEVEL
 						getHeatMapData()
 					}
 				}

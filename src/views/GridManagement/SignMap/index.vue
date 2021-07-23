@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-21 15:30:28
+ * @LastEditTime: 2021-07-23 14:45:18
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -149,7 +149,6 @@
 				() => mapAttrs.zoom,
 				(zoom, preZoom) => {
 					if (zoom > TEXT_MARKER_ZOOM_DEMARCATION_VALUE && preZoom <= TEXT_MARKER_ZOOM_DEMARCATION_VALUE) {
-						console.log(123213123)
 						addTextMarkers()
 						return
 					}
@@ -388,7 +387,8 @@
 				}
 				state.gridModalVisible = false
 				// 初始化流程
-				initProcess()
+				await initProcess()
+				addTextMarkers()
 			}
 
 			// 编辑保存网格

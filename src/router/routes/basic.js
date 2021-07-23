@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 17:52:09
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-09 13:23:04
+ * @LastEditTime: 2021-07-23 14:35:10
  */
 import { Layout, REDIRECT_NAME } from 'src/router/constant'
 export const PAGE_ERROR_ROUTES = [
@@ -31,8 +31,7 @@ export const REDIRECT_ROUTE = {
 			name: REDIRECT_NAME,
 			component: () => import('src/views/System/Redirect/index.vue'),
 			meta: {
-				title: REDIRECT_NAME,
-				breadcrumb: false
+				title: REDIRECT_NAME
 			}
 		}
 	]

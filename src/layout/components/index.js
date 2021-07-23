@@ -9,3 +9,4 @@
 export { default as Content } from './Content/index.vue'
 export { default as Header } from './Header/index.vue'
 export { default as Sider } from './Sider/index.vue'
+export { default as TabsView } from './TabsView/index.vue'

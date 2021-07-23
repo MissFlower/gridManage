@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 18:03:13
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-09 13:23:12
+ * @LastEditTime: 2021-07-23 14:28:11
  */
 import { PAGE_ERROR_ROUTES, REDIRECT_ROUTE } from './basic'
 const modules = import.meta.globEager('./modules/**/*.js')
@@ -48,7 +48,7 @@ export const PAGE_NOT_FOUND_ROUTE = {
 }
 
 // Basic routing without permission
-export const basicRoutes = [RootRoute, LoginRoute, ...PAGE_ERROR_ROUTES, REDIRECT_ROUTE]
+export const basicRoutes = [RootRoute, LoginRoute, REDIRECT_ROUTE, ...PAGE_ERROR_ROUTES]
 
 // Async routing with permission
 export const asyncRoutes = [...routeModuleList]
