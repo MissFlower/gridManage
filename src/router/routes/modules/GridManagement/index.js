@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 14:28:42
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-26 15:25:09
+ * @LastEditTime: 2021-07-26 18:17:03
  */
 import { Layout } from 'src/router/constant'
 
@@ -26,7 +26,8 @@ const route = [
 				component: () => import('src/views/GridManagement/index.vue'),
 				meta: {
 					title: '网格管理',
-					code: 100001
+					code: 100001,
+					hideWatermark: true
 				}
 			},
 			{
@@ -35,37 +36,6 @@ const route = [
 				component: () => import('src/views/GridRecord/index.vue'),
 				meta: {
 					title: '网格变更记录',
-					code: 100002
-				}
-			}
-		]
-	},
-	{
-		path: '/grid1',
-		name: 'Grid1',
-		component: Layout,
-		redirect: '/grid1/management1',
-		meta: {
-			title: '网格化管理',
-			icon: 'icon-wanggeshitu',
-			code: 100001
-		},
-		children: [
-			{
-				path: 'management1',
-				name: 'GridManagement1',
-				component: () => import('src/views/GridManagement/index.vue'),
-				meta: {
-					title: '网格管理1',
-					code: 100001
-				}
-			},
-			{
-				path: 'record1',
-				name: 'GridRecord1',
-				component: () => import('src/views/GridRecord/index.vue'),
-				meta: {
-					title: '网格变更记录1',
 					code: 100002
 				}
 			}

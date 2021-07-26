@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-26 14:37:44
+ * @LastEditTime: 2021-07-26 17:43:00
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -270,6 +270,10 @@
 
 			// 网格点击事件
 			const gridClickHandle = async gridInfo => {
+				if (state.isCreate) {
+					state.isShowDispatchDrawer = false
+					return
+				}
 				if (userGridsData.role === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE) {
 					state.orgOrbdList = (await getDispatchOrganization({ regionCode: gridInfo.districtCode })) || []
 					state.gridInfoList = [gridInfo]

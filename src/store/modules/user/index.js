@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-23 11:09:24
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-19 18:27:29
+ * @LastEditTime: 2021-07-26 17:37:28
  */
 import { resetRouter } from 'src/router'
 import { getToken, removeToken, setToken } from 'src/utils/cookie'
@@ -55,8 +55,8 @@ const actions = {
 					if (!res) {
 						reject('Verification failed, Please Login Aligin!')
 					}
-					const { trueName, avatar, userId } = res
-					commit(types.SET_USERINFO, { username: trueName, avatar, userId })
+					const { trueName, avatar, userId, mobile } = res
+					commit(types.SET_USERINFO, { username: trueName, avatar, userId, phone: mobile })
 					resolve()
 				})
 				.catch(error => {
