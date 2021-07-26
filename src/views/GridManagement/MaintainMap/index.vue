@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-26 11:40:32
+ * @LastEditTime: 2021-07-26 14:38:33
 -->
 <template>
 	<!-- 维护地图容器 -->
@@ -708,6 +708,10 @@
 				await initProcess()
 				// 若当前用户为bdm则获取bdm下的得bd人员用于分配网格(ADMIN_ROLE_TYPE.BD_ADMIN_ROLE角色固定列表只拉取一次 ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE及以上点击网格获取)
 				!state.orgOrbdList.length && getBdUserList()
+			})
+
+			onDeactivated(() => {
+				state.isShowDispatchDrawer = false
 			})
 
 			onUnmounted(() => {
