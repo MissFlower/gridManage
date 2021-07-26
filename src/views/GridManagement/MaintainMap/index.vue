@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-26 14:38:33
+ * @LastEditTime: 2021-07-26 15:24:18
 -->
 <template>
 	<!-- 维护地图容器 -->
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-	import { defineComponent, onMounted, reactive, ref, toRefs, watchEffect, watch, onUnmounted, createVNode, onActivated } from 'vue'
+	import { defineComponent, onMounted, reactive, ref, toRefs, watchEffect, watch, onUnmounted, createVNode, onActivated, onDeactivated } from 'vue'
 	import { message as Message, Modal, Radio } from 'ant-design-vue'
 	import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
 	import ShopInfo from '../components/shopInfo.vue'

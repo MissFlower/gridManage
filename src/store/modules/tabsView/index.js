@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-21 17:07:26
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-23 15:20:39
+ * @LastEditTime: 2021-07-26 16:00:16
  */
 import {
 	ADD_VISITED_VIEW,
@@ -20,6 +20,7 @@ import {
 	DEL_LEFT_CACHED_VIEWS,
 	DEL_RIGHT_VISITED_VIEWS,
 	DEL_RIGHT_CACHED_VIEWS,
+	SORT_TABS,
 	addView,
 	addVisitedView,
 	addCachedView,
@@ -38,11 +39,13 @@ import {
 	delLeftCachedViews,
 	delRightViews,
 	delRightVisitedViews,
-	delRightCachedViews
+	delRightCachedViews,
+	sortTabs
 } from './types'
 const state = {
 	visitedViews: [],
-	cachedViews: []
+	cachedViews: [],
+	lastDragEndIndex: 0
 }
 
 const mutations = {
@@ -134,6 +137,12 @@ const mutations = {
 			if (item.name === view.name) index = state.cachedViews.indexOf(item)
 			return index >= state.cachedViews.indexOf(item)
 		})
+	},
+	[SORT_TABS]: (state, { oldIndex, newIndex }) => {
+		const currentTab = state.visitedViews[oldIndex]
+		state.visitedViews.splice(oldIndex, 1)
+		state.visitedViews.splice(newIndex, 0, currentTab)
+		state.lastDragEndIndex = state.lastDragEndIndex + 1
 	}
 }
 
@@ -262,6 +271,12 @@ const actions = {
 		return new Promise(resolve => {
 			commit(DEL_RIGHT_CACHED_VIEWS, view)
 			resolve([...state.cachedViews])
+		})
+	},
+	[sortTabs]({ commit, state }, { oldIndex, newIndex }) {
+		return new Promise(resolve => {
+			commit(SORT_TABS, { oldIndex, newIndex })
+			resolve([...state.visitedViews])
 		})
 	}
 }

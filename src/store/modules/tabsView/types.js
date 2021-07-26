@@ -20,6 +20,7 @@ export const DEL_LEFT_VISITED_VIEWS = 'DEL_LEFT_VISITED_VIEWS'
 export const DEL_LEFT_CACHED_VIEWS = 'DEL_LEFT_CACHED_VIEWS'
 export const DEL_RIGHT_VISITED_VIEWS = 'DEL_RIGHT_VISITED_VIEWS'
 export const DEL_RIGHT_CACHED_VIEWS = 'DEL_RIGHT_CACHED_VIEWS'
+export const SORT_TABS = 'SORT_TABS'
 
 // actions
 export const addView = 'addView'
@@ -41,3 +42,4 @@ export const delLeftCachedViews = 'delLeftCachedViews'
 export const delRightViews = 'delRightViews'
 export const delRightVisitedViews = 'delRightVisitedViews'
 export const delRightCachedViews = 'delRightCachedViews'
+export const sortTabs = 'sortTabs'

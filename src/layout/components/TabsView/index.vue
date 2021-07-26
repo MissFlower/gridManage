@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-21 16:58:25
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-26 10:44:23
+ * @LastEditTime: 2021-07-26 16:01:30
 -->
 <template>
 	<div class="tabs-view-container">
@@ -19,7 +19,7 @@
 			@edit="handleEdit"
 		>
 			<template v-for="tab in visitedViews" :key="tab.path">
-				<TabPane :closable="!(tab && tab.meta && tab.meta.affix)">
+				<TabPane :closable="!((tab && tab.meta && tab.meta.affix) || visitedViews.length === 1)">
 					<template #tab>
 						<TabContent :tab-item="tab" :affix-tabs="affixTabs" class="tab" />
 					</template>
@@ -30,12 +30,13 @@
 </template>
 
 <script>
-	import { computed, defineComponent, onMounted, ref, watch } from 'vue'
+	import { computed, defineComponent, onMounted, ref, watch, nextTick } from 'vue'
 	import { Tabs } from 'ant-design-vue'
 	import { useRoute } from 'vue-router'
 	import { useStore } from 'vuex'
 	import TabContent from './components/TabContent.vue'
 	import { useGo, useRedo } from 'src/hooks/usePage'
+	import { useSortable } from 'src/hooks/useSortable'
 	export default defineComponent({
 		name: 'MultipleTabs',
 		components: {
@@ -127,9 +128,33 @@
 				}
 			}
 
+			const useTabsDrag = affixTextList => {
+				nextTick(() => {
+					const el = document.querySelectorAll(`.tabs-view-container .ant-tabs-nav > div`)?.[0]
+					const { initSortable } = useSortable(el, {
+						filter: e => {
+							const text = e?.target?.innerText
+							if (!text) return false
+							return affixTextList.value.includes(text)
+						},
+						onEnd: evt => {
+							const { oldIndex, newIndex } = evt
+
+							if (oldIndex === newIndex) {
+								return
+							}
+
+							store.dispatch('tabsView/sortTabs', { oldIndex, newIndex })
+						}
+					})
+					initSortable()
+				})
+			}
+
 			onMounted(() => {
 				initTabs()
 				addTabs()
+				useTabsDrag(affixTabs)
 			})
 			return {
 				activeKeyRef,

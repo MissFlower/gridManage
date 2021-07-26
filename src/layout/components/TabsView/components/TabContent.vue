@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-22 11:01:06
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-23 17:15:25
+ * @LastEditTime: 2021-07-26 15:57:26
 -->
 <template>
 	<Dropdown :trigger="['contextmenu']" @visibleChange="visible => dropdownChangeHandle(visible, tabItem)">
@@ -61,7 +61,9 @@
 				const index = state.currentIndex
 				const refleshDisabled = curItem ? curItem.fullPath !== route.fullPath : true
 				const leftDisabled = index === 0
-				const rightDisabled = index === visitedViews.value.length - 1
+				const rightDisabled = index === store.getters.visitedViews.length - 1 && store.state.tabsView.lastDragEndIndex >= 0
+				const disabled = store.getters.visitedViews.length === 1
+				const { meta } = visitedViews.value.find(view => view.fullPath === props.tabItem.fullPath)
 				const dropMenuList = [
 					{
 						title: '刷新',
@@ -71,6 +73,7 @@
 					{
 						title: '关闭标签页',
 						value: CLOSE_TAB,
+						disabled: !!meta?.affix || disabled,
 						divider: true
 					},
 					{
@@ -86,11 +89,13 @@
 					},
 					{
 						title: '关闭其它标签页',
-						value: CLOSE_OTHERS_TAB
+						value: CLOSE_OTHERS_TAB,
+						disabled: disabled
 					},
 					{
 						title: '关闭全部标签页',
-						value: CLOSE_ALL_TAB
+						value: CLOSE_ALL_TAB,
+						disabled: disabled
 					}
 				]
 				return dropMenuList
@@ -100,7 +105,6 @@
 
 			const toLastView = (visitedViews, view) => {
 				const latestView = visitedViews.slice(-1)[0]
-				console.log(latestView)
 				if (latestView) {
 					go(latestView.fullPath, false)
 				} else {
