@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-26 21:27:25
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-23 15:18:10
+ * @LastEditTime: 2021-07-26 10:44:36
 -->
 <template>
 	<div />
@@ -22,7 +22,7 @@
 			const { path } = params
 
 			const _path = Array.isArray(path) ? path.join('/') : path
-			console.log(_path)
+
 			replace({
 				path: '/' + _path,
 				query

@@ -4,10 +4,10 @@
  * @Author: AiDongYang
  * @Date: 2021-06-30 15:30:53
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-16 17:58:04
+ * @LastEditTime: 2021-07-26 11:31:38
 -->
 <template>
-	<Drawer v-bind="$attrs" title="网格分配" :mask="false" :closable="false" @save="saveHandle" @close="closeHandle">
+	<Drawer v-bind="$attrs" title="网格分配" :mask="false" :closable="false">
 		<Form>
 			<div class="grid-name-wrap">
 				<p>网格名:</p>
@@ -29,7 +29,7 @@
 				<span>机构分配</span>
 				<FormItem v-bind="validateInfos.orgId">
 					<RadioGroup v-model:value="orgId" class="org-radio-group">
-						<Radio v-for="{ id, orgName } of orgOrbdList" :key="id" :value="id" class="radio-item">{{ orgName }}</Radio>
+						<Radio v-for="{ id, orgName } of orgOrbdList" :key="id" :value="id" :disabled="!isDispatchGrid" class="radio-item">{{ orgName }}</Radio>
 					</RadioGroup>
 				</FormItem>
 			</div>
@@ -62,12 +62,16 @@
 				</div>
 			</div>
 		</Form>
+		<template #footer>
+			<Button @click="cancelHandle">取消</Button>
+			<Button v-if="isDispatchGrid" type="primary" @click="saveHandle">保存</Button>
+		</template>
 	</Drawer>
 </template>
 
 <script>
-	import { defineComponent, nextTick, reactive, toRefs, watch } from 'vue'
-	import { Form, Select, Radio } from 'ant-design-vue'
+	import { computed, defineComponent, nextTick, reactive, toRefs, watch } from 'vue'
+	import { Form, Select, Radio, Button } from 'ant-design-vue'
 	import Drawer from 'src/components/Drawer/index.vue'
 	import { ADMIN_ROLE_TYPE } from 'src/common/constant'
 	import { dispatchGrid } from 'src/api/GridManagement'
@@ -85,7 +89,8 @@
 			Radio,
 			RadioGroup: Radio.Group,
 			Form,
-			FormItem: Form.Item
+			FormItem: Form.Item,
+			Button
 		},
 		props: {
 			role: {
@@ -104,12 +109,17 @@
 			gridInfoList: {
 				type: Object,
 				required: true
+			},
+			isDispatchGrid: {
+				type: Boolean,
+				default: false
 			}
 		},
 		emits: ['close', 'dispatched'],
 		setup(props, { emit }) {
+			console.log(props)
 			let state = reactive({
-				orgId: undefined, // 机构id
+				orgId: '', // 机构id
 				sellerId: '', // 负责人id
 				maintainId: '', // 维护人id
 				gridIds: [], // 网格id
@@ -129,17 +139,22 @@
 					return Promise.resolve()
 				}
 			}
+
+			const validatorMsg = name => {
+				return computed(() => `${(props.isDispatchGrid ? '请选择' : '暂未分配') + name}`)
+			}
 			const rulesRef = reactive({
-				orgId: [{ required: true, message: '请选择机构' }],
-				sellerId: [{ required: true, message: '请选择负责人' }],
-				maintainId: [{ required: true, message: '请选择维护人' }],
+				orgId: [{ required: true, message: validatorMsg('机构') }],
+				sellerId: [{ required: true, message: validatorMsg('负责人') }],
+				maintainId: [{ required: true, message: validatorMsg('维护人') }],
 				gridIds: [{ validator: checkGridIds, message: '请选择网格' }]
 			})
 
 			watch(
 				() => state.orgId,
 				newVal => {
-					if (props.role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE && newVal !== undefined) {
+					console.log(newVal)
+					if (props.role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE && newVal) {
 						state.currentBdList = props.orgOrbdList.find(item => newVal === item.orgId).userList
 					}
 				}
@@ -148,6 +163,7 @@
 			watch(
 				() => props.gridInfoList,
 				newVal => {
+					console.log(newVal)
 					if (newVal.length === 0) {
 						state.selfSupportShopCount = 0
 						state.averageFlows = 0
@@ -170,6 +186,11 @@
 						prev.seasMapShopCount += cur.publicMapNum
 						return prev
 					}, state)
+					console.log(newVal.orgId)
+					state.orgId = newVal[0]?.orgId
+					state.sellerId = newVal[0]?.sellerId
+					state.maintainId = newVal[0]?.maintainId
+					console.log(state)
 				},
 				{
 					deep: true
@@ -206,7 +227,7 @@
 			}
 
 			// 取消
-			const closeHandle = () => {
+			const cancelHandle = () => {
 				state.currentBdList = []
 				resetFields()
 				emit('close')
@@ -217,7 +238,7 @@
 				ADMIN_ROLE_TYPE,
 				validateInfos,
 				saveHandle,
-				closeHandle
+				cancelHandle
 			}
 		}
 	})

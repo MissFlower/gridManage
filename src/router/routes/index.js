@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 18:03:13
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-23 14:28:11
+ * @LastEditTime: 2021-07-26 10:45:52
  */
 import { PAGE_ERROR_ROUTES, REDIRECT_ROUTE } from './basic'
 const modules = import.meta.globEager('./modules/**/*.js')
@@ -35,7 +35,8 @@ export const LoginRoute = {
 	component: () => import('src/views/System/Login/index.vue'),
 	hidden: true,
 	meta: {
-		title: '登录'
+		title: '登录',
+		hideTab: true
 	}
 }
 

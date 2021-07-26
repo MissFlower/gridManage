@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-23 14:45:18
+ * @LastEditTime: 2021-07-26 11:41:55
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -37,11 +37,12 @@
 
 	<!-- 网格分配抽屉 -->
 	<GridDrawer
-		v-model:visible="isDispatchGrid"
+		v-model:visible="isShowDispatchDrawer"
 		:role="role"
 		:map-type="MAP_TYPE.SIGN_MAP"
 		:org-orbd-list="orgOrbdList"
 		:grid-info-list="gridInfoList"
+		:is-dispatch-grid="isDispatchGrid"
 		@close="cancelBatchDispatchGridHandle"
 		@dispatched="dispatchedHandle"
 	/>
@@ -110,6 +111,7 @@
 			const gridInfo = ref({}) // 闭环时网格信息
 			const state = reactive({
 				gridModalVisible: false,
+				isShowDispatchDrawer: false,
 				isDispatchGrid: false,
 				isCreate: false,
 				isEdit: false,
@@ -238,7 +240,6 @@
 
 			// 添加文本标记
 			const addTextMarkers = () => {
-				console.log('开始绘制文本标记')
 				const { gridList, role } = userGridsData
 				const textMarkerList = []
 				gridList.forEach(grid => {
@@ -269,16 +270,21 @@
 
 			// 网格点击事件
 			const gridClickHandle = async gridInfo => {
-				if (!state.isDispatchGrid) {
-					return
-				}
 				if (userGridsData.role === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE) {
-					state.gridInfoList = [gridInfo]
 					state.orgOrbdList = (await getDispatchOrganization({ regionCode: gridInfo.districtCode })) || []
+					state.gridInfoList = [gridInfo]
+					state.isShowDispatchDrawer = true
 					return
 				}
 
 				if (userGridsData.role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE) {
+					state.isShowDispatchDrawer = true
+					if (!state.isDispatchGrid) {
+						// 不是批量分配状态 点击网格时展示该网格信息为单选
+						state.gridInfoList = [gridInfo]
+						return
+					}
+					// 批量分配
 					const index = state.gridInfoList.findIndex(grid => grid.id === gridInfo.id)
 					if (gridInfo.isChecked) {
 						// 添加
@@ -444,6 +450,7 @@
 			// 确定批量分配网格
 			const sureBatchDispatchGridHandle = () => {
 				map.resetGridStyle()
+				state.isShowDispatchDrawer = true
 				state.isDispatchGrid = true
 				console.log('批量分配网格')
 			}
@@ -451,6 +458,7 @@
 			// 取消批量分配网格
 			const cancelBatchDispatchGridHandle = () => {
 				map.resetGridStyle()
+				state.isShowDispatchDrawer = false
 				state.isDispatchGrid = false
 				mapButtonGroupRef.value.batchDispatchGridFlag = true
 				// 重置选中的网格信息列表
@@ -496,7 +504,7 @@
 					averageNum,
 					cost,
 					sourceStr,
-					averageFlow
+					avgProfit
 				} = e.target.getExtData()
 
 				const shopInfoConfig = {
@@ -527,7 +535,7 @@
 							},
 							{
 								title: '近30天日均流水',
-								text: averageFlow
+								text: avgProfit
 							}
 						]
 					},

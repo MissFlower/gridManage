@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-21 16:58:25
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-23 15:20:49
+ * @LastEditTime: 2021-07-26 10:44:23
 -->
 <template>
 	<div class="tabs-view-container">
@@ -36,7 +36,6 @@
 	import { useStore } from 'vuex'
 	import TabContent from './components/TabContent.vue'
 	import { useGo, useRedo } from 'src/hooks/usePage'
-	import { REDIRECT_NAME } from 'src/router/constant'
 	export default defineComponent({
 		name: 'MultipleTabs',
 		components: {
@@ -56,7 +55,7 @@
 			watch(
 				() => route.fullPath,
 				() => {
-					if (route.name === REDIRECT_NAME) return
+					if (route?.meta?.hideTab) return
 					addTabs()
 					moveToCurrentTab()
 				}
