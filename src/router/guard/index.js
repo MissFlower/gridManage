@@ -6,11 +6,10 @@
  * @LastEditors: AiDongYang
  * @LastEditTime: 2021-06-27 00:20:00
  */
-import { router } from 'src/router'
 import { createPermissionGuard } from './permissionGuard'
 import { createMessageGuard } from './messageGuard'
 
-export function setupRouterGuard() {
+export function setupRouterGuard(router) {
 	createPermissionGuard(router)
 	createMessageGuard(router)
 }

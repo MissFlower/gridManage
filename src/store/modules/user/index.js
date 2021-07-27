@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-23 11:09:24
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-26 17:37:28
+ * @LastEditTime: 2021-07-27 17:11:18
  */
 import { resetRouter } from 'src/router'
 import { getToken, removeToken, setToken } from 'src/utils/cookie'
@@ -71,7 +71,10 @@ const actions = {
 			getMenuList()
 				.then(res => {
 					const { button = [], menu = [] } = res
-					commit(types.SET_BUTTONLIST, button)
+					commit(
+						types.SET_BUTTONLIST,
+						button.map(code => +code)
+					)
 					commit(types.SET_MENULIST, menu)
 					resolve(menu)
 				})

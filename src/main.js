@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:01:42
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-05 12:31:55
+ * @LastEditTime: 2021-07-27 17:00:15
  */
 import { createApp } from 'vue'
 import App from './App.vue'
@@ -15,6 +15,7 @@ import { router, setupRouter } from 'src/router'
 import { setupStore } from 'src/store'
 import { setupRouterGuard } from 'src/router/guard'
 import { registerGlobComp } from 'src/components/registerGlobComp'
+import { setupGlobDirectives } from '/@/directives'
 
 if (import.meta.env.DEV) {
 	import('ant-design-vue/dist/antd.css')
@@ -33,7 +34,10 @@ const bootstrap = async () => {
 	registerGlobComp(app)
 
 	// router-guard
-	setupRouterGuard()
+	setupRouterGuard(router)
+
+	// Register global directive
+	setupGlobDirectives(app)
 
 	// Mount when the route is ready
 	await router.isReady()
