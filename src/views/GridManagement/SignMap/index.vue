@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-27 11:09:11
+ * @LastEditTime: 2021-07-27 15:19:47
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -248,7 +248,8 @@
 						textMarkerList.push({
 							longitude,
 							latitude,
-							text: grid.gridOrg
+							text: grid.gridOrg,
+							...grid
 						})
 					}
 					if (role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE && grid.sellerId) {
@@ -256,7 +257,8 @@
 						textMarkerList.push({
 							longitude,
 							latitude,
-							text: grid.sellerName
+							text: grid.sellerName,
+							...grid
 						})
 					}
 				})
@@ -270,22 +272,22 @@
 
 			// 网格点击事件
 			const gridClickHandle = async gridInfo => {
-				// 右键触发查看网格信息
+				// 双击查看网格信息
 				if (userGridsData.role === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE) {
-					if (gridInfo.eventType === 'rightclick' || state.isDispatchGrid) {
+					if (gridInfo.eventType === 'dblclick' || state.isDispatchGrid) {
 						state.orgOrbdList = (await getDispatchOrganization({ regionCode: gridInfo.districtCode })) || []
 						state.gridInfoList = [gridInfo]
 					}
 
-					if (gridInfo.eventType === 'rightclick') {
+					if (gridInfo.eventType === 'dblclick') {
 						state.isShowDispatchDrawer = true
 					}
 					return
 				}
 
 				if (userGridsData.role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE) {
-					if (gridInfo.eventType === 'rightclick') {
-						// 右键展示该网格信息为单选
+					if (gridInfo.eventType === 'dblclick') {
+						// 双击展示该网格信息为单选
 						state.gridInfoList = [gridInfo]
 						state.isShowDispatchDrawer = true
 						return

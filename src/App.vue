@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:01:42
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-27 09:38:58
+ * @LastEditTime: 2021-07-27 13:19:46
 -->
 <template>
 	<ConfigProvider :locale="locale">
@@ -21,6 +21,7 @@
 	import { useStore } from 'vuex'
 	import { useRoute } from 'vue-router'
 	import { useWatermark } from 'src/hooks/useWatermark'
+	import settings from 'src/settings'
 	import Loading from 'src/components/Loading/index.vue'
 	export default defineComponent({
 		name: 'App',
@@ -32,11 +33,12 @@
 			const store = useStore()
 			const route = useRoute()
 			const loading = ref(false)
+			const { title } = settings
 			const { setWatermark, clear } = useWatermark()
 			useTitle()
 			watchEffect(() => {
 				const { username, phone } = store.getters.userInfo
-				const waterText = username + phone?.slice(-4) || ''
+				const waterText = username + phone?.slice(-4) || title
 				loading.value = store.state.common.requestCount > 0
 				setWatermark(waterText)
 				route?.meta?.hideWatermark && clear()

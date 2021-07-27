@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 13:26:36
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-27 11:27:21
+ * @LastEditTime: 2021-07-27 15:13:45
  */
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
@@ -30,6 +30,7 @@ export function useMap(el, options = {}) {
 	let currentUsedGridPolygon = null // 当前绘制图形的多边形边界数据
 	const drawedParentPolygons = [] // 已经绘制过的父级网格数据
 	const drawedOwnPolygons = [] // 已经绘制过自己的网格数据
+	const drawedChildrenPolygons = [] // 已经绘制过子集的网格数据
 	let currentUsedDistrictCode = '' // 当前正在被使用的行政区code
 	let currentUsedParentPolygonId = '' // 当前正在被使用的父级多边形ID
 	const isEdit = ref(false) // 是否正在编辑
@@ -260,16 +261,17 @@ export function useMap(el, options = {}) {
 		mapInstance.setDefaultCursor('default')
 	}
 
-	// 多边形鼠标移入事件处理函数
-	function polygonMouseoverHandle() {
-		this.setOptions({
+	// 自己多边形鼠标移入事件处理函数
+	function ownPolygonMouseoverHandle(e, polygon) {
+		polygon = polygon || this
+		polygon.setOptions({
 			cursor: 'pointer',
 			fillOpacity: OWN_GRID_OPACITY_CHECKED
 		})
 	}
 
-	// 多边形鼠标移出事件处理函数
-	function polygonMouseoutHandle() {
+	// 自己多边形鼠标移出事件处理函数
+	function ownPolygonMouseoutHandle() {
 		if (!this.getExtData().isChecked) {
 			this.setOptions({
 				cursor: 'default',
@@ -278,9 +280,9 @@ export function useMap(el, options = {}) {
 		}
 	}
 
-	// 多边形点击事件处理函数
-	function polygonClickHandle() {
-		const polygon = this
+	// 自己多边形点击事件处理函数
+	function ownPolygonClickHandle(e, polygon) {
+		polygon = polygon || this
 		const extData = polygon.getExtData()
 		const { isChecked, callback } = extData
 		const { role, isDispatchGrid } = extData.state
@@ -322,11 +324,11 @@ export function useMap(el, options = {}) {
 			})
 	}
 
-	// 多边形右键事件处理函数
-	function polygonRightclickHandle() {
-		const polygon = this
+	// 自己多边形双击事件处理函数
+	function ownPolygonDblclickHandle(e, polygon) {
+		polygon = polygon || this
 		const extData = polygon.getExtData()
-		const { isChecked, callback } = extData
+		const { callback } = extData
 		const { isDispatchGrid } = extData.state
 		// 批量分配状态下右键功能禁用
 		if (isDispatchGrid) {
@@ -335,54 +337,90 @@ export function useMap(el, options = {}) {
 		// 重置网格样式
 		resetGridStyle()
 		// 设置当前使用的多边形和透明度
-		if (!isChecked) {
-			polygon.setOptions({
-				fillOpacity: OWN_GRID_OPACITY_CHECKED
-			})
-			polygon.setExtData({
-				...extData,
-				isChecked: true
-			})
-		} else {
-			polygon.setOptions({
-				fillOpacity: OWN_GRID_OPACITY_DEFAULT
-			})
-			polygon.setExtData({
-				...extData,
-				isChecked: false
-			})
-		}
+		polygon.setOptions({
+			fillOpacity: OWN_GRID_OPACITY_CHECKED
+		})
+		polygon.setExtData({
+			...extData,
+			isChecked: true
+		})
 		// 调用回调函数
 		callback &&
 			callback({
 				...polygon.getExtData(),
-				eventType: 'rightclick'
+				eventType: 'dblclick'
 			})
 	}
 
-	// 多边形绑定事件
-	function polygonBindEvent() {
+	// 子集多边形鼠标移入事件
+	function childPolygonMouseoverHandle() {
+		const { pid } = this.getExtData()
+		ownPolygonMouseoverHandle(
+			null,
+			drawedOwnPolygons.find(ownPolygon => ownPolygon.getExtData().id === pid)
+		)
+	}
+
+	// 子集多边形点击事件
+	function childPolygonClickHandle() {
+		const { pid } = this.getExtData()
+		ownPolygonClickHandle(
+			null,
+			drawedOwnPolygons.find(ownPolygon => ownPolygon.getExtData().id === pid)
+		)
+	}
+
+	// 子集多边形双击事件
+	function childPolygonDblclickHandle() {
+		const { pid } = this.getExtData()
+		ownPolygonDblclickHandle(
+			null,
+			drawedOwnPolygons.find(ownPolygon => ownPolygon.getExtData().id === pid)
+		)
+	}
+
+	// 自己的多边形绑定事件
+	function ownPolygonBindEvent() {
 		drawedOwnPolygons.forEach(polygon => {
-			polygon.on('mouseover', polygonMouseoverHandle)
+			polygon.on('mouseover', ownPolygonMouseoverHandle)
 
-			polygon.on('mouseout', polygonMouseoutHandle)
+			polygon.on('mouseout', ownPolygonMouseoutHandle)
 
-			polygon.on('click', polygonClickHandle)
+			polygon.on('click', ownPolygonClickHandle)
 
-			polygon.on('rightclick', polygonRightclickHandle)
+			polygon.on('dblclick', ownPolygonDblclickHandle)
+		})
+	}
+
+	// 子集的多边形绑定事件
+	function childrenPolygonBindEvent() {
+		drawedChildrenPolygons.forEach(polygon => {
+			polygon.on('mouseover', childPolygonMouseoverHandle)
+
+			polygon.on('click', childPolygonClickHandle)
+
+			polygon.on('dblclick', childPolygonDblclickHandle)
 		})
 	}
 
 	// 解绑事件
 	function unbindEvent() {
 		drawedOwnPolygons.forEach(polygon => {
-			polygon.off('mouseover', polygonMouseoverHandle)
+			polygon.off('mouseover', ownPolygonMouseoverHandle)
 
-			polygon.off('mouseout', polygonMouseoutHandle)
+			polygon.off('mouseout', ownPolygonMouseoutHandle)
 
-			polygon.off('click', polygonClickHandle)
+			polygon.off('click', ownPolygonClickHandle)
 
-			polygon.off('rightclick', polygonRightclickHandle)
+			polygon.off('rightclick', ownPolygonDblclickHandle)
+		})
+
+		drawedChildrenPolygons.forEach(polygon => {
+			polygon.off('mouseover', childPolygonMouseoverHandle)
+
+			polygon.off('click', childPolygonClickHandle)
+
+			polygon.off('dblclick', childPolygonDblclickHandle)
 		})
 	}
 	// 绘制行政区域边界
@@ -474,7 +512,8 @@ export function useMap(el, options = {}) {
 			fillOpacity: OWN_GRID_OPACITY_DEFAULT,
 			strokeColor: '#2b8cbe',
 			strokeWeight: 0,
-			strokeStyle: 'solid'
+			strokeStyle: 'solid',
+			cursor: 'pointer'
 		}
 		const parentOptions = Object.assign({}, defaultParentOptions, options?.parentOptions || {})
 		const ownOptions = Object.assign({}, defaultOwnOptions, options?.ownOptions || {})
@@ -514,11 +553,11 @@ export function useMap(el, options = {}) {
 				mapInstance.add(ownPolygon)
 				drawedOwnPolygons.push(ownPolygon)
 			})
-		polygonBindEvent()
+		ownPolygonBindEvent()
 		// 绘制子多边形
 		childrenGridList.length &&
 			childrenGridList.forEach(({ gridAddress, role, ...rest }) => {
-				const parentPolygon = new AMap.Polygon({
+				const childPolygon = new AMap.Polygon({
 					path: gridAddress,
 					zIndex: rolezIndex[role],
 					extData: {
@@ -527,9 +566,10 @@ export function useMap(el, options = {}) {
 					},
 					...childrenOptions
 				})
-				mapInstance.add(parentPolygon)
-				drawedParentPolygons.push(parentPolygon)
+				mapInstance.add(childPolygon)
+				drawedChildrenPolygons.push(childPolygon)
 			})
+		childrenPolygonBindEvent()
 	}
 
 	// 绘制多边形(用户手动绘制)
@@ -729,12 +769,61 @@ export function useMap(el, options = {}) {
 		markers.length && mapInstance.remove(markers)
 	}
 
+	// 纯文本鼠标移入事件
+	function textMarkerMouseoverHandle() {
+		const id = this.getExtData().id
+		ownPolygonMouseoverHandle(
+			null,
+			drawedOwnPolygons.find(ownPolygon => ownPolygon.getExtData().id === id)
+		)
+	}
+
+	// 纯文本鼠标点击事件
+	function textMarkerClickHandle() {
+		const id = this.getExtData().id
+		ownPolygonClickHandle(
+			null,
+			drawedOwnPolygons.find(ownPolygon => ownPolygon.getExtData().id === id)
+		)
+	}
+
+	// 纯文本鼠标双击事件
+	function textMarkerDblclickHandle() {
+		const id = this.getExtData().id
+		ownPolygonDblclickHandle(
+			null,
+			drawedOwnPolygons.find(ownPolygon => ownPolygon.getExtData().id === id)
+		)
+	}
+
+	// 纯文本标记绑定事件
+	function textMarkerBindEvent() {
+		textMarkers.forEach(marker => {
+			marker.on('mouseover', textMarkerMouseoverHandle)
+
+			marker.on('click', textMarkerClickHandle)
+
+			marker.on('dblclick', textMarkerDblclickHandle)
+		})
+	}
+
+	// 纯文本标记解绑事件
+	function textMarkerUnbindEvent() {
+		textMarkers.forEach(marker => {
+			marker.off('mouseover', textMarkerMouseoverHandle)
+
+			marker.off('click', textMarkerClickHandle)
+
+			marker.off('dblclick', textMarkerDblclickHandle)
+		})
+	}
+
 	// 创建纯文本标记text
 	function addTextMarkers(coordinates, options = {}) {
 		// 清空上次的markers
 		removeTextMarkers()
 		textMarkers = coordinates.map(item => {
-			const { longitude, latitude, text } = item
+			const { longitude, latitude, text, ...rest } = item
 			const textmarker = new AMap.Text({
 				text,
 				anchor: 'center', // 设置文本标记锚点
@@ -745,20 +834,28 @@ export function useMap(el, options = {}) {
 					'background-color': 'transparent',
 					'border-width': 0,
 					'text-align': 'center',
-					'font-size': '14px',
+					'font-size': '18px',
 					'font-weight': '600',
 					color: 'blue'
+				},
+				extData: {
+					longitude,
+					latitude,
+					text,
+					...rest
 				},
 				position: [longitude, latitude],
 				...options
 			})
 			return textmarker
 		})
+		textMarkerBindEvent()
 		mapInstance.add([...textMarkers])
 	}
 
 	// 移除TextMarker点
 	function removeTextMarkers() {
+		textMarkerUnbindEvent()
 		textMarkers.length && mapInstance.remove(textMarkers)
 	}
 
