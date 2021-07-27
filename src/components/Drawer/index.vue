@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-30 15:53:40
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-13 16:38:50
+ * @LastEditTime: 2021-07-27 11:18:22
 -->
 <template>
 	<Drawer v-bind="$attrs" class="drawer">
@@ -51,9 +51,5 @@
 <style lang="scss" scoped>
 	:deep .ant-drawer-header {
 		padding: 24px 12px;
-	}
-
-	.ant-btn + .ant-btn {
-		margin-left: 12px;
 	}
 </style>

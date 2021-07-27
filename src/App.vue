@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:01:42
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-26 17:51:55
+ * @LastEditTime: 2021-07-27 09:38:58
 -->
 <template>
 	<ConfigProvider :locale="locale">
@@ -36,8 +36,9 @@
 			useTitle()
 			watchEffect(() => {
 				const { username, phone } = store.getters.userInfo
+				const waterText = username + phone?.slice(-4) || ''
 				loading.value = store.state.common.requestCount > 0
-				setWatermark(username + phone?.slice(-4))
+				setWatermark(waterText)
 				route?.meta?.hideWatermark && clear()
 			})
 

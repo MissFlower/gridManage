@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-26 17:43:00
+ * @LastEditTime: 2021-07-27 11:09:11
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -270,43 +270,47 @@
 
 			// 网格点击事件
 			const gridClickHandle = async gridInfo => {
-				if (state.isCreate) {
-					state.isShowDispatchDrawer = false
-					return
-				}
+				// 右键触发查看网格信息
 				if (userGridsData.role === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE) {
-					state.orgOrbdList = (await getDispatchOrganization({ regionCode: gridInfo.districtCode })) || []
-					state.gridInfoList = [gridInfo]
-					state.isShowDispatchDrawer = true
+					if (gridInfo.eventType === 'rightclick' || state.isDispatchGrid) {
+						state.orgOrbdList = (await getDispatchOrganization({ regionCode: gridInfo.districtCode })) || []
+						state.gridInfoList = [gridInfo]
+					}
+
+					if (gridInfo.eventType === 'rightclick') {
+						state.isShowDispatchDrawer = true
+					}
 					return
 				}
 
 				if (userGridsData.role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE) {
-					state.isShowDispatchDrawer = true
-					if (!state.isDispatchGrid) {
-						// 不是批量分配状态 点击网格时展示该网格信息为单选
+					if (gridInfo.eventType === 'rightclick') {
+						// 右键展示该网格信息为单选
 						state.gridInfoList = [gridInfo]
+						state.isShowDispatchDrawer = true
 						return
 					}
 					// 批量分配
-					const index = state.gridInfoList.findIndex(grid => grid.id === gridInfo.id)
-					if (gridInfo.isChecked) {
-						// 添加
-						if (state.gridInfoList.length >= 5) {
-							Message.warn('批量分配最多选择50个网格!')
-							return
+					if (state.isDispatchGrid) {
+						const index = state.gridInfoList.findIndex(grid => grid.id === gridInfo.id)
+						if (gridInfo.isChecked) {
+							// 添加
+							if (state.gridInfoList.length >= 5) {
+								map.resetGridStyle([gridInfo.polygon])
+								Message.warn('批量分配最多选择50个网格!')
+								return
+							}
+							!~index && state.gridInfoList.push(gridInfo)
+						} else {
+							// 删除
+							state.gridInfoList.splice(index, 1)
 						}
-						!~index && state.gridInfoList.push(gridInfo)
-					} else {
-						// 删除
-						state.gridInfoList.splice(index, 1)
 					}
 				}
 			}
 
 			// 获取bdm角色下的用户数据 用于批量分配网格
 			const getBdUserList = async () => {
-				console.log(userGridsData.role)
 				if (userGridsData.role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE) {
 					state.orgOrbdList = (await getDispatchBd()) || []
 				}
@@ -721,6 +725,7 @@
 			})
 
 			onUnmounted(() => {
+				map.unbindEvent()
 				unbindEvent()
 			})
 

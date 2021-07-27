@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 13:26:36
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-21 09:51:16
+ * @LastEditTime: 2021-07-27 11:27:21
  */
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
@@ -34,6 +34,7 @@ export function useMap(el, options = {}) {
 	let currentUsedParentPolygonId = '' // 当前正在被使用的父级多边形ID
 	const isEdit = ref(false) // 是否正在编辑
 	let markers = [] // 存储marker点
+	let markerClickFn = () => {}
 	let textMarkers = [] // 存储文本标记
 	let isFirst = true
 
@@ -236,8 +237,9 @@ export function useMap(el, options = {}) {
 	}
 
 	// 重置网格样式
-	function resetGridStyle() {
-		drawedOwnPolygons.forEach(polygon => {
+	function resetGridStyle(polygons) {
+		polygons = polygons || drawedOwnPolygons
+		polygons.forEach(polygon => {
 			polygon.setOptions({
 				fillOpacity: OWN_GRID_OPACITY_DEFAULT
 			})
@@ -258,62 +260,131 @@ export function useMap(el, options = {}) {
 		mapInstance.setDefaultCursor('default')
 	}
 
-	// 多边形绑定事件
-	function bindEvent(polygon, options, callback) {
-		polygon.on('mouseover', () => {
-			polygon.setOptions({
-				cursor: 'pointer',
-				fillOpacity: OWN_GRID_OPACITY_CHECKED
-			})
-		})
-
-		polygon.on('mouseout', () => {
-			if (!polygon.getExtData().isChecked) {
-				polygon.setOptions({
-					cursor: 'default',
-					fillOpacity: OWN_GRID_OPACITY_DEFAULT
-				})
-			}
-		})
-
-		polygon.on('click', () => {
-			const { role, isDispatchGrid } = options.state
-			const extData = polygon.getExtData()
-			const { isChecked } = extData
-			// 重置网格样式
-			// 如果当前用户不是BD_ADMIN_ROLE或者是BD_ADMIN_ROLE没有在分配网格需要重置样式
-			if (role !== ADMIN_ROLE_TYPE.BD_ADMIN_ROLE || !isDispatchGrid) {
-				resetGridStyle()
-			}
-			// 设置当前使用的多边形和透明度
-			if (!isChecked) {
-				polygon.setOptions({
-					fillOpacity: OWN_GRID_OPACITY_CHECKED
-				})
-				polygon.setExtData({
-					...extData,
-					isChecked: true
-				})
-				currentUsedGridPolygon = polygon
-				const { judgeMethod, polygons } = accordRoleMethods[currentRole]
-				const { lng, lat } = polygon.getPath()[0]
-				// 检测坐标点属于哪一个行政区或父网格
-				judgeMethod([lng, lat], polygons)
-			} else {
-				currentUsedGridPolygon = null
-				polygon.setOptions({
-					fillOpacity: OWN_GRID_OPACITY_DEFAULT
-				})
-				polygon.setExtData({
-					...extData,
-					isChecked: false
-				})
-			}
-			// 调用回调函数
-			callback && callback(polygon.getExtData())
+	// 多边形鼠标移入事件处理函数
+	function polygonMouseoverHandle() {
+		this.setOptions({
+			cursor: 'pointer',
+			fillOpacity: OWN_GRID_OPACITY_CHECKED
 		})
 	}
 
+	// 多边形鼠标移出事件处理函数
+	function polygonMouseoutHandle() {
+		if (!this.getExtData().isChecked) {
+			this.setOptions({
+				cursor: 'default',
+				fillOpacity: OWN_GRID_OPACITY_DEFAULT
+			})
+		}
+	}
+
+	// 多边形点击事件处理函数
+	function polygonClickHandle() {
+		const polygon = this
+		const extData = polygon.getExtData()
+		const { isChecked, callback } = extData
+		const { role, isDispatchGrid } = extData.state
+		// 重置网格样式
+		// 如果当前用户不是BD_ADMIN_ROLE或者是BD_ADMIN_ROLE没有在分配网格需要重置样式
+		if (role !== ADMIN_ROLE_TYPE.BD_ADMIN_ROLE || !isDispatchGrid) {
+			resetGridStyle()
+		}
+		// 设置当前使用的多边形和透明度
+		if (!isChecked) {
+			polygon.setOptions({
+				fillOpacity: OWN_GRID_OPACITY_CHECKED
+			})
+			polygon.setExtData({
+				...extData,
+				isChecked: true
+			})
+			currentUsedGridPolygon = polygon
+			const { judgeMethod, polygons } = accordRoleMethods[currentRole]
+			const { lng, lat } = polygon.getPath()[0]
+			// 检测坐标点属于哪一个行政区或父网格
+			judgeMethod([lng, lat], polygons)
+		} else {
+			currentUsedGridPolygon = null
+			polygon.setOptions({
+				fillOpacity: OWN_GRID_OPACITY_DEFAULT
+			})
+			polygon.setExtData({
+				...extData,
+				isChecked: false
+			})
+		}
+		// 调用回调函数
+		callback &&
+			callback({
+				...polygon.getExtData(),
+				eventType: 'click',
+				polygon
+			})
+	}
+
+	// 多边形右键事件处理函数
+	function polygonRightclickHandle() {
+		const polygon = this
+		const extData = polygon.getExtData()
+		const { isChecked, callback } = extData
+		const { isDispatchGrid } = extData.state
+		// 批量分配状态下右键功能禁用
+		if (isDispatchGrid) {
+			return
+		}
+		// 重置网格样式
+		resetGridStyle()
+		// 设置当前使用的多边形和透明度
+		if (!isChecked) {
+			polygon.setOptions({
+				fillOpacity: OWN_GRID_OPACITY_CHECKED
+			})
+			polygon.setExtData({
+				...extData,
+				isChecked: true
+			})
+		} else {
+			polygon.setOptions({
+				fillOpacity: OWN_GRID_OPACITY_DEFAULT
+			})
+			polygon.setExtData({
+				...extData,
+				isChecked: false
+			})
+		}
+		// 调用回调函数
+		callback &&
+			callback({
+				...polygon.getExtData(),
+				eventType: 'rightclick'
+			})
+	}
+
+	// 多边形绑定事件
+	function polygonBindEvent() {
+		drawedOwnPolygons.forEach(polygon => {
+			polygon.on('mouseover', polygonMouseoverHandle)
+
+			polygon.on('mouseout', polygonMouseoutHandle)
+
+			polygon.on('click', polygonClickHandle)
+
+			polygon.on('rightclick', polygonRightclickHandle)
+		})
+	}
+
+	// 解绑事件
+	function unbindEvent() {
+		drawedOwnPolygons.forEach(polygon => {
+			polygon.off('mouseover', polygonMouseoverHandle)
+
+			polygon.off('mouseout', polygonMouseoutHandle)
+
+			polygon.off('click', polygonClickHandle)
+
+			polygon.off('rightclick', polygonRightclickHandle)
+		})
+	}
 	// 绘制行政区域边界
 	function drawAdministrationBoundary(districtCodes, options = {}) {
 		// console.log(districtCodes)
@@ -434,14 +505,16 @@ export function useMap(el, options = {}) {
 					extData: {
 						role,
 						isChecked: false,
+						state: options.state,
+						callback,
 						...rest
 					},
 					...ownOptions
 				})
 				mapInstance.add(ownPolygon)
 				drawedOwnPolygons.push(ownPolygon)
-				bindEvent(ownPolygon, options, callback)
 			})
+		polygonBindEvent()
 		// 绘制子多边形
 		childrenGridList.length &&
 			childrenGridList.forEach(({ gridAddress, role, ...rest }) => {
@@ -608,10 +681,25 @@ export function useMap(el, options = {}) {
 		}
 	}
 
+	// marker绑定事件
+	function markerBindEvent() {
+		markers.forEach(marker => {
+			marker.on('click', markerClickFn)
+		})
+	}
+
+	// marker解绑事件
+	function markerUnbindEvent() {
+		markers.forEach(marker => {
+			marker.off('click', markerClickFn)
+		})
+	}
+
 	// 设置marker点
 	function addMarkers(coordinates, clickHandle) {
 		// 清空上次的markers
 		removeMarkers()
+		markerClickFn = clickHandle
 		markers = coordinates.map(item => {
 			const { longitude, latitude, stype } = item
 			const icon = new AMap.Icon({
@@ -628,14 +716,16 @@ export function useMap(el, options = {}) {
 					...item
 				}
 			})
-			marker.on('click', clickHandle)
+
 			return marker
 		})
+		markerBindEvent()
 		mapInstance.add([...markers])
 	}
 
 	// 移除marker点
 	function removeMarkers() {
+		markerUnbindEvent()
 		markers.length && mapInstance.remove(markers)
 	}
 
@@ -736,6 +826,7 @@ export function useMap(el, options = {}) {
 		addTextMarkers,
 		removeTextMarkers,
 		initHeatMap,
-		resetGridStyle
+		resetGridStyle,
+		unbindEvent
 	}
 }
