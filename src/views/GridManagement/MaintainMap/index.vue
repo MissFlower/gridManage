@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-27 15:20:24
+ * @LastEditTime: 2021-07-28 09:37:23
 -->
 <template>
 	<!-- 维护地图容器 -->
@@ -724,6 +724,7 @@
 
 			onDeactivated(() => {
 				state.isShowDispatchDrawer = false
+				map.resetToolStatus(true)
 			})
 
 			onUnmounted(() => {

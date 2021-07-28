@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 13:26:36
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-27 15:13:45
+ * @LastEditTime: 2021-07-28 09:46:11
  */
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
@@ -65,7 +65,7 @@ export function useMap(el, options = {}) {
 			currentUsedDistrictCode = code
 			currentUsedDistrictPolygon = polygons[0]
 		} else {
-			notQualifyGraphHandle(true)
+			resetToolStatus(true)
 			callback &&
 				callback({
 					code: 100001,
@@ -86,7 +86,7 @@ export function useMap(el, options = {}) {
 			currentUsedParentPolygonId = id
 			currentUsedParentPolygon = parentPolygon
 		} else {
-			notQualifyGraphHandle(true)
+			resetToolStatus(true)
 			callback &&
 				callback({
 					code: 100001,
@@ -209,7 +209,7 @@ export function useMap(el, options = {}) {
 				message: `当前绘制的网格已超出${currentRole === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE ? '行政' : '网格'}区域边界！`
 			}
 			callback && callback(res)
-			notQualifyGraphHandle(true)
+			resetToolStatus(true)
 			return callback ? false : res
 		}
 		// 2.检测绘制图形和其他同级多边形是否存在相交和包含的关系
@@ -220,7 +220,7 @@ export function useMap(el, options = {}) {
 				message: '当前绘制的网格与同级网格出现相交或包含关系！'
 			}
 			callback && callback(res)
-			notQualifyGraphHandle(true)
+			resetToolStatus(true)
 			return callback ? false : res
 		}
 		// 3.检测绘制图形面积是否符合规定面积
@@ -231,7 +231,7 @@ export function useMap(el, options = {}) {
 				message: `当前绘制的网格面积为${(polygonsArea / 1000000).toFixed(2)}平方千米,不在规定区间${min / 1000000}-${max / 1000000}平方千米之间！`
 			}
 			callback && callback(res)
-			notQualifyGraphHandle(true)
+			resetToolStatus(true)
 			return callback ? false : res
 		}
 		return true
@@ -252,7 +252,7 @@ export function useMap(el, options = {}) {
 	}
 
 	// 处理不符合图形
-	function notQualifyGraphHandle(isDeleteGraph = false) {
+	function resetToolStatus(isDeleteGraph = false) {
 		// 关闭绘图工具 true 参数为true直接删除图形
 		polyEditor?.editable && polyEditor.close()
 		isEdit.value = false
@@ -459,7 +459,8 @@ export function useMap(el, options = {}) {
 								path: bounds[i],
 								fillOpacity: 0.3,
 								fillColor: '#80d8ff',
-								strokeColor: '#0091ea'
+								strokeColor: '#0091ea',
+								bubble: true
 							})
 							polygonsData.polygons.push(polygon)
 						}
@@ -614,7 +615,7 @@ export function useMap(el, options = {}) {
 				return
 			}
 			// 2.处理不符合图形
-			notQualifyGraphHandle()
+			resetToolStatus()
 			// 3.将绘制好的多边形设置为当前正在被使用的多边形
 			currentUsedGridPolygon = event.obj
 			// 4.调用回调函数
@@ -924,6 +925,7 @@ export function useMap(el, options = {}) {
 		removeTextMarkers,
 		initHeatMap,
 		resetGridStyle,
-		unbindEvent
+		unbindEvent,
+		resetToolStatus
 	}
 }

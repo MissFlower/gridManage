@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-27 15:19:47
+ * @LastEditTime: 2021-07-28 09:48:07
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -272,6 +272,8 @@
 
 			// 网格点击事件
 			const gridClickHandle = async gridInfo => {
+				// 关闭门店信息弹窗
+				state.isShowShopInfo = false
 				// 双击查看网格信息
 				if (userGridsData.role === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE) {
 					if (gridInfo.eventType === 'dblclick' || state.isDispatchGrid) {
@@ -724,6 +726,7 @@
 
 			onDeactivated(() => {
 				state.isShowDispatchDrawer = false
+				map.resetToolStatus(true)
 			})
 
 			onUnmounted(() => {
