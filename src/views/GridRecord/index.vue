@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 14:34:40
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-19 15:41:23
+ * @LastEditTime: 2021-07-28 11:32:04
 -->
 <template>
 	<div>
@@ -45,7 +45,15 @@
 			</template>
 		</SearchFormBox>
 		<TableListBox>
-			<Table row-key="id" :data-source="tableList" :columns="columns" :scroll="{ x: true }" bordered :pagination="pagination" size="small" />
+			<Table
+				row-key="id"
+				:data-source="tableList"
+				:columns="columns"
+				:scroll="{ x: 1, scrollToFirstRowOnChange: true }"
+				bordered
+				:pagination="pagination"
+				size="small"
+			/>
 		</TableListBox>
 	</div>
 </template>
@@ -157,12 +165,13 @@
 					title: '操作机构',
 					dataIndex: 'optOrgName',
 					key: 'optOrgName',
-					width: 100
+					width: 120
 				},
 				{
 					title: '操作网格',
 					dataIndex: 'gridName',
 					key: 'gridName',
+					ellipsis: true,
 					width: 160
 				},
 				{
@@ -170,7 +179,7 @@
 					dataIndex: 'remark',
 					key: 'remark',
 					ellipsis: true,
-					width: 160
+					width: 320
 				},
 				{
 					title: '原负责人',
