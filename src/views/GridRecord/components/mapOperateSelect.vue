@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-07 10:02:10
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-10 17:35:03
+ * @LastEditTime: 2021-07-29 18:37:01
 -->
 <template>
 	<Select v-bind="$attrs">
@@ -36,5 +36,3 @@
 		}
 	})
 </script>
-
-<style lang="scss" scoped></style>

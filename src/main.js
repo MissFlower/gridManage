@@ -4,12 +4,13 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:01:42
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-27 17:00:15
+ * @LastEditTime: 2021-07-29 18:08:20
  */
 import { createApp } from 'vue'
 import App from './App.vue'
 // import 'default-passive-events'
 import 'src/styles/index.scss'
+import 'src/styles/tailwind.css'
 
 import { router, setupRouter } from 'src/router'
 import { setupStore } from 'src/store'

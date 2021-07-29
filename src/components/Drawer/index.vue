@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-30 15:53:40
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-27 11:18:22
+ * @LastEditTime: 2021-07-29 18:36:24
 -->
 <template>
 	<Drawer v-bind="$attrs" class="drawer">
@@ -12,7 +12,7 @@
 			<slot />
 		</div>
 
-		<div class="button-wrapper">
+		<div class="absolute bottom-0 right-0 z-10 px-4 py-3 text-right bg-white border-gray-200 border-t border-solid w-full space-x-3">
 			<slot name="footer">
 				<AButton @click="cancelHandle">取消</AButton>
 				<AButton type="primary" @click="saveHandle">保存</AButton>

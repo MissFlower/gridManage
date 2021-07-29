@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 18:01:50
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-19 11:00:55
+ * @LastEditTime: 2021-07-29 18:42:01
 -->
 <template>
 	<div class="login-container">
@@ -14,6 +14,7 @@
 				<FormItem label="登录账号" v-bind="validateInfos.username">
 					<Input ref="usernameRef" v-model:value.trim="modelRef.username" placeholder="请输入登录账号" @focus="clearValidateHandle" />
 				</FormItem>
+
 				<FormItem label="登录密码" v-bind="validateInfos.password">
 					<InputPassword
 						ref="passwordRef"
@@ -23,6 +24,7 @@
 						@focus="clearValidateHandle"
 					/>
 				</FormItem>
+
 				<FormItem label="验证码" v-bind="validateInfos.code" class="verify">
 					<Input v-model:value.trim="modelRef.code" @focus="clearValidateHandle" @pressEnter="loginHandle" />
 					<Image v-if="modelRef.verifyImage" :width="100" :height="32" :src="modelRef.verifyImage" :preview="false" @click="verifyCodeHandle" />
@@ -153,7 +155,6 @@
 			)
 
 			watch(route, ({ query }) => {
-				console.log(query)
 				if (query) {
 					redirectRef.redirect = query.redirect
 					redirectRef.otherQuery = getOtherQuery(query)

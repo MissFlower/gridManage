@@ -4,10 +4,11 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 11:25:31
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-14 18:17:55
+ * @LastEditTime: 2021-07-29 18:49:03
  */
 module.exports = {
 	plugins: {
+		tailwindcss: {},
 		autoprefixer: {}
 	}
 }

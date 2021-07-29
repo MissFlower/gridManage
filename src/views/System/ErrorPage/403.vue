@@ -4,10 +4,10 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 17:59:33
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-20 14:43:38
+ * @LastEditTime: 2021-07-29 18:39:14
 -->
 <template>
-	<div class="no-fount-wrapper">
+	<div class="no-fount-wrapper relative w-full h-full">
 		<Image :src="errorPage" :preview="false" class="img" />
 		<div class="tips-container">
 			<div class="tip-text">您暂无访问权限</div>
@@ -57,10 +57,6 @@
 
 <style lang="scss" scoped>
 	.no-fount-wrapper :deep {
-		position: relative;
-		width: 100%;
-		height: 100%;
-
 		.ant-image {
 			position: absolute;
 			top: -24%;
