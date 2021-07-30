@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-06 18:24:55
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-07 10:29:26
+ * @LastEditTime: 2021-07-30 09:54:22
 -->
 <template>
 	<div class="table-list-box">
@@ -20,7 +20,7 @@
 
 		<slot />
 
-		<div v-if="showFooter" class="footer">
+		<div v-if="showFooter" class="mt-6 text-right">
 			<slot name="footer" />
 		</div>
 	</div>
@@ -57,11 +57,6 @@
 
 		.ant-dropdown {
 			margin-left: 12px;
-		}
-
-		.footer {
-			margin-top: 24px;
-			text-align: right;
 		}
 	}
 </style>

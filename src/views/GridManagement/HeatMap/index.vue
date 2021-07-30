@@ -4,15 +4,15 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:06:08
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-23 13:41:10
+ * @LastEditTime: 2021-07-30 15:00:20
 -->
 <template>
 	<!-- 热力图容器 -->
-	<div v-bind="$attrs" id="heat-map-wrapper" class="map" />
+	<div v-bind="$attrs" id="heat-map-wrapper" class="w-full h-full" />
 
 	<!-- 选择门店类型RadioGroup -->
 	<RadioGroup v-model:value="shopType" button-style="solid" class="shop-radio-group">
-		<RadioButton v-for="(shopTypeName, key) in HEAT_SHOP_TYPE_NAME" :key="key" :value="+key" class="radio-shop">{{ shopTypeName }}</RadioButton>
+		<RadioButton v-for="(shopTypeName, key) in HEAT_SHOP_TYPE_NAME" :key="key" :value="+key" class="radio-block-item">{{ shopTypeName }}</RadioButton>
 	</RadioGroup>
 
 	<div class="legend-wrap">
@@ -96,8 +96,8 @@
 				const { mapInstance } = map
 				const toolBar = new AMap.ToolBar({
 					position: {
-						bottom: '10px',
-						right: '10px'
+						bottom: '12px',
+						right: '12px'
 					}
 				})
 				mapInstance.addControl(toolBar)
@@ -174,12 +174,6 @@
 </script>
 
 <style lang="scss" scoped>
-	.radio-shop {
-		display: block;
-		height: 30px;
-		line-height: 30px;
-	}
-
 	.legend-wrap {
 		position: absolute;
 		bottom: 30px;

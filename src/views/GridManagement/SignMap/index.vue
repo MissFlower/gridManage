@@ -4,15 +4,15 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-28 09:48:07
+ * @LastEditTime: 2021-07-30 15:05:39
 -->
 <template>
 	<!-- 签约地图容器 -->
-	<div id="sign-map-wrapper" class="map" />
+	<div id="sign-map-wrapper" class="w-full h-full" />
 
 	<!-- 选择门店类型RadioGroup -->
 	<RadioGroup v-model:value="shopType" button-style="solid" class="shop-radio-group">
-		<RadioButton v-for="(shopTypeName, key) of SHOP_TYPE_NAME" :key="key" :value="+key" class="radio-shop">{{ shopTypeName }}</RadioButton>
+		<RadioButton v-for="(shopTypeName, key) of SHOP_TYPE_NAME" :key="key" :value="+key" class="radio-block-item">{{ shopTypeName }}</RadioButton>
 	</RadioGroup>
 
 	<!-- 门店信息 -->
@@ -164,8 +164,8 @@
 			const addControl = mapInstance => {
 				const toolBar = new AMap.ToolBar({
 					position: {
-						bottom: '10px',
-						right: '10px'
+						bottom: '12px',
+						right: '12px'
 					}
 				})
 				mapInstance.addControl(toolBar)
@@ -262,7 +262,7 @@
 						})
 					}
 				})
-				textMarkerList.length && map.addTextMarkers(textMarkerList)
+				map.addTextMarkers(textMarkerList)
 			}
 
 			// 清除text marker点
@@ -754,11 +754,3 @@
 		}
 	})
 </script>
-
-<style lang="scss" scoped>
-	.radio-shop {
-		display: block;
-		height: 30px;
-		line-height: 30px;
-	}
-</style>

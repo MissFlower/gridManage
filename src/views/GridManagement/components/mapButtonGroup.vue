@@ -4,15 +4,15 @@
  * @Author: AiDongYang
  * @Date: 2021-06-30 13:38:30
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-14 17:28:57
+ * @LastEditTime: 2021-07-30 14:56:46
 -->
 <template>
-	<div class="button-group-wrapper">
+	<div class="flex flex-col absolute right-14 bottom-3">
 		<AButton :disabled="isEdit || isDispatchGrid" @click.prevent="createGridHandle">新建网格</AButton>
-		<AButton :disabled="isEdit || isDispatchGrid || isCreate" @click.prevent="editGridHandle">编辑已有网格</AButton>
-		<AButton :disabled="!isEdit || isDispatchGrid || isCreate" @click.prevent="saveGridHandle">保存</AButton>
-		<AButton :disabled="isEdit || isDispatchGrid || isCreate" @click.prevent="deleteGridHandle">删除网格</AButton>
-		<AButton :disabled="isEdit || isCreate" @click.prevent="batchDispatchGridHandle">{{
+		<AButton :disabled="isEdit || isDispatchGrid || isCreate" class="mt-0.5" @click.prevent="editGridHandle">编辑已有网格</AButton>
+		<AButton :disabled="!isEdit || isDispatchGrid || isCreate" class="mt-0.5" @click.prevent="saveGridHandle">保存</AButton>
+		<AButton :disabled="isEdit || isDispatchGrid || isCreate" class="mt-0.5" @click.prevent="deleteGridHandle">删除网格</AButton>
+		<AButton :disabled="isEdit || isCreate" class="mt-0.5" @click.prevent="batchDispatchGridHandle">{{
 			batchDispatchGridFlag ? '批量分配网格' : '取消批量分配'
 		}}</AButton>
 	</div>
@@ -71,17 +71,3 @@
 		}
 	})
 </script>
-
-<style lang="scss" scoped>
-	.button-group-wrapper :deep {
-		position: absolute;
-		right: 50px;
-		bottom: 10px;
-		display: flex;
-		flex-direction: column;
-
-		.ant-btn {
-			margin-top: 2px;
-		}
-	}
-</style>

@@ -4,15 +4,17 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 17:59:33
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-29 18:39:14
+ * @LastEditTime: 2021-07-30 11:40:23
 -->
 <template>
-	<div class="no-fount-wrapper relative w-full h-full">
-		<Image :src="errorPage" :preview="false" class="img" />
-		<div class="tips-container">
-			<div class="tip-text">您暂无访问权限</div>
-			<div class="tip-text">很抱歉，您访问的页面暂无权限，请联系管理员获取权限后访问</div>
-			<Button v-if="addRoutes.length" type="primary" class="back-index" @click="backHome">返回首页</Button>
+	<div class="relative w-full h-full">
+		<div class="absolute top-1/4 w-1/2 h-1/2 left-0 right-0 m-auto transform -translate-y-1/4">
+			<Image :src="errorPage" width="100%" :preview="false" />
+		</div>
+		<div class="w-auto absolute top-2/3 left-1/2 text-center transform -translate-x-1/2 -translate-y-1/2">
+			<div class="py-2 text-xl text-gray-600">暂无访问权限</div>
+			<div class="text-sm text-gray-600">很抱歉，您访问的页面暂无权限，请联系管理员获取权限后访问</div>
+			<Button v-if="addRoutes.length" type="primary" class="mt-3" @click="backHome">返回首页</Button>
 		</div>
 	</div>
 </template>
@@ -54,44 +56,3 @@
 		}
 	})
 </script>
-
-<style lang="scss" scoped>
-	.no-fount-wrapper :deep {
-		.ant-image {
-			position: absolute;
-			top: -24%;
-			right: 0;
-			bottom: 0;
-			left: 0;
-			width: 50%;
-			height: 50%;
-			margin: auto;
-		}
-
-		.tips-container {
-			position: absolute;
-			top: 65%;
-			left: 50%;
-			width: 400px;
-			text-align: center;
-			transform: translate(-50%);
-
-			.image {
-				width: 300px;
-				height: 300px;
-				margin-top: 10vh;
-			}
-
-			.tip-text {
-				height: 36px;
-				font-size: 14px;
-				line-height: 36px;
-				color: #333;
-			}
-
-			.back-index {
-				margin-top: 12px;
-			}
-		}
-	}
-</style>

@@ -4,58 +4,60 @@
  * @Author: AiDongYang
  * @Date: 2021-06-30 15:30:53
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-26 11:31:38
+ * @LastEditTime: 2021-07-30 14:53:45
 -->
 <template>
 	<Drawer v-bind="$attrs" title="网格分配" :mask="false" :closable="false">
 		<Form>
-			<div class="grid-name-wrap">
+			<div>
 				<p>网格名:</p>
 				<FormItem v-bind="validateInfos.gridIds">
-					<div v-show="gridInfoList.length" class="grid-name-content">
-						<span v-for="{ id, gridName } of gridInfoList" :key="id" class="grid-name-item">{{ gridName }}</span>
+					<div v-show="gridInfoList.length" class="flex flex-col">
+						<span v-for="{ id, gridName } of gridInfoList" :key="id" class="font-semibold">{{ gridName }}</span>
 					</div>
 				</FormItem>
 			</div>
 
-			<div class="grid-info-wrap">
-				<div class="grid-info-item">自营团队门店数: {{ selfSupportShopCount }}</div>
-				<div class="grid-info-item">店日均流水总和: {{ averageFlows }}</div>
-				<div class="grid-info-item">直营创建门店数: {{ redictSupportShopCount }}</div>
-				<div class="grid-info-item">公海推荐门店数: {{ seasRecommendShopCount }}</div>
-				<div class="grid-info-item">公海地图门店数: {{ seasMapShopCount }}</div>
+			<div class="flex flex-col">
+				<div class="py-1">自营团队门店数: {{ selfSupportShopCount }}</div>
+				<div class="py-1">店日均流水总和: {{ averageFlows }}</div>
+				<div class="py-1">直营创建门店数: {{ redictSupportShopCount }}</div>
+				<div class="py-1">公海推荐门店数: {{ seasRecommendShopCount }}</div>
+				<div class="py-1">公海地图门店数: {{ seasMapShopCount }}</div>
 			</div>
-			<div v-if="role === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE" class="org-radio-wrapper">
+			<div v-if="role === ADMIN_ROLE_TYPE.ORGANZITION_ADMIN_ROLE" class="flex flex-col mt-6">
 				<span>机构分配</span>
 				<FormItem v-bind="validateInfos.orgId">
-					<RadioGroup v-model:value="orgId" class="org-radio-group">
-						<Radio v-for="{ id, orgName } of orgOrbdList" :key="id" :value="id" :disabled="!isDispatchGrid" class="radio-item">{{ orgName }}</Radio>
+					<RadioGroup v-model:value="orgId">
+						<Radio v-for="{ id, orgName } of orgOrbdList" :key="id" :value="id" :disabled="!isDispatchGrid" class="radio-block-item">
+							{{ orgName }}
+						</Radio>
 					</RadioGroup>
 				</FormItem>
 			</div>
 
 			<div v-if="role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE">
 				<FormItem v-bind="validateInfos.orgId">
-					<Select v-model:value="orgId" placeholder="请选择机构" class="group-select">
+					<Select v-model:value="orgId" placeholder="请选择机构" class="w-full mt-6 mb-3">
 						<SelectOption v-for="{ orgName, orgId } of orgOrbdList" :key="orgId" :value="orgId">{{ orgName }}</SelectOption>
 					</Select>
 				</FormItem>
 
-				<div class="radio-wrapper">
-					<div class="duty-radio-group">
+				<div class="flex">
+					<div class="flex-1">
 						<span>负责人选择</span>
 
 						<FormItem v-bind="validateInfos.sellerId">
 							<RadioGroup v-model:value="sellerId">
-								<Radio v-for="{ userId, userName } of currentBdList" :key="userId" :value="userId" class="radio-item">{{ userName }}</Radio>
+								<Radio v-for="{ userId, userName } of currentBdList" :key="userId" :value="userId" class="radio-block-item">{{ userName }}</Radio>
 							</RadioGroup>
 						</FormItem>
 					</div>
-					<div class="maintain-radio-group">
+					<div class="flex-1">
 						<span>维护人选择</span>
 						<FormItem v-bind="validateInfos.maintainId">
 							<RadioGroup v-model:value="maintainId">
-								<Radio v-for="{ userId, userName } of currentBdList" :key="userId" :value="userId" class="radio-item">{{ userName }}</Radio>
+								<Radio v-for="{ userId, userName } of currentBdList" :key="userId" :value="userId" class="radio-block-item">{{ userName }}</Radio>
 							</RadioGroup>
 						</FormItem>
 					</div>
@@ -243,52 +245,3 @@
 		}
 	})
 </script>
-
-<style lang="scss" scoped>
-	.grid-name-content,
-	.grid-info-wrap {
-		display: flex;
-		flex-direction: column;
-	}
-
-	.grid-name-item {
-		font-weight: 600;
-	}
-
-	.grid-info-item {
-		height: 24px;
-		margin-top: 12px;
-		line-height: 24px;
-
-		&:first-child {
-			margin-top: 0;
-		}
-	}
-
-	.group-select {
-		width: 100%;
-		margin-top: 24px;
-		margin-bottom: 12px;
-	}
-
-	.org-radio-wrapper {
-		display: flex;
-		flex-direction: column;
-		margin-top: 24px;
-	}
-
-	.radio-wrapper {
-		display: flex;
-
-		.duty-radio-group,
-		.maintain-radio-group {
-			flex: 1;
-		}
-	}
-
-	.radio-item {
-		display: block;
-		height: 30px;
-		line-height: 30px;
-	}
-</style>

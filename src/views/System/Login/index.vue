@@ -4,12 +4,12 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 18:01:50
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-29 18:42:01
+ * @LastEditTime: 2021-07-30 10:55:55
 -->
 <template>
-	<div class="login-container">
+	<div class="relative h-full bg-login-image bg-cover bg-no-repeat">
 		<div class="login-wrapper">
-			<h2 class="title">速绿运营管理后台</h2>
+			<h2 class="mb-6 text-3xl font-bold tracking-wide text-white text-center">速绿运营管理后台</h2>
 			<Form :label-col="labelCol" :wrapper-col="wrapperCol" class="form-wrap">
 				<FormItem label="登录账号" v-bind="validateInfos.username">
 					<Input ref="usernameRef" v-model:value.trim="modelRef.username" placeholder="请输入登录账号" @focus="clearValidateHandle" />
@@ -31,7 +31,7 @@
 					<RedoOutlined v-else @click="verifyCodeHandle" />
 				</FormItem>
 				<!-- <Button type="link">忘记密码？</Button> -->
-				<Button type="primary" block class="login-btn" @click.prevent="loginHandle">登录</Button>
+				<Button type="primary" block class="mt-3" @click.prevent="loginHandle">登录</Button>
 			</Form>
 		</div>
 	</div>
@@ -179,15 +179,6 @@
 </script>
 
 <style lang="scss" scoped>
-	.login-container {
-		position: relative;
-		height: 100%;
-		background-image: url('src/assets/images/login-background.jpg');
-		background-repeat: no-repeat;
-		background-size: cover;
-		background-origin: right;
-	}
-
 	.login-wrapper {
 		position: absolute;
 		top: 40%;
@@ -196,23 +187,10 @@
 		text-align: right;
 		transform: translate(-50%, -50%);
 
-		.title {
-			margin-bottom: 24px;
-			font-size: 30px;
-			font-weight: bold;
-			letter-spacing: 1px;
-			color: #fff;
-			text-align: center;
-		}
-
 		.form-wrap {
 			padding: 48px 24px 32px;
 			background-color: #fff;
-			border-radius: 10px;
-
-			.login-btn {
-				margin-top: 12px;
-			}
+			border-radius: 8px;
 		}
 
 		.verify :deep {

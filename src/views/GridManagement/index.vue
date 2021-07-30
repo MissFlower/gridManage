@@ -4,17 +4,17 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 14:31:46
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-27 17:23:13
+ * @LastEditTime: 2021-07-30 14:52:14
 -->
 <template>
-	<div class="grid-container">
+	<div class="relative w-full h-full">
 		<!-- 签约、维护、热力图组件 -->
 		<KeepAlive>
 			<component :is="currentMap" />
 		</KeepAlive>
 
 		<!-- 选择地图RadioGroup -->
-		<RadioGroup v-model:value="mapType" button-style="solid" class="map-radio-group">
+		<RadioGroup v-model:value="mapType" button-style="solid" class="absolute top-3 right-3">
 			<RadioButton value="SignMap">签约地图</RadioButton>
 			<RadioButton value="MaintainMap">维护地图</RadioButton>
 			<RadioButton value="HeatMap">热力图</RadioButton>
@@ -59,40 +59,23 @@
 	})
 </script>
 <style lang="scss" scoped>
-	.grid-container :deep {
-		position: relative;
-		width: 100%;
-		height: 100%;
+	:deep .shop-radio-group {
+		position: absolute;
+		top: 60px;
+		right: 12px;
 
-		.map-radio-group {
-			position: absolute;
-			top: 10px;
-			right: 10px;
-		}
+		.ant-radio-button-wrapper {
+			border-top: 0;
+			border-left: 1px solid #d9d9d9;
 
-		.shop-radio-group {
-			position: absolute;
-			top: 60px;
-			right: 10px;
-
-			.ant-radio-button-wrapper {
-				border-top: 0;
-				border-left: 1px solid #d9d9d9;
-
-				&:first-child {
-					border-top: 1px solid #d9d9d9;
-					border-radius: 2px 2px 0 0;
-				}
-
-				&:last-child {
-					border-radius: 0 0 2px 2px;
-				}
+			&:first-child {
+				border-top: 1px solid #d9d9d9;
+				border-radius: 2px 2px 0 0;
 			}
-		}
 
-		.map {
-			width: 100%;
-			height: 100%;
+			&:last-child {
+				border-radius: 0 0 2px 2px;
+			}
 		}
 	}
 </style>

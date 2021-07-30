@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 17:25:22
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-16 13:17:41
+ * @LastEditTime: 2021-07-30 15:09:05
 -->
 <template>
 	<div class="shop-info-wrapper" :class="[isShow ? 'active' : '']">
@@ -56,8 +56,8 @@
 <style lang="scss" scoped>
 	.shop-info-wrapper {
 		position: absolute;
-		top: 10px;
-		left: 10px;
+		top: 12px;
+		left: 12px;
 		width: 0;
 		overflow: hidden;
 		font-size: 12px;
