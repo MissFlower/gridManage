@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 15:07:22
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-30 11:40:42
+ * @LastEditTime: 2021-07-30 16:11:47
 -->
 <template>
 	<div class="relative w-full h-full">
@@ -45,49 +45,3 @@
 		}
 	})
 </script>
-
-<style lang="scss" scoped>
-	.no-fount-wrapper :deep {
-		position: relative;
-		width: 100%;
-		height: 100%;
-		transform: translate(0, 0);
-
-		.ant-image {
-			position: absolute;
-			top: -24%;
-			right: 0;
-			bottom: 0;
-			left: 0;
-			width: 50%;
-			height: 50%;
-			margin: auto;
-		}
-
-		.tips-container {
-			position: absolute;
-			top: 65%;
-			left: 50%;
-			width: 400px;
-			text-align: center;
-			transform: translate(-50%);
-
-			.image {
-				width: 300px;
-				height: 300px;
-				margin-top: 10vh;
-			}
-
-			.tip-text {
-				height: 36px;
-				font-size: 14px;
-				line-height: 36px;
-				color: #333;
-			}
-
-			.back-index {
-				margin-top: 12px;
-			}
-		}
-	}
-</style>
