@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-29 17:57:17
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-30 10:05:08
+ * @LastEditTime: 2021-07-30 16:04:21
  */
 module.exports = {
 	purge: {
@@ -18,7 +18,7 @@ module.exports = {
 				'-1': '-1'
 			},
 			backgroundImage: () => ({
-				'login-image': "url('./src/assets/images/login-background.jpg')"
+				'login-image': "url('src/assets/images/login-background.jpg')"
 			})
 		}
 	},
