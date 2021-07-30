@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:06:08
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-30 15:00:20
+ * @LastEditTime: 2021-07-30 16:46:37
 -->
 <template>
 	<!-- 热力图容器 -->
@@ -51,18 +51,20 @@
 
 			watch(
 				() => state.zoom,
-				(newVal, preVal) => {
-					if (newVal <= ZOOM_DEMARCATION_VALUE && preVal > ZOOM_DEMARCATION_VALUE) {
-						// 调用二级热力图数据
-						state.mapZoom = HEAT_MAP_DEMARCATION_TYPE.TWO_LEVEL
-						getHeatMapData()
-						return
-					}
-					if (newVal > ZOOM_DEMARCATION_VALUE && preVal <= ZOOM_DEMARCATION_VALUE) {
-						// 调用一级热力图数据
-						state.mapZoom = HEAT_MAP_DEMARCATION_TYPE.ONE_LEVEL
-						getHeatMapData()
-					}
+				newVal => {
+					state.mapZoom = HEAT_MAP_DEMARCATION_TYPE[newVal <= ZOOM_DEMARCATION_VALUE ? 'TWO_LEVEL' : 'ONE_LEVEL']
+					getHeatMapData()
+					// if (newVal <= ZOOM_DEMARCATION_VALUE && preVal > ZOOM_DEMARCATION_VALUE) {
+					// 	// 调用二级热力图数据
+					// 	state.mapZoom = HEAT_MAP_DEMARCATION_TYPE.TWO_LEVEL
+					// 	getHeatMapData()
+					// 	return
+					// }
+					// if (newVal > ZOOM_DEMARCATION_VALUE && preVal <= ZOOM_DEMARCATION_VALUE) {
+					// 	// 调用一级热力图数据
+					// 	state.mapZoom = HEAT_MAP_DEMARCATION_TYPE.ONE_LEVEL
+					// 	getHeatMapData()
+					// }
 				}
 			)
 			watch([() => state.shopType, () => state.center], () => {
