@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-22 14:04:49
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-23 14:25:25
+ * @LastEditTime: 2021-07-30 15:25:21
 -->
 <template>
 	<Logo :collapse="collapsed" />
@@ -27,7 +27,6 @@
 	import { Menu } from 'ant-design-vue'
 	import { useStore } from 'vuex'
 	import { useRoute } from 'vue-router'
-	import { REDIRECT_NAME } from 'src/router/constant'
 	import ScrollContainer from 'src/components/Scrollbar'
 	import SiderItem from './components/SiderItem.vue'
 	import Logo from './components/Logo.vue'
@@ -80,9 +79,6 @@
 						}
 
 						const pathList = newPath.split('/')
-						if (pathList.includes(REDIRECT_NAME.toLowerCase())) {
-							return
-						}
 						const pathListLen = pathList.length
 						state.selectedKeys = [newPath]
 

@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-30 15:06:54
+ * @LastEditTime: 2021-07-30 15:41:28
 -->
 <template>
 	<!-- 维护地图容器 -->
@@ -419,6 +419,13 @@
 
 			// 删除网格
 			const deleteGridHandle = () => {
+				const { getCurrentPolygonInfo } = map
+				const { code, message, data } = getCurrentPolygonInfo()
+				if (code !== 200) {
+					Message.warn(message)
+					return
+				}
+
 				Modal.confirm({
 					title: '是否确认删除该网格？',
 					icon: createVNode(ExclamationCircleOutlined),
@@ -427,16 +434,10 @@
 					centered: true,
 					width: 400,
 					onOk: async () => {
-						const { getCurrentPolygonInfo } = map
-						const { code, message, data } = getCurrentPolygonInfo()
-						if (code === 200) {
-							await deleteGrid({ id: data.id, mapType: MAP_TYPE.MAINTAIN_MAP })
-							// 初始化流程
-							await initProcess()
-							addTextMarkers()
-						} else {
-							Message.warn(message)
-						}
+						await deleteGrid({ id: data.id, mapType: MAP_TYPE.MAINTAIN_MAP })
+						// 初始化流程
+						await initProcess()
+						addTextMarkers()
 					}
 				})
 			}
