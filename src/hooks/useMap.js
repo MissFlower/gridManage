@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 13:26:36
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-28 09:46:11
+ * @LastEditTime: 2021-07-30 18:28:53
  */
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
@@ -835,8 +835,7 @@ export function useMap(el, options = {}) {
 					'background-color': 'transparent',
 					'border-width': 0,
 					'text-align': 'center',
-					'font-size': '18px',
-					'font-weight': '600',
+					'font-size': '14px',
 					color: 'blue'
 				},
 				extData: {

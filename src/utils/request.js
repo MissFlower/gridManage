@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-25 13:47:47
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-19 18:28:25
+ * @LastEditTime: 2021-07-30 17:53:41
  */
 import axios from 'axios'
 import qs from 'qs'
@@ -111,7 +111,8 @@ http.interceptors.response.use(
 
 				case 403:
 					// 无权限
-					message.warning(`${error.response.data.msg || '操作暂无权限!'}`)
+					router.push('/403')
+					// message.warning(`${error.response.data.msg || '操作暂无权限!'}`)
 					break
 
 				case 500:

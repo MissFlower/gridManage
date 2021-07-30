@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-30 15:41:28
+ * @LastEditTime: 2021-07-30 18:26:14
 -->
 <template>
 	<!-- 维护地图容器 -->
@@ -252,7 +252,7 @@
 							...grid
 						})
 					}
-					if (role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE && grid.sellerId) {
+					if (role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE && grid.maintainId && grid.centerPoint) {
 						const [longitude, latitude] = grid.centerPoint?.split(',')
 						textMarkerList.push({
 							longitude,

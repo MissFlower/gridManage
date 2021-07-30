@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-30 15:30:53
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-30 14:53:45
+ * @LastEditTime: 2021-07-30 18:15:06
 -->
 <template>
 	<Drawer v-bind="$attrs" title="网格分配" :mask="false" :closable="false">
@@ -43,25 +43,23 @@
 					</Select>
 				</FormItem>
 
-				<div class="flex">
-					<div class="flex-1">
-						<span>负责人选择</span>
+				<FormItem v-bind="validateInfos.sellerAndMaintainId">
+					<div class="flex">
+						<div class="flex-1">
+							<span>负责人选择</span>
 
-						<FormItem v-bind="validateInfos.sellerId">
 							<RadioGroup v-model:value="sellerId">
 								<Radio v-for="{ userId, userName } of currentBdList" :key="userId" :value="userId" class="radio-block-item">{{ userName }}</Radio>
 							</RadioGroup>
-						</FormItem>
-					</div>
-					<div class="flex-1">
-						<span>维护人选择</span>
-						<FormItem v-bind="validateInfos.maintainId">
+						</div>
+						<div class="flex-1">
+							<span>维护人选择</span>
 							<RadioGroup v-model:value="maintainId">
 								<Radio v-for="{ userId, userName } of currentBdList" :key="userId" :value="userId" class="radio-block-item">{{ userName }}</Radio>
 							</RadioGroup>
-						</FormItem>
+						</div>
 					</div>
-				</div>
+				</FormItem>
 			</div>
 		</Form>
 		<template #footer>
@@ -133,6 +131,7 @@
 				seasMapShopCount: 0 // 公海地图门店数
 			})
 			const useForm = Form.useForm
+			state.sellerAndMaintainId = computed(() => state.sellerId + state.maintainId)
 
 			const checkGridIds = async (rule, value) => {
 				if (!value.length) {
@@ -142,14 +141,23 @@
 				}
 			}
 
+			const checkSellerAndMaintainId = async (rule, value) => {
+				console.log(value)
+				console.log(state.maintainId)
+				if (state.sellerId || state.maintainId) {
+					return Promise.resolve()
+				} else {
+					return Promise.reject('负责人和维护人至少选择一个！')
+				}
+			}
+
 			const validatorMsg = name => {
 				return computed(() => `${(props.isDispatchGrid ? '请选择' : '暂未分配') + name}`)
 			}
 			const rulesRef = reactive({
 				orgId: [{ required: true, message: validatorMsg('机构') }],
-				sellerId: [{ required: true, message: validatorMsg('负责人') }],
-				maintainId: [{ required: true, message: validatorMsg('维护人') }],
-				gridIds: [{ validator: checkGridIds, message: '请选择网格' }]
+				sellerAndMaintainId: [{ validator: () => checkSellerAndMaintainId(state) }],
+				gridIds: [{ validator: checkGridIds }]
 			})
 
 			watch(
@@ -188,11 +196,11 @@
 						prev.seasMapShopCount += cur.publicMapNum
 						return prev
 					}, state)
-					console.log(newVal.orgId)
-					state.orgId = newVal[0]?.orgId
-					state.sellerId = newVal[0]?.sellerId
-					state.maintainId = newVal[0]?.maintainId
-					console.log(state)
+					if (!props.isDispatchGrid) {
+						state.orgId = newVal[0]?.orgId
+						state.sellerId = newVal[0]?.sellerId
+						state.maintainId = newVal[0]?.maintainId
+					}
 				},
 				{
 					deep: true
