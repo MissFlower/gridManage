@@ -3,8 +3,8 @@
 	"scripts": {
 		"i": "npm install",
 		"dev": "vite",
-		"build:dev": "vite build --mode dev",
-		"build:uat": "vite build --mode uat",
+		"build:dev": "cross-env NODE_ENV=production vite build --mode dev",
+		"build:uat": "cross-env NODE_ENV=production vite build --mode uat",
 		"build": "vite build",
 		"serve": "npm run dev",
 		"preview": "npm run build && vite preview",
