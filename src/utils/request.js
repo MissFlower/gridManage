@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-25 13:47:47
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-08-02 14:47:18
+ * @LastEditTime: 2021-08-02 16:59:42
  */
 import axios from 'axios'
 import qs from 'qs'
@@ -15,12 +15,11 @@ import { getToken, removeToken } from 'src/utils/cookie'
 import { UPDATE_REQUEST_COUNT } from 'src/store/modules/common/types'
 
 // 请求超时时间
-const TIMEOUT = 100000
+const TIMEOUT = 10000
 const BASE_URL = import.meta.env.VITE_GLOB_API_URL
 // const BASE_URL = import.meta.env.VITE_GLOB_LOCAL_URL_BSD
 // const BASE_URL = import.meta.env.VITE_GLOB_LOCAL_URL_LHQ
 // const BASE_URL = import.meta.env.VITE_GLOB_LOCAL_URL_HW
-// const BASE_URL = 'http://192.168.11.65:9008'
 
 const http = axios.create({
 	baseURL: BASE_URL,
