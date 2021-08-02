@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-29 17:57:17
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-08-02 11:19:00
+ * @LastEditTime: 2021-08-02 11:35:24
  */
 console.log(process.env.NODE_ENV)
 module.exports = {
