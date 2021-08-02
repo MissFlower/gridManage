@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:06:08
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-30 16:46:37
+ * @LastEditTime: 2021-08-02 10:22:33
 -->
 <template>
 	<!-- 热力图容器 -->
@@ -49,25 +49,29 @@
 				mapZoom: HEAT_MAP_DEMARCATION_TYPE.ONE_LEVEL
 			})
 
-			watch(
-				() => state.zoom,
-				newVal => {
-					state.mapZoom = HEAT_MAP_DEMARCATION_TYPE[newVal <= ZOOM_DEMARCATION_VALUE ? 'TWO_LEVEL' : 'ONE_LEVEL']
-					getHeatMapData()
-					// if (newVal <= ZOOM_DEMARCATION_VALUE && preVal > ZOOM_DEMARCATION_VALUE) {
-					// 	// 调用二级热力图数据
-					// 	state.mapZoom = HEAT_MAP_DEMARCATION_TYPE.TWO_LEVEL
-					// 	getHeatMapData()
-					// 	return
-					// }
-					// if (newVal > ZOOM_DEMARCATION_VALUE && preVal <= ZOOM_DEMARCATION_VALUE) {
-					// 	// 调用一级热力图数据
-					// 	state.mapZoom = HEAT_MAP_DEMARCATION_TYPE.ONE_LEVEL
-					// 	getHeatMapData()
-					// }
-				}
-			)
-			watch([() => state.shopType, () => state.center], () => {
+			// watch(
+			// 	() => state.zoom,
+			// 	newVal => {
+			// 		state.mapZoom = HEAT_MAP_DEMARCATION_TYPE[newVal <= ZOOM_DEMARCATION_VALUE ? 'TWO_LEVEL' : 'ONE_LEVEL']
+			// 		// 获取地图的边界范围坐标
+			// 		getMapBounds()
+			// 		// 获取热力图数据
+			// 		getHeatMapData()
+			// 		// if (newVal <= ZOOM_DEMARCATION_VALUE && preVal > ZOOM_DEMARCATION_VALUE) {
+			// 		// 	// 调用二级热力图数据
+			// 		// 	state.mapZoom = HEAT_MAP_DEMARCATION_TYPE.TWO_LEVEL
+			// 		// 	getHeatMapData()
+			// 		// 	return
+			// 		// }
+			// 		// if (newVal > ZOOM_DEMARCATION_VALUE && preVal <= ZOOM_DEMARCATION_VALUE) {
+			// 		// 	// 调用一级热力图数据
+			// 		// 	state.mapZoom = HEAT_MAP_DEMARCATION_TYPE.ONE_LEVEL
+			// 		// 	getHeatMapData()
+			// 		// }
+			// 	}
+			// )
+			watch([() => state.zoom, () => state.shopType, () => state.center], ([zoom]) => {
+				state.mapZoom = HEAT_MAP_DEMARCATION_TYPE[zoom <= ZOOM_DEMARCATION_VALUE ? 'TWO_LEVEL' : 'ONE_LEVEL']
 				// 获取地图的边界范围坐标
 				getMapBounds()
 				// 获取热力图数据

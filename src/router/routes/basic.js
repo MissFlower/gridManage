@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 17:52:09
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-26 10:44:57
+ * @LastEditTime: 2021-08-02 10:47:45
  */
 import { Layout, REDIRECT_NAME } from 'src/router/constant'
 export const PAGE_ERROR_ROUTES = [
@@ -17,6 +17,21 @@ export const PAGE_ERROR_ROUTES = [
 		path: '/404',
 		component: () => import('src/views/System/ErrorPage/404.vue'),
 		hidden: true
+	},
+	{
+		path: '/system',
+		component: Layout,
+		hidden: true,
+		children: [
+			{
+				path: '403',
+				name: 'Error403',
+				component: () => import('src/views/System/ErrorPage/403.vue'),
+				meta: {
+					hideTab: true
+				}
+			}
+		]
 	}
 ]
 
