@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 13:26:36
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-30 18:28:53
+ * @LastEditTime: 2021-08-02 14:44:00
  */
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
@@ -300,13 +300,13 @@ export function useMap(el, options = {}) {
 				...extData,
 				isChecked: true
 			})
-			currentUsedGridPolygon = polygon
+			!isEdit.value && (currentUsedGridPolygon = polygon)
 			const { judgeMethod, polygons } = accordRoleMethods[currentRole]
 			const { lng, lat } = polygon.getPath()[0]
 			// 检测坐标点属于哪一个行政区或父网格
 			judgeMethod([lng, lat], polygons)
 		} else {
-			currentUsedGridPolygon = null
+			!isEdit.value && (currentUsedGridPolygon = null)
 			polygon.setOptions({
 				fillOpacity: OWN_GRID_OPACITY_DEFAULT
 			})

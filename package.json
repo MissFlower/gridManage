@@ -8,7 +8,7 @@
 		"build": "vite build",
 		"serve": "npm run dev",
 		"preview": "npm run build && vite preview",
-		"preview:dev": "vite build --mode dev && vite preview",
+		"preview:dev": "vite build --mode dev --base=/ && vite preview",
 		"preview:dist": "vite preview",
 		"report": "cross-env REPORT=true npm run build",
 		"prepare": "husky install",

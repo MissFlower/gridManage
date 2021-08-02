@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-25 13:47:47
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-08-02 10:47:37
+ * @LastEditTime: 2021-08-02 14:47:18
  */
 import axios from 'axios'
 import qs from 'qs'
@@ -20,6 +20,7 @@ const BASE_URL = import.meta.env.VITE_GLOB_API_URL
 // const BASE_URL = import.meta.env.VITE_GLOB_LOCAL_URL_BSD
 // const BASE_URL = import.meta.env.VITE_GLOB_LOCAL_URL_LHQ
 // const BASE_URL = import.meta.env.VITE_GLOB_LOCAL_URL_HW
+// const BASE_URL = 'http://192.168.11.65:9008'
 
 const http = axios.create({
 	baseURL: BASE_URL,
