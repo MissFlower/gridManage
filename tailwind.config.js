@@ -4,9 +4,10 @@
  * @Author: AiDongYang
  * @Date: 2021-07-29 17:57:17
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-08-02 17:02:11
+ * @LastEditTime: 2021-08-02 17:18:14
  */
 module.exports = {
+	mode: 'jit',
 	purge: {
 		enable: process.env.NODE_ENV === 'production',
 		content: ['./index.html', './src/**/*.{vue,ts,tsx}']
