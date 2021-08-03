@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-25 13:47:47
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-08-02 16:59:42
+ * @LastEditTime: 2021-08-03 16:35:30
  */
 import axios from 'axios'
 import qs from 'qs'
@@ -13,6 +13,7 @@ import { router } from 'src/router'
 import { message, Modal } from 'ant-design-vue'
 import { getToken, removeToken } from 'src/utils/cookie'
 import { UPDATE_REQUEST_COUNT } from 'src/store/modules/common/types'
+import { addRequest, removeRequest } from './cancelRequest'
 
 // 请求超时时间
 const TIMEOUT = 10000
@@ -33,12 +34,18 @@ const http = axios.create({
 		}
 	},
 	loading: true,
-	showMessage: true
+	showMessage: true,
+	cancelRequest: false
 })
 
 // http 请求拦截
 http.interceptors.request.use(
 	config => {
+		if (config.cancelRequest) {
+			removeRequest(config)
+			addRequest(config)
+		}
+
 		if (config.loading) {
 			store.commit(UPDATE_REQUEST_COUNT, 1)
 		}
@@ -55,6 +62,10 @@ http.interceptors.response.use(
 	response => {
 		const result = response.data
 		let data = null
+
+		if (response.config.cancelRequest) {
+			removeRequest(response.config)
+		}
 
 		if (response.config.loading) {
 			store.commit(UPDATE_REQUEST_COUNT, -1)
@@ -79,7 +90,7 @@ http.interceptors.response.use(
 		return result.data || data
 	},
 	error => {
-		if (error.config.loading) {
+		if ((error.message || error.config).loading) {
 			store.commit(UPDATE_REQUEST_COUNT, -1)
 		}
 
@@ -93,8 +104,6 @@ http.interceptors.response.use(
 			switch (error.response.status) {
 				case 401:
 					if (!getToken()) {
-						console.log(error)
-						console.log(error.response)
 						return Promise.reject(error.response)
 					}
 					removeToken()

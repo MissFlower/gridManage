@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-07 15:57:30
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-16 17:50:04
+ * @LastEditTime: 2021-08-03 16:13:49
  */
 import request from 'src/utils/request'
 
@@ -108,7 +108,7 @@ export function deleteGrid(params) {
  * @Date 2021-07-07 17:40:29
  */
 export function getNearbyShopForGrid(params) {
-	return request.get('/manage/shopGrid/queryNearbyShopForGrid', params, { loading: false })
+	return request.get('/manage/shopGrid/queryNearbyShopForGrid', params, { loading: false, cancelRequest: true })
 }
 
 /**
@@ -135,7 +135,7 @@ export function getShopInfo(params) {
  * @Date 2021-07-07 17:45:19
  */
 export function getHeatMapList(params) {
-	return request.post('/manage/hotMap/getHotMapList', params)
+	return request.post('/manage/hotMap/getHotMapList', params, { loading: false, cancelRequest: true })
 }
 
 /**

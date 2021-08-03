@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-08-03 14:21:16
+ * @LastEditTime: 2021-08-03 16:09:05
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -490,13 +490,17 @@
 				const { addMarkers } = map
 				const { lng, lat } = mapAttrs.center
 				state.isShowShopInfo = false
-				const data =
-					(await getNearbyShopForGrid({
-						longitude: lng,
-						latitude: lat,
-						type: mapAttrs.shopType
-					})) || []
-				mapAttrs.zoom > SHOP_ZOOM_DEMARCATION_VALUE && data.length && addMarkers(data, getShopInfo)
+				try {
+					const data =
+						(await getNearbyShopForGrid({
+							longitude: lng,
+							latitude: lat,
+							type: mapAttrs.shopType
+						})) || []
+					mapAttrs.zoom > SHOP_ZOOM_DEMARCATION_VALUE && addMarkers(data, getShopInfo)
+				} catch (error) {
+					console.log(error)
+				}
 			}
 
 			// 点击门店获取门店信息

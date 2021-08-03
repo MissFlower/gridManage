@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:06:08
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-08-02 10:22:33
+ * @LastEditTime: 2021-08-03 16:19:31
 -->
 <template>
 	<!-- 热力图容器 -->
@@ -118,13 +118,17 @@
 
 			// 获取热力图数据
 			const getHeatMapData = async () => {
-				const data = await getHeatMapList(state)
+				try {
+					const data = (await getHeatMapList(state)) || []
 
-				// 设置数据集
-				map.heatmap.setDataSet({
-					data
-					// ...options
-				})
+					// 设置数据集
+					map.heatmap.setDataSet({
+						data
+						// ...options
+					})
+				} catch (error) {
+					console.log(error)
+				}
 			}
 
 			// 地图缩放
