@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-30 15:30:53
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-30 18:15:06
+ * @LastEditTime: 2021-08-03 11:26:48
 -->
 <template>
 	<Drawer v-bind="$attrs" title="网格分配" :mask="false" :closable="false">
@@ -18,7 +18,7 @@
 				</FormItem>
 			</div>
 
-			<div class="flex flex-col">
+			<div class="flex flex-col mb-4">
 				<div class="py-1">自营团队门店数: {{ selfSupportShopCount }}</div>
 				<div class="py-1">店日均流水总和: {{ averageFlows }}</div>
 				<div class="py-1">直营创建门店数: {{ redictSupportShopCount }}</div>
@@ -49,13 +49,29 @@
 							<span>负责人选择</span>
 
 							<RadioGroup v-model:value="sellerId">
-								<Radio v-for="{ userId, userName } of currentBdList" :key="userId" :value="userId" class="radio-block-item">{{ userName }}</Radio>
+								<Radio
+									v-for="{ userId, userName } of currentBdList"
+									:key="userId"
+									:value="userId"
+									:disabled="!isDispatchGrid"
+									class="radio-block-item"
+								>
+									{{ userName }}
+								</Radio>
 							</RadioGroup>
 						</div>
 						<div class="flex-1">
 							<span>维护人选择</span>
 							<RadioGroup v-model:value="maintainId">
-								<Radio v-for="{ userId, userName } of currentBdList" :key="userId" :value="userId" class="radio-block-item">{{ userName }}</Radio>
+								<Radio
+									v-for="{ userId, userName } of currentBdList"
+									:key="userId"
+									:value="userId"
+									:disabled="!isDispatchGrid"
+									class="radio-block-item"
+								>
+									{{ userName }}
+								</Radio>
 							</RadioGroup>
 						</div>
 					</div>
@@ -117,11 +133,11 @@
 		},
 		emits: ['close', 'dispatched'],
 		setup(props, { emit }) {
-			console.log(props)
 			let state = reactive({
 				orgId: '', // 机构id
 				sellerId: '', // 负责人id
 				maintainId: '', // 维护人id
+				sellerAndMaintainId: '',
 				gridIds: [], // 网格id
 				currentBdList: [],
 				selfSupportShopCount: 0, // 自营门店数
@@ -131,7 +147,7 @@
 				seasMapShopCount: 0 // 公海地图门店数
 			})
 			const useForm = Form.useForm
-			state.sellerAndMaintainId = computed(() => state.sellerId + state.maintainId)
+			state.sellerAndMaintainId = computed(() => state.sellerId || state.maintainId)
 
 			const checkGridIds = async (rule, value) => {
 				if (!value.length) {
@@ -142,9 +158,7 @@
 			}
 
 			const checkSellerAndMaintainId = async (rule, value) => {
-				console.log(value)
-				console.log(state.maintainId)
-				if (state.sellerId || state.maintainId) {
+				if (!props.isDispatchGrid || value) {
 					return Promise.resolve()
 				} else {
 					return Promise.reject('负责人和维护人至少选择一个！')
@@ -156,14 +170,15 @@
 			}
 			const rulesRef = reactive({
 				orgId: [{ required: true, message: validatorMsg('机构') }],
-				sellerAndMaintainId: [{ validator: () => checkSellerAndMaintainId(state) }],
+				sellerAndMaintainId: [{ validator: checkSellerAndMaintainId }],
 				gridIds: [{ validator: checkGridIds }]
 			})
+
+			const { resetFields, validate, validateInfos } = useForm(state, rulesRef)
 
 			watch(
 				() => state.orgId,
 				newVal => {
-					console.log(newVal)
 					if (props.role === ADMIN_ROLE_TYPE.BD_ADMIN_ROLE && newVal) {
 						state.currentBdList = props.orgOrbdList.find(item => newVal === item.orgId).userList
 					}
@@ -173,7 +188,6 @@
 			watch(
 				() => props.gridInfoList,
 				newVal => {
-					console.log(newVal)
 					if (newVal.length === 0) {
 						state.selfSupportShopCount = 0
 						state.averageFlows = 0
@@ -207,8 +221,6 @@
 				}
 			)
 
-			const { resetFields, validate, validateInfos } = useForm(state, rulesRef)
-
 			// 保存
 			const saveHandle = async () => {
 				state.gridIds = props.gridInfoList.map(grid => grid.id)
@@ -238,8 +250,8 @@
 
 			// 取消
 			const cancelHandle = () => {
-				state.currentBdList = []
 				resetFields()
+				state.currentBdList = []
 				emit('close')
 			}
 
