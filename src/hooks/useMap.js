@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 13:26:36
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-08-02 14:44:00
+ * @LastEditTime: 2021-08-03 14:22:03
  */
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
@@ -17,6 +17,7 @@ const rolezIndex = {
 const PARENT_GRID_OPACITY = 0.2
 const OWN_GRID_OPACITY_DEFAULT = 0.4
 const OWN_GRID_OPACITY_CHECKED = 0.6
+const POLYGON_MAX_DRAWED_COORDINATE_AMOUNT = 50 // 图形绘制最大坐标数量
 export function useMap(el, options = {}) {
 	let mapInstance = null // 地图实例
 	let district = null // 行政查询工具实例
@@ -182,18 +183,24 @@ export function useMap(el, options = {}) {
 	}
 
 	// 检测绘制图形面积
-	function judgePolygonsArea(polygon) {
-		const polygonsArea = Math.round(polygon.getArea())
+	function judgePolygonArea(polygon) {
+		const polygonArea = Math.round(polygon.getArea())
 		const min = GRID_AREA_TYPE[currentRole].MIN
 		const max = GRID_AREA_TYPE[currentRole].MAX
-		const isInArea = polygonsArea >= min && polygonsArea <= max
+		const isInArea = polygonArea >= min && polygonArea <= max
 
 		return {
 			isInArea,
-			polygonsArea,
+			polygonArea,
 			min,
 			max
 		}
+	}
+
+	// 检测绘制图形坐标数量
+	function judgePolygonCoordinateAmount(polygon) {
+		const polygonPaths = polygon.getPath()
+		return polygonPaths.length > POLYGON_MAX_DRAWED_COORDINATE_AMOUNT
 	}
 
 	// 检测碰撞
@@ -224,11 +231,22 @@ export function useMap(el, options = {}) {
 			return callback ? false : res
 		}
 		// 3.检测绘制图形面积是否符合规定面积
-		const { isInArea, polygonsArea, min, max } = judgePolygonsArea(polygon)
+		const { isInArea, polygonArea, min, max } = judgePolygonArea(polygon)
 		if (!isInArea) {
 			const res = {
-				code: 10002,
-				message: `当前绘制的网格面积为${(polygonsArea / 1000000).toFixed(2)}平方千米,不在规定区间${min / 1000000}-${max / 1000000}平方千米之间！`
+				code: 10003,
+				message: `当前绘制的网格面积为${(polygonArea / 1000000).toFixed(2)}平方千米,不在规定区间${min / 1000000}-${max / 1000000}平方千米之间！`
+			}
+			callback && callback(res)
+			resetToolStatus(true)
+			return callback ? false : res
+		}
+		// 4.检测绘制图形坐标数量
+		const isOverMaxAmount = judgePolygonCoordinateAmount(polygon)
+		if (isOverMaxAmount) {
+			const res = {
+				code: 10004,
+				message: `当前绘制的网格坐标点已超出最大数量${POLYGON_MAX_DRAWED_COORDINATE_AMOUNT}个！`
 			}
 			callback && callback(res)
 			resetToolStatus(true)
