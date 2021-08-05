@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-08-03 16:09:05
+ * @LastEditTime: 2021-08-05 16:39:50
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -299,7 +299,7 @@
 						const index = state.gridInfoList.findIndex(grid => grid.id === gridInfo.id)
 						if (gridInfo.isChecked) {
 							// 添加
-							if (state.gridInfoList.length >= 5) {
+							if (state.gridInfoList.length >= 50) {
 								map.resetGridStyle([gridInfo.polygon])
 								Message.warn('批量分配最多选择50个网格!')
 								return

@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-24 18:01:50
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-30 10:55:55
+ * @LastEditTime: 2021-08-05 16:38:38
 -->
 <template>
 	<div class="relative h-full bg-login-image bg-cover bg-no-repeat">
@@ -68,8 +68,8 @@
 				otherQuery: {}
 			})
 			const modelRef = reactive({
-				username: 'aa04',
-				password: 'Ycb@13',
+				username: import.meta.env.DEV ? 'aa04' : '',
+				password: import.meta.env.DEV ? 'Ycb@13' : '',
 				code: '',
 				verifyImage: '',
 				uuid: ''
@@ -113,6 +113,7 @@
 							}
 						})
 						.then(() => {
+							console.log(redirectRef.redirect)
 							router.push({ path: redirectRef.redirect || '/', query: redirectRef.otherQuery })
 						})
 						.catch(error => {
@@ -154,12 +155,18 @@
 				}
 			)
 
-			watch(route, ({ query }) => {
-				if (query) {
-					redirectRef.redirect = query.redirect
-					redirectRef.otherQuery = getOtherQuery(query)
+			watch(
+				route,
+				({ query }) => {
+					if (query) {
+						redirectRef.redirect = query.redirect
+						redirectRef.otherQuery = getOtherQuery(query)
+					}
+				},
+				{
+					immediate: true
 				}
-			})
+			)
 
 			verifyCodeHandle()
 

@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-25 13:47:47
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-08-03 16:35:30
+ * @LastEditTime: 2021-08-05 14:18:01
  */
 import axios from 'axios'
 import qs from 'qs'
@@ -90,7 +90,7 @@ http.interceptors.response.use(
 		return result.data || data
 	},
 	error => {
-		if ((error.message || error.config).loading) {
+		if (error.config.loading) {
 			store.commit(UPDATE_REQUEST_COUNT, -1)
 		}
 

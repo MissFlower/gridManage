@@ -4,10 +4,10 @@
  * @Author: AiDongYang
  * @Date: 2021-06-28 17:51:01
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-09 16:41:05
+ * @LastEditTime: 2021-08-05 13:55:44
 -->
 <template>
-	<section v-show="loading" class="full-loading" :class="{ absolute }">
+	<section v-show="loading" class="full-loading" :class="{ absolute }" @contextmenu.prevent>
 		<Spin v-bind="$attrs" :size="size" :tip="tip" :spinning="loading" />
 	</section>
 </template>

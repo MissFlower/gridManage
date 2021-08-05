@@ -10,11 +10,6 @@
 			src="https://webapi.amap.com/maps?v=2.0&key=864e0b88db3a4f27cfff0d2f33a81578&&plugin=AMap.Scale,AMap.HawkEye,AMap.ToolBar,AMap.ControlBar,AMap.DistrictSearch,AMap.MouseTool,AMap.PolygonEditor"
 			defer
 		></script>
-		<script type="text/javascript">
-			document.oncontextmenu = function () {
-				return false
-			}
-		</script>
 	</head>
 	<body>
 		<div id="app">
@@ -60,6 +55,8 @@
 					display: flex;
 					margin-top: 30px;
 					font-size: 30px;
+					font-weight: 500;
+					letter-spacing: 2px;
 					color: rgba(0, 0, 0, 0.85);
 					justify-content: center;
 					align-items: center;
@@ -145,8 +142,67 @@
 						opacity: 1;
 					}
 				}
+
+				#guide-page {
+					display: none;
+				}
+
+				.guide-img {
+					position: absolute;
+					top: -25%;
+					right: 0;
+					bottom: 0;
+					left: 0;
+					width: 50%;
+					margin: auto;
+				}
+
+				.btn {
+					display: inline-block;
+					height: 32px;
+					padding: 4px 15px;
+					font-size: 14px;
+					font-weight: 400;
+					color: #fff;
+					text-align: center;
+					text-shadow: 0 -1px 0 rgb(0 0 0 / 12%);
+					white-space: nowrap;
+					cursor: pointer;
+					background: #1890ff;
+					border: 1px solid transparent;
+					border-color: #1890ff;
+					border-radius: 2px;
+					outline: 0;
+					box-shadow: 0 2px 0 rgb(0 0 0 / 5%);
+					user-select: none;
+					touch-action: manipulation;
+				}
+
+				.btn:hover {
+					background: #40a9ff;
+					border-color: #40a9ff;
+				}
+
+				.broswer-wrapper {
+					position: absolute;
+					top: 70%;
+					right: 0;
+					bottom: 0;
+					left: 0;
+					margin: auto;
+					text-align: center;
+				}
+
+				.broswer-item {
+					display: inline-block;
+					margin-top: 12px;
+				}
+
+				.broswer-item + .broswer-item {
+					margin-left: 12px;
+				}
 			</style>
-			<div class="app-loading">
+			<div id="app-loading" class="app-loading">
 				<div class="app-loading-wrap">
 					<img src="src/assets/images/bg_logo.png" class="app-loading-logo" alt="Logo" />
 					<div class="app-loading-dots">
@@ -155,7 +211,26 @@
 					<div class="app-loading-title"><%= title %></div>
 				</div>
 			</div>
+			<div id="guide-page">
+				<img src="src/assets/svg/update.svg" class="guide-img" alt="Logo" />
+				<div class="broswer-wrapper">
+					<div><%= title %>系统不支持IE浏览器，请前往下载主流高级浏览器！</div>
+					<a href="https://www.google.cn/intl/zh-CN/chrome/" target="_blank" rel="noopener noreferrer" class="broswer-item">
+						<button class="btn">下载 Chrome</button>
+					</a>
+					<a href="https://www.microsoft.com/zh-cn/edge" target="_blank" rel="noopener noreferrer" class="broswer-item">
+						<button class="btn">下载 Microsoft Edge</button>
+					</a>
+				</div>
+			</div>
 		</div>
+
+		<script type="text/javascript">
+			if (!!window.ActiveXObject || 'ActiveXObject' in window) {
+				document.getElementById('app-loading').style.display = 'none'
+				document.getElementById('guide-page').style.display = 'block'
+			}
+		</script>
 		<script type="module" src="/src/main.js"></script>
 	</body>
 </html>
