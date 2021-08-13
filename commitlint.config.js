@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-07-16 15:32:29
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-07-19 14:32:51
+ * @LastEditTime: 2021-08-13 09:51:43
  */
 module.exports = {
 	ignores: [commit => commit.includes('init')],
@@ -13,8 +13,8 @@ module.exports = {
 		'body-leading-blank': [2, 'always'],
 		'footer-leading-blank': [1, 'always'],
 		'header-max-length': [2, 'always', 108],
-		'subject-empty': [2, 'never'], // 提交不符合规范时,也可以提交,但是会有警告
-		'type-empty': [2, 'never'], // 提交不符合规范时,也可以提交,但是会有警告
+		'subject-empty': [2, 'never'],
+		'type-empty': [2, 'never'],
 		'type-enum': [
 			2,
 			'always',

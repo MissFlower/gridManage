@@ -62,14 +62,15 @@
 			const usernameRef = ref(null)
 			const passwordRef = ref(null)
 			const useForm = Form.useForm
+			const isDev = import.meta.env.DEV
 
 			const redirectRef = reactive({
 				redirect: '',
 				otherQuery: {}
 			})
 			const modelRef = reactive({
-				username: import.meta.env.DEV ? 'aa04' : '',
-				password: import.meta.env.DEV ? 'Ycb@13' : '',
+				username: isDev ? 'aa04' : '',
+				password: isDev ? 'Ycb@13' : '',
 				code: '',
 				verifyImage: '',
 				uuid: ''

@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-25 13:47:47
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-08-05 14:18:01
+ * @LastEditTime: 2021-08-13 09:28:42
  */
 import axios from 'axios'
 import qs from 'qs'
@@ -16,7 +16,7 @@ import { UPDATE_REQUEST_COUNT } from 'src/store/modules/common/types'
 import { addRequest, removeRequest } from './cancelRequest'
 
 // 请求超时时间
-const TIMEOUT = 10000
+const TIMEOUT = 100000
 const BASE_URL = import.meta.env.VITE_GLOB_API_URL
 // const BASE_URL = import.meta.env.VITE_GLOB_LOCAL_URL_BSD
 // const BASE_URL = import.meta.env.VITE_GLOB_LOCAL_URL_LHQ
