@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-08-13 10:42:08
+ * @LastEditTime: 2021-08-13 11:04:55
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -105,6 +105,7 @@
 			})
 			const mapButtonGroupRef = ref(null)
 			let map = null
+			let saveFalg = false
 			const SHOP_ZOOM_DEMARCATION_VALUE = 10 // 门店展示zoom分界值
 			const TEXT_MARKER_ZOOM_DEMARCATION_VALUE = 12 // 文本标记zoom分界值
 			let userGridsData = {} // 用户网格数据
@@ -396,11 +397,10 @@
 
 			// 保存网格(弹窗保存按钮)
 			const modalSaveGridHandle = async () => {
-				let flag = false
-				if (flag) {
+				if (saveFalg) {
 					return
 				}
-				flag = true
+				saveFalg = true
 				if (gridInfo.value.id) {
 					// 编辑网格
 					await editSaveGridHandle()
@@ -408,7 +408,7 @@
 					// 新增网格
 					await addSaveGridHandle()
 				}
-				flag = false
+				saveFalg = false
 				state.gridModalVisible = false
 				// 初始化流程
 				await initProcess()
