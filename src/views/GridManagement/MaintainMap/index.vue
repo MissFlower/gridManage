@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-08-05 16:41:32
+ * @LastEditTime: 2021-08-13 11:21:24
 -->
 <template>
 	<!-- 维护地图容器 -->
@@ -394,6 +394,7 @@
 
 			// 保存网格(弹窗保存按钮)
 			const modalSaveGridHandle = async () => {
+				state.gridModalVisible = false
 				if (gridInfo.value.id) {
 					// 编辑网格
 					await editSaveGridHandle()
@@ -401,7 +402,6 @@
 					// 新增网格
 					await addSaveGridHandle()
 				}
-				state.gridModalVisible = false
 				// 初始化流程
 				await initProcess()
 				addTextMarkers()
