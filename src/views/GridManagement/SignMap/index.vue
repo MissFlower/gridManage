@@ -4,7 +4,7 @@
  * @Author: AiDongYang
  * @Date: 2021-06-29 15:03:27
  * @LastEditors: AiDongYang
- * @LastEditTime: 2021-08-05 16:39:50
+ * @LastEditTime: 2021-08-13 10:42:08
 -->
 <template>
 	<!-- 签约地图容器 -->
@@ -396,6 +396,11 @@
 
 			// 保存网格(弹窗保存按钮)
 			const modalSaveGridHandle = async () => {
+				let flag = false
+				if (flag) {
+					return
+				}
+				flag = true
 				if (gridInfo.value.id) {
 					// 编辑网格
 					await editSaveGridHandle()
@@ -403,6 +408,7 @@
 					// 新增网格
 					await addSaveGridHandle()
 				}
+				flag = false
 				state.gridModalVisible = false
 				// 初始化流程
 				await initProcess()
